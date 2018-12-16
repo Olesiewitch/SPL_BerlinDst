@@ -1,0 +1,50 @@
+---
+title: "Getting Mobility Data"
+author: "Malgorzata Olesiewicz"
+date: "16 December 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Source of data: Berliner Verkehr in Zahlen 2013
+
+The project uses the report *Berliner Verkehr in Zahlen 2013* (the report) as the source of data regarding parking spaces. To read full report please visit: <https://www.berlin.de/senuvk/verkehr/politik_planung/zahlen_fakten/download/Mobilitaet_dt_komplett.pdf>
+
+The report has been acessed on the 16th of December 2018
+
+## Processing the data
+
+As the mobility data is only avaiable as a part of the written report, this protocol documents how the data have been collected into the csv file *berliner_verkehr_zahlen_daten.csv*, which has been uploaded on the GitHub side of the project (https://github.com/Olesiewitch/SPL-Project/tree/master/data)
+
+
+## Districts 
+
+For the convenience of the data sets merging, the numeration and names of the districts of Berlin have been sources from the statistik-berlin-brandenburg-daten.csv . 
+```{r, echo= TRUE}
+a= c("01 Mitte", "02 Friedrichshain-Kreuzberg", "03 Pankow", "04 Charlottenburg-Wilmersdorf", "05 Spandau", "06 Steglitz-Zehlendorf", "07 Tempelhof-Schöneberg", "08 Neukölln", "09 Treptow-Köpenick", "10 Marzahn-Hellersdorf", "11 Lichtenberg", "12 Reinickendorf")
+```
+
+### Parking spaces 
+
+The data regarding parking spaces in the districs of Berlin have been sourced from the page 32 of the report. Original name of data "Bewirtschaftete Stellplätze im öffentlichen  Straßenraum". 
+
+```{r, echo=TRUE }
+b= c(26488,4090,26000,20500,2726,7400,7150,"N/A","N/A","N/A","N/A","N/A")
+```
+
+## Mergin the data 
+
+```{r, echo=TRUE}
+berliner_verkehr_zahlen_daten = data.frame(a,b) 
+```
+### Colummn names
+```{r pressure, echo=FALSE}
+colnames(berliner_verkehr_zahlen_daten)=c("District","Parking Spaces")
+```
+
+ 
+
+
