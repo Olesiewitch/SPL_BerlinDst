@@ -27,7 +27,7 @@ For the convenience of the data sets merging, the numeration and names of the di
 a= c("01 Mitte", "02 Friedrichshain-Kreuzberg", "03 Pankow", "04 Charlottenburg-Wilmersdorf", "05 Spandau", "06 Steglitz-Zehlendorf", "07 Tempelhof-Schöneberg", "08 Neukölln", "09 Treptow-Köpenick", "10 Marzahn-Hellersdorf", "11 Lichtenberg", "12 Reinickendorf")
 ```
 
-### Parking spaces 
+## Parking spaces 
 
 The data regarding parking spaces in the districs of Berlin have been sourced from the page 32 of the report. Original name of data "Bewirtschaftete Stellplätze im öffentlichen  Straßenraum". 
 
