@@ -10,7 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 ### Getting the data
 Data from the www.statistik-berlin-brandenburg.de potal (the portal) have been accessed on the 15th of December 2018. As the data cannot be directly downloaded from the potal, they have been copied to csv file (statistik-berlin-brandenburg-daten.csv) and saved on the GitHub repository of the project (<https://github.com/Olesiewitch/SPL-Project/tree/master/data>)
-The following Protokol describes the process of data cleaning and merging it into the excel spreadsheet. As the naming of the original data is in German, the process of data translation is also described.   
+The following Protokol describes the process of data cleaning and merging it into the csv file. As the naming of the original data is in German, the process of data translation is also described.   
 
 ### Dirstics
 
