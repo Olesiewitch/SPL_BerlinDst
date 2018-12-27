@@ -1,0 +1,32 @@
+---
+title: "protocol- getting data - Kriminalitätsatlas Berlin"
+author: "Malgorzata Olesiewicz"
+date: "27 December 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+### Getting the data 
+
+The data has been obtaine from the Berlin Open Data Portal and accessed on the 27th of December 2018 under the link <https://daten.berlin.de/datensaetze/kriminalit%C3%A4tsatlas-berlin> 
+The data has been downloaded as excel spreedsheet. The chosen for the project criminal offences data has been written in R into a csv file. The following protocol presents the process of writting the csv file. The written csv file has been stored on the Github page of the project under:  <https://github.com/Olesiewitch/SPL-Project/tree/master/Dirstrict%20Data> 
+
+### Crime frequancy
+Excel sheet : HZ 2017 
+Original name of data : Insgesamt-Straftaten (Häufigkeitszahlen (HZ) der Bezirke und Bezirksregionen)
+English translation: Crime Frequancy
+Year: 2017
+Unit: Total number
+```{r ,echo= TRUE}
+crime =c(25864,19460,9718,15767,10888,7664,11385,12937,9239,9385,9663,11456)
+districts= c("Mitte","Friedrichshain-Kreuzberg","Pankow","Charlottenburg-Wilmersdorf","Spandau", "Steglitz-Zehlendorf","Tempelhof-Schöneberg","Neukölln","Treptow-Köpenick","Marzahn-Hellersdorf", "Lichtenberg","Reinickendorf") 
+criminal_offences = data.frame (districts, crime)
+```
+
+## Writting csv
+
+```{r, echo= TRUE}
+write.csv(criminal_offences, "kriminalitatsatlas_berlin_daten.csv")

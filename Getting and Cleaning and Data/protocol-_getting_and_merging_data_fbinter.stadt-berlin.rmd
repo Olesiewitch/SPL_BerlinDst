@@ -1,0 +1,21 @@
+---
+title: "protocol- getting and merging data fbinter.stadt-berlin"
+author: "Malgorzata Olesiewicz"
+date: "26 December 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+### Getting Data 
+The data has been obtained from the <http://www.stadtentwicklung.berlin.de//geoinformation/fis-broker/> website.The data has been acessed on the 26th of December. The developed by the city of Berlin data base  does not allow for coping links to selected data sets. Therefore, detail instructions of how to look for specific data sets will be given for every data used. The chosen data has been stored in the excel spreedsheet on the GitHub page of the project under <https://github.com/Olesiewitch/SPL-Project/tree/master/Dirstrict%20Data>
+
+### Street crossings
+Name of the dataset:Fußgängerüberwege 
+Search options: Archivsuche 
+Original name: Fußgängerüberwege
+English Translation: Street Crossing  
+
+
+
