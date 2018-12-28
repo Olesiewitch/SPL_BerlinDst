@@ -17,5 +17,13 @@ Search options: Archivsuche
 Original name: Fußgängerüberwege
 English Translation: Street Crossing  
 
+## Colummn names
+```{r pressure, echo=FALSE}
+colnames(fbinter.stadt-berlin- daten)=c("Districts","Street crossings")
 
+## Street Crossing 
+```{r ,echo= TRUE}
+ =c(33,39,54,35,22,31,19,25,32,39,22,30)
+Districts= c("Mitte","Friedrichshain-Kreuzberg","Pankow","Charlottenburg-Wilmersdorf","Spandau", "Steglitz-Zehlendorf","Tempelhof-Schöneberg","Neukölln","Treptow-Köpenick","Marzahn-Hellersdorf", "Lichtenberg","Reinickendorf") 
+Street Crossing= data.frame (Districts, Street crossings )
 
