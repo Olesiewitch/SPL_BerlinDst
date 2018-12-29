@@ -34,14 +34,13 @@ return(zip) ## returning the obtained data
 }
 zips=(matrix(unlist(getting_zip(stops.data$stop_lon,stops.data$stop_lat)))) ## running the function and converting the obtained level data into factor type
 
-zip.code=c(as.numeric(as.character(zips))) ## converting factor type data into numeric data and saving it as a vector
+zip.code=c(as.character(zips)) ## converting factor type data into character (numeric not possible as some post codes start from 0) and saving it as a vector
 
 stops.data$zip=zip.code ## adding the data to the data set
 
 ### THIS OPERATION TAKES VERY LONG TIME
 
-write.csv(stops.data, "stops+zip.csv")
-  
+write.csv(stops.data, "stops+zip2.csv")
 ```
 
 *3. Obtaining and saving as new variable the name of the district 
