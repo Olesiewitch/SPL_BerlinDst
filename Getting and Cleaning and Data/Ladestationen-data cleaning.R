@@ -1,15 +1,13 @@
 setwd("/Users/qier/Downloads")
 library(readxl)
-ladestationen <- read_excel("ladestationen.xls")
-View(ladestationen)
-
-Postleitzahlen <- read_excel("~/Downloads/ZuordnungderBezirkezuPostleitzahlen.xls")
+ladestationen = read_excel("ladestationen.xls")
+Postleitzahlen = read_excel("~/Downloads/ZuordnungderBezirkezuPostleitzahlen.xls")
 View(Postleitzahlen)
 
 Bezirk<-Postleitzahlen$X__1[!is.na(Postleitzahlen$X__1)];Bezirk
 Bezirk<-Bezirk[2:length(Bezirk)];Bezirk
 Bezirk[2]<-"Friedrichshain-Kreuzberg";Bezirk<- Bezirk[-3];Bezirk
-Bezirk[4]<-"Charlottenburg-Schöneberg";Bezirk<- Bezirk[-5];Bezirk
+Bezirk[4]<-"Charlottenburg";Bezirk<- Bezirk[-5];Bezirk
 Bezirk[7]<-"Tempelhof-Schöneberg";Bezirk<- Bezirk[-8];Bezirk
 
 class(Bezirk)#charachter

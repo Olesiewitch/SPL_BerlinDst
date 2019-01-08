@@ -32,7 +32,7 @@ kriminal_arr= arrange(kriminalitatsatlas_berlin_daten, districts)
 final_data_frame = data.frame(stat_arr,fbinter_ar$`Street crossings`,fbinter_ar$`Lenthg of cycling lines`,berliner_ar$`Parking Spaces`,doctor_arr$`Nr.of house doctor per 10,000 people`,kriminal_arr$crime)
 colnames(final_data_frame)=c(colnames(stat_arr),colnames(fbinter_ar[2]), colnames(fbinter_ar[3]), colnames(berliner_ar[3]),colnames(doctor_arr[2]), colnames(kriminal_arr[3]))
 
-final_data_frame %>% arrange(final_data_frame,Nr)
+final_data_frame_arr=arrange(final_data_frame,Nr)
 
 ### LIVIBILITY INDEX INDICATORS : CALCULATION
 
