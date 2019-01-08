@@ -1,6 +1,4 @@
 # SPL-Project
 
 ### Methodology: 
-1. http://martinprosperity.org/content/best-neighbourhoods-methodology/
-2.https://realestate.usnews.com/places/methodology
-3. https://www.areavibes.com/methodology/
+1. https://docs.google.com/spreadsheets/d/1Lu_Javgyk84H6LwOsn84F3N4VvcIyl96dYoy4HAn06c/edit#gid=0
