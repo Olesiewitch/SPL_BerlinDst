@@ -30,3 +30,4 @@ criminal_offences = data.frame (districts, crime)
 
 ```{r, echo= TRUE}
 write.csv(criminal_offences, "kriminalitatsatlas_berlin_daten.csv")
+```
