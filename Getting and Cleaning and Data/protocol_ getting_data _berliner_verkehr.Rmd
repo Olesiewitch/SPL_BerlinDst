@@ -24,7 +24,7 @@ As the mobility data is only avaiable as a part of the written report, this prot
 
 For the convenience of the data sets merging, the numeration and names of the districts of Berlin have been sources from the statistik-berlin-brandenburg-daten.csv . 
 ```{r, echo= TRUE}
-a= c("01 Mitte", "02 Friedrichshain-Kreuzberg", "03 Pankow", "04 Charlottenburg-Wilmersdorf", "05 Spandau", "06 Steglitz-Zehlendorf", "07 Tempelhof-Schöneberg", "08 Neukölln", "09 Treptow-Köpenick", "10 Marzahn-Hellersdorf", "11 Lichtenberg", "12 Reinickendorf")
+a= c("01 Mitte", "02 Friedrichshain-Kreuzberg", "03 Pankow", "04 Charlottenburg-Wilmersdorf", "05 Spandau", "06 Steglitz-Zehlendorf", "07 Tempelhof-Schöneberg", "08 Neukolln", "09 Treptow-Köpenick", "10 Marzahn-Hellersdorf", "11 Lichtenberg", "12 Reinickendorf")
 ```
 
 ## Parking spaces 
