@@ -10,18 +10,20 @@ library(dplyr)
 
 ### loading the cleaned data sets
 
-fbinter_stadt_berlin_daten =(read_excel("fbinter.stadt-berlin- daten.xls"))
+fbinter_stadt_berlin_daten =(read_xls("fbinter.stadt-berlin- daten.xls"))
 berliner_verkehr_zahlen_daten = read_csv("berliner_verkehr_zahlen_daten.csv")
-statistik_berlin_brandenburg_daten= read_delim("statistik-berlin-brandenburg-daten.csv", ";", escape_double = FALSE, trim_ws = TRUE)
+statistik_berlin_brandenburg_daten = read_csv2("statistik-berlin-brandenburg-daten.csv") 
 Nr_of_house_doctor_per_10_000_people_ = read_excel("Nr.of house doctor per 10,000 people .xls")
 kriminalitatsatlas_berlin_daten = read_csv("kriminalitatsatlas_berlin_daten.csv")
-laden 
-bus
-restautant
+charging_stations #### Qi please add data 
+bus #### add 
+restautant## add 
 
-### Arragning the data sets according to alphabetical order
-fbinter_ar=arrange(fbinter_stadt_berlin_daten,Districts)
+### Arragning the data sets according to alphabetical orderand converting to numeric level 
+fbinter_ar=arrange(fbinter_stadt_berlin_daten,Districts) ## arrangind data according to the district
+fbinter_ar=sapply(fbinter_ar[-c(1)], as.numeric) ## making the values numeric and removing the district names 
 berliner_ar=arrange(berliner_verkehr_zahlen_daten,District)
+berliner_ar=as.numeric(berliner_ar[3])
 stat_dis=separate(stat2[-c(13),],col=District,into= c("Nr", "District"), sep =" " )
 stat_arr=arrange(stat_dis,District)
 doctor_arr= arrange(Nr_of_house_doctor_per_10_000_people_, Districts)

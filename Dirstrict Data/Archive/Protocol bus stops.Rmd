@@ -1,0 +1,68 @@
+---
+title: "Buses"
+output: pdf_document
+---
+--
+title: "protocol_getting_and processing_stops_data"
+author: "Malgorzata Olesiewicz"
+date: "28 December 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(revgeo)
+library(dplyr)
+```
+
+## Getting the Public Transportation Stops Data
+
+The public tranbsportation data has been acessed from Berlin Open Data Portal under <https://daten.berlin.de/datensaetze/vbb-fahrplandaten-gtfs> on the 28th of December 2018. 
+From the downloaded data the data set of *stops* have been chosen. The following document is a protocol of the conducted data processing 
+
+The *stops* data set contains a list of all the public transportation stops in Berlin together with their geografical coordinates. As we are intrested in finding out how many stops are in each district following steps of data: 
+*1. Loading data & removing not needed varaibles*
+```{r, echo=TRUE}
+stops.data=read.table("stops.txt", header = TRUE, sep = ",")
+
+```
+*2. Obtaining saving as new variable the postcode from longitude and latitude of each bus stop* 
+
+```{r, echo= TRUE }
+getting_zip= function(x,y){ ### writting function to obtain zip codes for every bus stop:lontitude and latitude as asrugments
+zip=c()  ### creating an empty vector to store the results
+for(i in 1:4000){  ### loop to run the function for every observation
+each_zip= revgeo(x[i], y[i], provider = NULL , output = 'frame', API = NULL, item = 'zip') ## using revgeo package to get zip code for every stop (open street maps as the default option)
+zip=c(zip,each_zip[5])} ##saving the 5th elemnt (zip) for every observation and adding it to previouse zips
+return(zip) ## returning the obtained data
+}
+zips1=(matrix(unlist(getting_zip(stops.data$stop_lon[1:4000],stops.data$stop_lat[1:4000]))))## running the function and converting the obtained level data into factor type 4000 obeersvartions at the time
+zips2=(matrix(unlist(getting_zip(stops.data$stop_lon[4001:8001],stops.data$stop_lat[4001:8001]))))
+zips3=(matrix(unlist(getting_zip(stops.data$stop_lon[8002:12002],stops.data$stop_lat[8002:12002]))))
+zips4=(matrix(unlist(getting_zip(stops.data$stop_lon[12003:16003],stops.data$stop_lat[12003:16003]))))
+zips5=(matrix(unlist(getting_zip(stops.data$stop_lon[16004:20004],stops.data$stop_lat[16004:20004]))))
+zips6=(matrix(unlist(getting_zip(stops.data$stop_lon[20005:24005],stops.data$stop_lat[20005:24005]))))
+zips7=(matrix(unlist(getting_zip(stops.data$stop_lon[24006:28006],stops.data$stop_lat[24006:28006]))))
+zips8=(matrix(unlist(getting_zip(stops.data$stop_lon[28007:32007],stops.data$stop_lat[28007:32007]))))
+zips9=(matrix(unlist(getting_zip(stops.data$stop_lon[32008:36008],stops.data$stop_lat[32008:36008]))))
+zips10=(matrix(unlist(getting_zip(stops.data$stop_lon[3609:40009],stops.data$stop_lat[3609:40009]))))
+
+getting_zip_short= function(x,y){ ### writting function to obtain zip codes for every bus stop:lontitude and latitude as asrugments
+zip=c()  ### creating an empty vector to store the results
+for(i in 1:1740){  ### loop to run the function for every observation
+each_zip= revgeo(x[i], y[i], provider = NULL , output = 'frame', API = NULL, item = 'zip') ## using revgeo package to get zip code for every stop (open street maps as the default option)
+zip=c(zip,each_zip[5])} ##saving the 5th elemnt (zip) for every observation and adding it to previouse zips
+return(zip) ## returning the obtained data
+}
+zips11=(matrix(unlist(getting_zip_short(stops.data$stop_lon[40010:41750],stops.data$stop_lat[40010:41750]))))
+zips=c(zips1,zips2,zips3,zips4,zips5,zips6,zips7,zips8,zips9,zips10,zips11)
+zip.code=c(as.character(zips)) ## converting factor type data into character (numeric not possible as some post codes start from 0) and saving it as a vector
+```
+
+```{r}
+step_by_step=data.frame(c(zips1,zips2))
+write.csv(step_by_step, "steps2.csv")
+stops.data$zip=zip.code ## adding the data to the data set
+### THIS OPERATION TAKES VERY LONG TIME
+write.csv(stops.data, "stops+zip2.csv")
+```

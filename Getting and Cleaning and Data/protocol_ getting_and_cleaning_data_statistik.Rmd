@@ -69,7 +69,7 @@ Year: 2017
 dogs =read_excel("Dirstrict Data/statistic_id13353_hundehalter-und-hunde-im-bundesland-berlin-nach-bezirken-2016.xlsx",sheet = "Daten", range = "B5:D18")
 dogs_data=dogs[-1, -2]## removing the unwanted variables 
 colnames(dogs_data)= c("districts", "total number of dogs") ## translating the names of the columns
-dogs_data_ord= dogs_data %>%arrange(districts) ## arranging the data according to the alfabetical order of the districs
+dogs_data_ord= arrange(dogs_data,districts) ## arranging the data according to the alfabetical order of the districs
 ```
 ### Open Green Space
 
@@ -80,7 +80,7 @@ Unit: ha
 Year:2017
 
 ```{r, echo=TRUE}
-green=green <- read_excel("Dirstrict Data/statistic_id652716_oeffentliche-gruenflaechen-in-berlin-nach-bezirken-2017.xlsx", sheet = "Daten", range = "B5:C17")
+green=read_excel("Dirstrict Data/statistic_id652716_oeffentliche-gruenflaechen-in-berlin-nach-bezirken-2017.xlsx", sheet = "Daten", range = "B5:C17")
 colnames(green)= c("districts", "open green space") ## translating the names of the columns
 green_data_ord =green%>%arrange(districts) ## arranging the data according to the alfabetical order of the districs
 ```
@@ -102,5 +102,5 @@ statistik_data=merge(tree_dogs, green_data_ord, by= "districts")
 ```
 4. Writting the final csv file
 ```{r, echo=TRUE}
-write.csv(statistik_data, file = "statistik_daten")
+write.csv(statistik_data, file = "statistik_daten.csv")
 ```
