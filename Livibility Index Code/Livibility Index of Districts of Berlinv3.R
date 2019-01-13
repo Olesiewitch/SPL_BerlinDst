@@ -18,57 +18,75 @@ nr_of_house_doctor= read_excel("Nr.of house doctor per 10,000 people .xls")
 kriminalitatsatlas_berlin_daten = read.csv("kriminalitatsatlas_berlin_daten.csv", header=TRUE)
 statistik_daten=read.csv("statistik_daten.csv",header=TRUE)
 charging_stations=read.csv("chargingstations.csv") 
-bus=read.csv("count_bus_stops.csv") #### add 
-restautant## add 
+bus_stops=read.csv("count_bus_stops.csv")
+restaurant=read.csv("Nr_of_restaurant.csv") 
 air_pollution ## Alexandra please add
 
 ### Arragning the data sets according to alphabetical order od districts and converting to numeric level 
 fbinter_ar=arrange(fbinter_stadt_berlin_daten,Districts) ## arrangind data according to the district
-fbinter_ar=sapply(fbinter_ar[-c(1)], as.numeric) ## making the values numeric and removing the district names 
+fbinter_ar=sapply(fbinter_ar[, -c(1)], as.numeric) ## making the values numeric and removing the district names 
+
 berliner_ar=arrange(berliner_verkehr_zahlen_daten,District)
 berliner_ar=as.numeric(berliner_ar$Parking.Spaces)
+
 stat_dis=separate(statistik_berlin_brandenburg_daten[-c(13),],col=District,into= c("Nr", "District"), sep =" " ) ### Removing "Berlin" observation and deviding 
 ## the name of the district into two part : number and name
 stat_arr=arrange(stat_dis,District)### arranging according to the district name
 doctor_arr= arrange(nr_of_house_doctor, Districts)
 doctor_arr=as.numeric(as.character(doctor_arr$`Nr.of house doctor per 10,000 people`))
+
 kriminal_arr= arrange(kriminalitatsatlas_berlin_daten, districts)
 kriminal_arr=as.numeric(kriminal_arr$crime)
+
 statistik_arr=arrange(statistik_daten,districts)
 statistik_arr= statistik_arr[-(1:2)]
 statistik_arr=as.numeric(statistik_arr$trees.km)
 #### please arrange the data accoriding to the alpabetical order of District and make sure the number are as.numeric
 
-###Mergin data sets
+#charging station
+charging_stations_arr=arrange(charging_stations,Bezirk)
+charging_stations_arr=as.numeric(charging_stations_arr$count)
+#bus stops
+bus_stops_arr=arrange(bus_stops,districts)
+bus_stops_arr=as.numeric(bus_stops_arr$count_stops)
+#restaurants
+restaurant_arr=arrange(restaurant,Nr_of_restaurant.district.1.12.)
+restaurant_arr=as.numeric(restaurant_arr$Nr_of_restaurant.X__3.1.12.)
+###Merging data sets
 
 
-final_data_frame = data.frame(stat_arr,fbinter_ar,berliner_ar,doctor_arr,kriminal_arr,statistik_arr) #### please add remaining columns & their names
-colnames(final_data_frame)=c(colnames(stat_arr),colnames(fbinter_stadt_berlin_daten[2]),colnames(fbinter_stadt_berlin_daten[3]),colnames(berliner_verkehr_zahlen_daten[3]),colnames(nr_of_house_doctor[2]), colnames(kriminalitatsatlas_berlin_daten[3]),colnames(statistik_daten[4]))
+final_data_frame = data.frame(stat_arr,fbinter_ar,berliner_ar,doctor_arr,kriminal_arr,statistik_arr,
+                              charging_stations_arr,bus_stops_arr,restaurant_arr) #### please add remaining columns & their names
+colnames(final_data_frame)=c(colnames(stat_arr),colnames(fbinter_stadt_berlin_daten[2:3]),
+                             colnames(berliner_verkehr_zahlen_daten[3]),
+                             colnames(nr_of_house_doctor[2]), colnames(kriminalitatsatlas_berlin_daten[3]),
+                             colnames(statistik_daten[4]),"charging_station","bus_stops","Nr_of_restaurants")
 
 final_data=arrange(final_data_frame,Nr)
 
 ### LIVIBILITY INDEX INDICATORS : CALCULATION
 
 ### Creating useful functions
-per_capita = function(x)
-  {x/final_data_frame$Population
+per_capita = function(x){
+  x/final_data_frame$Population
  }
 
-per_ha = function(x)
-  {x/final_data_frame$District.Size
+per_ha = function(x){
+  x/final_data_frame$District.Size
   }
-#### Calculating each indicator (following the google spreadsheet link in Mark down)
+#### Calculating each indicator (following the google spreadsheet link in Markdown)
 liv_spc =per_capita(final_data$Total.living.space)
 house_av=per_ha(final_data$Flats)
 dens=final_data$Population/final_data$District.Size
 hous_allow=final_data$Housing.allowance.housholds
-trans_stops ### Qi
+
+trans_stops=per_ha(final_data$bus_stops)*100 ### Qi
 bike_lines= final_data$`Lenthg of cycling lines`
-e_car_charge ## Qi
+e_car_charge=per_ha(final_data$charging_station)*1000 ## Qi
 park_spc=final_data$Parking.Spaces
 tourist=final_data$Tourist.guests
 hotel_occ =(final_data$Hotel.beds*365)-final_data$Overnight.stays
-bars ##Qi
+restaurant_ha=per_ha(final_data$Nr_of_restaurants)*100 ##Qi
 sport_club=final_data$Sport.Clubs
 pupils=final_data$Puplis.K
 avg_grade=final_data$Puplis/final_data$Grades
