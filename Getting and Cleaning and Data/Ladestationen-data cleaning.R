@@ -69,8 +69,8 @@ for(i in 1:12){
 };count
 
 
-
-
+count_chargingsta<- data.frame(Bezirk,count)
+write.csv(count_chargingsta,"chargingstations.csv")
 
 
 

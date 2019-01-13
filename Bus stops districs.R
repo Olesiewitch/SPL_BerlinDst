@@ -13,7 +13,7 @@ for(i in 1:length(stat$zip)){
 }; dist_stop
 sum(dist_stop==0)#33003 stops not in Berlin. 
 sum(is.na(as.numeric(stat$zip)))# 8220 
-which(is.na(as.numeric(stat$zip)))# from 32365 to 41750 post code not found
+which(is.na(as.numeric(stat$zip)))# from 41750-32365= 9385 post code not found
 
 count=rep(0,12)
 for(i in 1:12){
@@ -24,6 +24,7 @@ for(i in 1:12){
 };count
 
 count_stops <- c(515,  389,  672,  578,  842, 1048,  938,  957,  649,  630,  428, 1101)
-
-
+districts= c("Mitte","Friedrichshain-Kreuzberg","Pankow","Charlottenburg-Wilmersdorf","Spandau", "Steglitz-Zehlendorf","Tempelhof-Schöneberg","Neukölln","Treptow-Köpenick","Marzahn-Hellersdorf", "Lichtenberg","Reinickendorf") 
+count_stops = data.frame (districts, count_stops)
+write.csv(count_stops, "count_bus_stops.csv")
 
