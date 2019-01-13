@@ -1,0 +1,29 @@
+library(readr)
+stat <- read_csv("Dirstrict Data/stops+zip.csv")
+View(stat)
+
+dist_stop=rep(0,length(stat$zip))
+
+for(i in 1:length(stat$zip)){
+  for(j in 1:12){
+    if(stat$zip[i] %in% Postleitzhal[,j]){
+      dist_stop[i]=j
+    }
+  }
+}; dist_stop
+sum(dist_stop==0)#33003 stops not in Berlin. 
+sum(is.na(as.numeric(stat$zip)))# 8220 
+which(is.na(as.numeric(stat$zip)))# from 32365 to 41750 post code not found
+
+count=rep(0,12)
+for(i in 1:12){
+  for(j in 1:length(dist_stop)){
+    if(dist_stop[j]==i)
+      count[i]=count[i]+1
+  }
+};count
+
+count_stops <- c(515,  389,  672,  578,  842, 1048,  938,  957,  649,  630,  428, 1101)
+
+
+

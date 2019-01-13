@@ -20,7 +20,7 @@ The *stops* data set contains a list of all the public transportation stops in B
 *1. Loading data & removing not needed varaibles*
 ```{r, echo=TRUE}
 stops=read.table("stops.txt", header = TRUE, sep = ",")
-stops.data=stops%>% select(-c(stop_code, stop_desc, location_type, parent_station)) ### removing not needed columns
+stops.data=stops %>% select(-c(stop_code, stop_desc, location_type, parent_station)) ### removing not needed columns
 ```
 *2. Obtaining saving as new variable the postcode from longitude and latitude of each bus stop* 
 

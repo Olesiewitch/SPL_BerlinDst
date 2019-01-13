@@ -2,7 +2,7 @@
 
 ### preparing the enviroment
 rm(list = ls()) ## cleaning the enviroment
-setwd("C:/Users/Malgorzata/Desktop/R/SPL-Project-New/Dirstrict Data") ### setting up working directory
+setwd("/Users/qier/SPL-Project/Dirstrict Data") ### setting up working directory
 library(readr)
 library(readxl)
 library(tidyr)
@@ -10,14 +10,15 @@ library(dplyr)
 
 ### loading the cleaned data sets
 
-fbinter_stadt_berlin_daten =(read_xls("fbinter.stadt-berlin- daten.xls"))
+fbinter_stadt_berlin_daten =(read_xls("fbinter.stadt-berlin- daten.xls"))#streets crossings and length of cyclyings
+
 berliner_verkehr_zahlen_daten = read.csv("berliner_verkehr_zahlen_daten.csv",header=TRUE,sep=",", stringsAsFactors=FALSE)
 statistik_berlin_brandenburg_daten = read.csv("statistik-berlin-brandenburg-daten.csv", header=TRUE, sep=";", stringsAsFactors=FALSE, colClasses =c("character","numeric", "numeric","numeric","numeric","numeric","numeric", "numeric","numeric","numeric","numeric","numeric", "numeric","numeric","numeric","numeric","numeric", "numeric","numeric","numeric","numeric","numeric", "numeric","numeric","numeric","numeric","numeric", "numeric","numeric","numeric","numeric","numeric","numeric","numeric","numeric")) 
 nr_of_house_doctor= read_excel("Nr.of house doctor per 10,000 people .xls")
 kriminalitatsatlas_berlin_daten = read.csv("kriminalitatsatlas_berlin_daten.csv", header=TRUE)
 statistik_daten=read.csv("statistik_daten.csv",header=TRUE)
-charging_stations #### Qi please add data 
-bus #### add 
+charging_stations=read.csv("chargingstations.csv") 
+bus=read.csv("count_bus_stops.csv") #### add 
 restautant## add 
 air_pollution ## Alexandra please add
 

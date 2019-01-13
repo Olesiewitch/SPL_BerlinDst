@@ -2,7 +2,7 @@ library(readxl)
 ladestationen = read_excel("ladestationen.xls")
 Postleitzahlen = read_excel("ZuordnungderBezirkezuPostleitzahlen.xls")
 View(Postleitzahlen)
-
+View(ladestationen)
 Bezirk=Postleitzahlen$X__1[!is.na(Postleitzahlen$X__1)];Bezirk
 Bezirk=Bezirk[2:length(Bezirk)];Bezirk
 Bezirk[2]="Friedrichshain-Kreuzberg";Bezirk<- Bezirk[-3];Bezirk
