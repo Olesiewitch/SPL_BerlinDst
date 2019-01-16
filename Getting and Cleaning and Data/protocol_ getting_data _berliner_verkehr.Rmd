@@ -32,7 +32,8 @@ a= c("01 Mitte", "02 Friedrichshain-Kreuzberg", "03 Pankow", "04 Charlottenburg-
 The data regarding parking spaces in the districs of Berlin have been sourced from the page 32 of the report. Original name of data "Bewirtschaftete Stellplätze im öffentlichen  Straßenraum". 
 
 ```{r, echo=TRUE }
-b= c(26488,4090,26000,20500,2726,7400,7150,"N/A","N/A","N/A","N/A","N/A")
+d=c(26488,4090,26000,20500,2726,7400,7150) ### avaiable data
+b= c(26488,4090,26000,20500,2726,7400,7150,mean(d),mean(d),mean(d),mean(d),mean(d)) ## for the remaining districts taking the mean
 ```
 
 ## Mergin the data 
