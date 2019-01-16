@@ -19,7 +19,7 @@ statistik_daten=read.csv("statistik_daten.csv",header=TRUE)
 charging_stations=read.csv("chargingstations.csv") 
 bus_stops=read.csv("count_bus_stops.csv")
 restaurant=read.csv("Nr_of_restaurant.csv") 
-air_pollution ## Alexandra please add
+air_pollution=read.csv2("luftverschmutzung.csv")
 
 ### Arragning the data sets according to alphabetical order of districts and converting to numeric level 
 
@@ -63,13 +63,17 @@ bus_stops_arr=as.numeric(bus_stops_arr$count_stops)
 restaurant_arr=arrange(restaurant,Nr_of_restaurant.district.1.12.)
 restaurant_arr=as.numeric(restaurant_arr$Nr_of_restaurant.X__3.1.12.)
 
+#Air-polution
+air_pollution_arr=arrange(air_pollution, district)
+
+
 ###Merging data sets
 final_data_frame = data.frame(stat_arr,fbinter_arr,berliner_arr,doctor_arr,kriminal_arr,statistik_arr,
-                              charging_stations_arr,bus_stops_arr,restaurant_arr) #### please add remaining columns & their names
+                              charging_stations_arr,bus_stops_arr,restaurant_arr, air_pollution_arr[c(2,3)]) #### please add remaining columns & their names
 colnames(final_data_frame)=c(colnames(stat_arr),colnames(fbinter_stadt_berlin_daten[2:3]),
                              colnames(berliner_verkehr_zahlen_daten[3]),
                              colnames(nr_of_house_doctor[2]), colnames(kriminalitatsatlas_berlin_daten[3]),
-                             colnames(statistik_daten[4]),colnames(statistik_daten[6]),"charging_station","bus_stops","Nr_of_restaurants")
+                             colnames(statistik_daten[4]),colnames(statistik_daten[6]),"charging_station","bus_stops","Nr_of_restaurants", "PM10", "PM25")
 
 final_data=arrange(final_data_frame,Nr)
 
@@ -115,14 +119,13 @@ green_spc=per_ha(final_data$open.green.space)
 agr_res=final_data$Agricultural.surface/final_data$Residential.and.traffic.surface
 trees=final_data$trees.km
 
-so_2 ### Alexandra
-no_2_x
-pm_2.5_10
+pm_25=final_data$PM25
+pm_10=final_data$PM10
 
 
 livibility_index =data.frame(final_data$Nr, final_data$District,liv_spc,house_av,trans_stops, dens,hous_allow, bike_lines,e_car_charge,  park_spc, tourist,hotel_occ,restaurant_ha, sport_club,pupils,avg_grade, child_three_dc, child3_six_dc,nr_docs,act_sen, act_yth,traf_acc, str_cross,soc_help, handi, employ, comp,tax_rev, bankr,green_spc, agr_res, trees)                             
 colnames(livibility_index)= c("nr", "district","liv_spc", "house_av","trans_stops","dens","hous_allow","bike_lines","e_car_charge", "park_spc","tourist","hotel_occ","restaurant_ha", "sport_club", "pupils","avg_grade","child_three_dc","child3_six_dc", "nr_docs", "act_sen", " act_yth", "traf_acc", "str_cross", "soc_help", "handi", "employ", "comp","tax_rev",
-"bankr","green_spc", "agr_res", "trees")
+"bankr","green_spc", "agr_res", "trees", "pm_10", "pm_25")
 
 ### Creating 4 categories (Physical, Social, Economic, Enviromental)
 
