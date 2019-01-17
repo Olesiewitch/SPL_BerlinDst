@@ -7,7 +7,6 @@ library(readr)
 library(readxl)
 library(tidyr)
 library(dplyr)
-library(normalr)
 
 ### loading the cleaned data sets
 
@@ -51,6 +50,7 @@ kriminal_arr=as.numeric(kriminal_arr$crime)
 statistik_arr=arrange(statistik_daten,districts)
 statistik_arr= statistik_arr[-(1:2)]
 statistik_arr=data.frame((as.numeric(statistik_arr$trees.km)),as.numeric(statistik_arr$open.green.space))
+
 #### please arrange the data accoriding to the alpabetical order of District and make sure the number are as.numeric
 
 #Charging station
@@ -162,7 +162,8 @@ livibility_index =data.frame(final_data$Nr,
                              trees, 
                              pm_25, 
                              pm_10)
-                                                    
+              
+
 colnames(livibility_index)= c("nr", 
                               "district",
                               "liv_spc", 
@@ -272,3 +273,9 @@ max_score=(p1_ind_nr*phys1_weight)+(p2_ind_nr*phys2_weight) +(soc_ind_nr*social_
 
 
 ### Doing some fancy analysis 
+
+
+
+
+
+
