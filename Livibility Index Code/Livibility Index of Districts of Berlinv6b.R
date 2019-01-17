@@ -162,7 +162,7 @@ livibility_index =data.frame(final_data$Nr,
                              trees, 
                              pm_25, 
                              pm_10)
-                            )                             
+                                                    
 colnames(livibility_index)= c("nr", 
                               "district",
                               "liv_spc", 
@@ -206,7 +206,10 @@ a=which(colnames(livibility_index)=="dens")
 b=which(colnames(livibility_index)=="traf_acc")
 c=which(colnames(livibility_index)=="bankr")
 d=which(colnames(livibility_index)=="crime")
-negative=c("pm_25", "pm_10") #Alex  
+e=which(colnames(livibility_index)=="pm_25")
+f=which(colnames(livibility_index)=="pm_10")
+
+negative=c(a,b,c,d,e,f) 
 
 #### Calculating the score for every indicator
 
