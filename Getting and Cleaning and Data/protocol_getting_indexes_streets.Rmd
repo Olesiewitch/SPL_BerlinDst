@@ -1,0 +1,176 @@
+---
+title: "Streets_Indexes_upload"
+author: "Aleksandra Kudaeva"
+date: "13 Januar 2019"
+output: pdf_document
+---
+In order to obtain a matching table of correspondence of street names and indexes we have to parse those tables from separate web sub-pages.
+Sourse: https://berlin.kauperts.de
+
+```{r data_import, include=FALSE}
+if(!require("rvest")){install.packages("rvest")}
+library(rvest)
+
+#upload data from different web-subpages 
+districts<-read.csv2("~/SPL-Project/List_of_districts.csv", header = TRUE, sep=";", dec=",", stringsAsFactors = FALSE)
+
+#create table with data for the whole Berlin
+Berlin_streets<-data.frame()
+
+for (i in 1:dim(districts)[1]) {
+    #generate a link to data for all the districts and sub-districts
+    link<-paste0("https://berlin.kauperts.de/Bezirke/", districts$District[i],"/Ortsteile/",districts$Sub.district[i],"/Strassen")
+    print(i)
+    
+    #upload the data from the web-page with generated link
+    webpage <- read_html(link)
+    tbls <- html_nodes(webpage, "table")
+    tab<-html_table(tbls)[[1]]
+    
+    #add columns for district and sub-district
+    tab$district<-districts$District[i]
+    tab$subdistrict<-districts$Sub.district[i]
+    
+    #add created table to the table for the whole Berlin
+    Berlin_streets<-rbind(Berlin_streets, tab)
+}
+
+```
+
+As the street name is not always written the same way (~str./Straße, etc.) we needed to make it unified for further merge. 
+
+```{r rename_streets, include=FALSE}
+Berlin_streets$str<-sub("str.$|Straße|str$|-Straße|Strasse|-Strasse|straße|strasse|Str.$|-Str.$", "", Berlin_streets$Straße)
+
+#replace all the Umlauts
+replace_umlauts<-function(column){
+  column<-sub("ä", "ae", column)
+  column<-sub("ö", "oe", column)
+  column<-sub("ü", "ue", column)
+  column<-sub("ß", "ss", column)
+  
+  return(column)
+}
+
+Berlin_streets$str<-replace_umlauts(Berlin_streets$str)
+
+```
+
+
+```{r upload_airpolution_data, echo=true}
+ap15=read_excel("~/SPL-Project/Air Pollution Data/Air Pollution 2015.xls", sheet=1)
+ap15$`Abschnittsnummer (ID)`<-as.numeric(ap15$`Abschnittsnummer (ID)`)
+ap15$str<-sub("str.$|Straße|str$|-Straße|Strasse|straße|strasse|Str.", "", ap15$`Name des Straßenabschnittes`)
+
+```
+
+
+```{r check_airpolution_data, echo=true}
+#SUMMARY_AP - function that provides a summary for defined parameter: 
+#data - name of a data table 
+#column - parameter of the summary
+#groupby - grouping parameter
+#weight - weight for calculation of weighted averages
+#thresshold - critical level of parameter
+
+summary_ap<-function(data, column, groupby, weight, thresshold) {
+  summary<-data.frame()
+  
+  for (i in unique(data[[groupby]])) {
+    line$street<-i
+    line$n<-dim(data[data[[groupby]]==i,])[1]
+    line$min<-min(data[data[[groupby]]==i,][[column]])
+    line$max<-max(data[data[[groupby]]==i,][[column]])
+    line$average<-weighted.mean(data[data[[groupby]]==i,][[column]], data[data[[groupby]]==i,][[weight]])
+    line$hotspots<-sum(ifelse(data[data[[groupby]]==i,][[column]]>thresshold, data[data[[groupby]]==i,][[weight]], 0))
+    line$length<-sum(data[data[[groupby]]==i,][[weight]])
+    line$diff<-line$max-line$min
+    summary<-rbind(summary, line)
+  }
+  return(summary)
+}
+
+#ToDO: check the methodology again for thressholds
+
+PM10<-summary_ap(ap15, 
+                 "PM10-Belastung (berechnetes Jahresmittel [µg/m³]) 2015", 
+                 "Name des Straßenabschnittes", 
+                 "Länge des Straßenabschnittes [m]", 
+                 20)
+PM25<-summary_ap(ap15, 
+                 "PM25-Belastung (berechnetes Jahresmittel [µg/m³]) 2015", 
+                 "Name des Straßenabschnittes", 
+                 "Länge des Straßenabschnittes [m]", 
+                 20)
+
+
+#redacting of a street name
+#delete AS AK AD etc. at the beginning
+PM10$str<-sub("AK |AS |AD ", "", PM10$street)
+PM25$str<-sub("AK |AS |AD ", "", PM25$street)
+
+#delete street notation at the end
+PM10$str<-sub("str.$|Straße|str$|-Straße|Strasse|-Strasse|straße|strasse|Str.$|-Str.$", "", PM10$str)
+PM25$str<-sub("str.$|Straße|str$|-Straße|Strasse|-Strasse|straße|strasse|Str.$|-Str.$", "", PM25$str)
+
+#replace umlauts
+PM10$str<-replace_umlauts(PM10$str)
+PM25$str<-replace_umlauts(PM25$str)
+
+
+```
+
+
+```{r merge_datasets, echo=true}
+PM10_merged<-merge(PM10, Berlin_streets, by="str", all.x = TRUE, all.y = FALSE)
+PM25_merged<-merge(PM25, Berlin_streets, by="str", all.x = TRUE, all.y = FALSE)
+
+```
+
+
+```{r aggregate, echo=true}
+#count NAs
+count_missings<-function(column){
+  sum(ifelse(is.na(column),1,0))
+}
+
+count_missings(PM10_merged$PLZ)
+count_missings(PM25_merged$PLZ)
+
+#filter NAs
+PM10_merged_f<-PM10_merged[!is.na(PM10_merged$PLZ),]
+PM25_merged_f<-PM25_merged[!is.na(PM25_merged$PLZ),]
+
+#for streets that are in more than 1 district distribute numbers equally to all the districts
+for (i in unique(PM25_merged_f$str)){
+  n<-dim(PM25_merged_f[PM25_merged_f$str==i,])[1]
+  if (n>1){
+    PM25_merged_f[PM25_merged_f$str==i,][["length"]]<-PM25_merged_f[PM25_merged_f$str==i,][["length"]]/n
+    PM25_merged_f[PM25_merged_f$str==i,][["hotspots"]]<-PM25_merged_f[PM25_merged_f$str==i,][["hotspots"]]/n
+    PM25_merged_f[PM25_merged_f$str==i,][["n"]]<-PM25_merged_f[PM25_merged_f$str==i,][["n"]]/n
+  }
+}
+
+for (i in unique(PM10_merged_f$str)){
+  n<-dim(PM10_merged_f[PM10_merged_f$str==i,])[1]
+  if (n>1){
+    PM10_merged_f[PM10_merged_f$str==i,][["length"]]<-PM10_merged_f[PM10_merged_f$str==i,][["length"]]/n
+    PM10_merged_f[PM10_merged_f$str==i,][["hotspots"]]<-PM10_merged_f[PM10_merged_f$str==i,][["hotspots"]]/n
+    PM10_merged_f[PM10_merged_f$str==i,][["n"]]<-PM10_merged_f[PM10_merged_f$str==i,][["n"]]/n
+  }
+}
+
+#find weighted averages for each district
+ap<-data.frame()
+ap_ag<-data.frame(district="", PM10=0, PM25=0)
+
+for (i in unique(districts$District)) {
+  ap_ag$district<-i
+  ap_ag$PM10<-weighted.mean(PM10_merged_f[PM10_merged_f$district==i,]$average, PM10_merged_f[PM10_merged_f$district==i,]$length)
+  ap_ag$PM25<-weighted.mean(PM25_merged_f[PM25_merged_f$district==i,]$average, PM25_merged_f[PM25_merged_f$district==i,]$length)
+  ap<-rbind(ap,ap_ag)
+}
+
+write.csv2(ap, "luftverschmutzung.csv")
+
+```
