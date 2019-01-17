@@ -11,7 +11,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## extract district name
 ```{r}
 library(readxl)
-Postleitzahlen = read_excel("ZuordnungderBezirkezuPostleitzahlen.xls")
+Postleitzahlen = read_excel("~/SPL-Project/Dirstrict Data/ZuordnungderBezirkezuPostleitzahlen.xls")
 Bezirk=Postleitzahlen$X__1[!is.na(Postleitzahlen$X__1)];Bezirk
 Bezirk=Bezirk[2:length(Bezirk)];Bezirk
 Bezirk[2]="Friedrichshain-Kreuzberg";Bezirk<- Bezirk[-3];Bezirk
@@ -21,7 +21,7 @@ class(Bezirk)#charachter
 ```
 ## charging station data
 ```{r}
-ladestationen = read_excel("ladestationen.xls")
+ladestationen = read_excel("~/SPL-Project/Dirstrict Data/ladestationen.xls")
 #extract post code in column 'ladestationen$Adresse', where information is listed as e.g. "Malteserstrasse 136<U+2013>138, 12249 Berlin", and create a new column with post code
 
 adress=strsplit(ladestationen$Adresse,"[,]");adress
@@ -37,7 +37,6 @@ for(i in 1:length(adress)) {
 }   ;  adress11 
 #create a new dataframe with the name ladestationen1 with the new column of post code
 ladestationen1=data.frame(ladestationen,adress11)
-View(ladestationen1)
 
 #extract the post code of each district from the original excel file 'ZuordnungderBezirkezuPostleitzahlen'
 
@@ -81,5 +80,5 @@ for(i in 1:12){
 };count
 
 count_chargingsta<- data.frame(Bezirk,count)
-write.csv(count_chargingsta,"chargingstations.csv")
+write.csv(count_chargingsta,"~/SPL-Project/Dirstrict Data/chargingstations.csv")
 ```
