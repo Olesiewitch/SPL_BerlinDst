@@ -1,18 +1,28 @@
+---
+title: "Ladestation_data_cleaning"
+author: "Wu Qi"
+date: "1/17/2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## extract district name
+```{r}
 library(readxl)
-ladestationen = read_excel("ladestationen.xls")
 Postleitzahlen = read_excel("ZuordnungderBezirkezuPostleitzahlen.xls")
-View(Postleitzahlen)
-View(ladestationen)
 Bezirk=Postleitzahlen$X__1[!is.na(Postleitzahlen$X__1)];Bezirk
 Bezirk=Bezirk[2:length(Bezirk)];Bezirk
 Bezirk[2]="Friedrichshain-Kreuzberg";Bezirk<- Bezirk[-3];Bezirk
 Bezirk[4]="Charlottenburg-Wilmersdorf";Bezirk<- Bezirk[-5];Bezirk
 Bezirk[7]="Tempelhof-Schöneberg";Bezirk<- Bezirk[-8];Bezirk
-
 class(Bezirk)#charachter
-
-#extract post code in column 'ladestationen$Adresse', where information is listed as 
-#e.g. "Malteserstrasse 136<U+2013>138, 12249 Berlin", and create a new column with post code
+```
+## charging station data
+```{r}
+ladestationen = read_excel("ladestationen.xls")
+#extract post code in column 'ladestationen$Adresse', where information is listed as e.g. "Malteserstrasse 136<U+2013>138, 12249 Berlin", and create a new column with post code
 
 adress=strsplit(ladestationen$Adresse,"[,]");adress
 adress1=c()
@@ -47,7 +57,9 @@ district12<-as.numeric(unlist(as.list(Postleitzahlen[47:48,3:12])))
 Postleitzhal<- as.data.frame(cbind(district01,district02,district03,district04,
                                    district05,district06,district07,district08,
                                    district09,district10,district11,district12))
-
+```
+##assign districts to every charging station and count for each districs
+```{r}
 #compare the post code of each ladestation, and assgin a district to each ladestation
 dist_lade= rep(0,length(ladestationen1$adress11))
 for(i in 1:length(ladestationen1$adress11)){
@@ -68,9 +80,6 @@ for(i in 1:12){
   }
 };count
 
-
 count_chargingsta<- data.frame(Bezirk,count)
 write.csv(count_chargingsta,"chargingstations.csv")
-
-
-
+```
