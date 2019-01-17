@@ -12,7 +12,7 @@ if(!require("rvest")){install.packages("rvest")}
 library(rvest)
 
 #upload data from different web-subpages 
-districts<-read.csv2("~/SPL-Project/List_of_districts.csv", header = TRUE, sep=";", dec=",", stringsAsFactors = FALSE)
+districts<-read.csv2("~/SPL-Project/Dirstrict Data/List_of_districts.csv", header = TRUE, sep=";", dec=",", stringsAsFactors = FALSE)
 
 #create table with data for the whole Berlin
 Berlin_streets<-data.frame()
