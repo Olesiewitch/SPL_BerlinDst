@@ -19,7 +19,7 @@ From the downloaded data the data set of *stops* have been chosen. The following
 The *stops* data set contains a list of all the public transportation stops in Berlin together with their geografical coordinates. As we are intrested in finding out how many stops are in each district following steps of data: 
 *1. Loading data & removing not needed varaibles*
 ```{r, echo=TRUE}
-stops=read.table("stops.txt", header = TRUE, sep = ",")
+stops=read_csv("stops_buses.csv")
 stops.data=stops %>% select(-c(stop_code, stop_desc, location_type, parent_station)) ### removing not needed columns
 ```
 *2. Obtaining saving as new variable the postcode from longitude and latitude of each bus stop* 

@@ -1,4 +1,4 @@
-"stop_id","stop_code","stop_name","stop_desc","stop_lat","stop_lon","location_type","parent_station"
+﻿"stop_id","stop_code","stop_name","stop_desc","stop_lat","stop_lon","location_type","parent_station"
 000008012713,"","Rangsdorf, Bahnhof",,"52.294125000000","13.431112000000",0,900000245025
 000008010205,"","Leipzig, Hauptbahnhof",,"51.344817000000","12.381321000000",0,900000550090
 000008010327,"","Senftenberg, Bahnhof",,"51.526790000000","14.003977000000",0,900000435000
