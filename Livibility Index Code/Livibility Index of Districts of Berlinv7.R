@@ -269,7 +269,16 @@ max_score=(p1_ind_nr*phys1_weight)+(p2_ind_nr*phys2_weight) +(soc_ind_nr*social_
 
 
 ###Comparing to rent data
+mietpreise_in_berlin_2017_nach_bezirken= read_excel("statistic_id259905_mietpreise-in-berlin-2017-nach-bezirken.xlsx", 
+                                                    sheet = "Daten", col_types = c("text", 
+                                                                                   "numeric"), skip = 4)
 
+mietepreise_arr=arrange(mietpreise_in_berlin_2017_nach_bezirken[!mietpreise_in_berlin_2017_nach_bezirken$X__1=="Berlin Durchschnitt",], X__1)
+
+#Results_Rent=merge(Results, mietepreise_arr, by.x="district",by.y="X__1")
+results_arr=arrange(Results, district)
+
+Results_Rent=data.frame(results_arr,mietepreise_arr$`Mietpreis in Euro pro m²`)
 
 
 ### Doing some fancy analysis 
