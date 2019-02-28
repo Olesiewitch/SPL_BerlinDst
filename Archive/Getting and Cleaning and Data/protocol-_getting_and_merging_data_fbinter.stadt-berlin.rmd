@@ -1,0 +1,39 @@
+---
+title: "protocol- getting and merging data fbinter.stadt-berlin"
+author: "Malgorzata Olesiewicz"
+date: "26 December 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+### Getting Data 
+The data has been obtained from the <http://www.stadtentwicklung.berlin.de//geoinformation/fis-broker/> website.The data has been acessed on the 26th of December. The developed by the city of Berlin data base does not allow for coping links to selected data sets. Therefore, detail instructions of how to look for specific data sets will be given for every data used. The chosen data has been stored in the excel spreedsheet on the GitHub page of the project under <https://github.com/Olesiewitch/SPL-Project/tree/master/Dirstrict%20Data>
+
+### Street crossings
+Name of the dataset:Fußgängerüberwege 
+Search options: Archivsuche 
+Original name: Fußgängerüberwege
+English Translation: Street Crossing  
+
+##Lenthg of cycling lines
+Name of the dataset:Radverkehrsanlagen
+English Translation: Lenthg of cycling lines 
+
+## Colummn names
+```{r pressure, echo=FALSE}
+colnames(fbinter.stadt-berlin-daten)=c("Districts","Street_crossings","Lenthg_of_cycling_lines")
+```
+
+## Inserting the data
+```{r ,echo= TRUE}
+Street_crossings =c(33,39,54,35,22,31,19,25,32,39,22,30)
+
+#with the information in the original dataset, which shows us different cycling lines(ca.18400 lines) and provide us the districts they belong to,we used the sumif fuction in excel to calculate the length of cycling lines in each district
+Lenthg_of_cycling_lines=c(169677.4,90134.7,161242.6,169577.9,165372.5,194599.2,148588.8,104444,202059.2,118019.1,100257,140794.4)
+
+Districts= c("Mitte","Friedrichshain-Kreuzberg","Pankow","Charlottenburg-Wilmersdorf","Spandau", "Steglitz-Zehlendorf","Tempelhof-Schöneberg","Neukölln","Treptow-Köpenick","Marzahn-Hellersdorf", "Lichtenberg","Reinickendorf") 
+
+data.frame (Districts, Street_crossings,Lenthg_of_cycling_lines)
+```
