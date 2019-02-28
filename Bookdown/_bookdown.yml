@@ -1,0 +1,13 @@
+book_filename: "SPL_project.Rmd"
+delete_merged_file: TRUE
+rmd_files: ["index.Rmd", 
+            "Methodology.Rmd",
+            "01_Data_Preparation/01_Data_Preparation.Rmd", 
+            "02_Data_Preparation/02_Data_Preparation.Rmd", 
+            "03_Data_Preparation/03_Data_Preparation.Rmd", 
+            "04_Data_Description/04_Data_Description.Rmd", 
+            "05_Index_Calculation/05_Index_Calculation.Rmd", 
+            "06_Maps/06_Maps.Rmd", 
+            "07_Sensitivity_PCA/07_Sensitivity_PCA.Rmd", 
+            "Conslusion.Rmd"
+            ]
