@@ -9,8 +9,7 @@ output: pdf_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 ### Getting the data
-Data from the www.statistik-berlin-brandenburg.de potal (the portal) have been accessed on the 15th of December 2018. As the data cannot be directly downloaded from the potal, they have been copied to csv file (statistik-berlin-brandenburg-daten.csv) and saved on the GitHub repository of the project (<https://github.com/Olesiewitch/SPL-Project/tree/master/data>)
-The following Protokol describes the process of data cleaning and merging it into the csv file. As the naming of the original data is in German, the process of data translation is also described.   
+Data from the www.statistik-berlin-brandenburg.de potal (the portal) have been accessed on the 15th of December 2018. The following Protokol describes the process of data cleaning and merging it into the csv file. As the naming of the original data is in German, the process of data translation is also described.   
 
 ### Dirstics
 
@@ -275,8 +274,8 @@ Year: 30.09.2017
 Data obtained from: 
 <https://www.statistik-berlin-brandenburg.de/regionalstatistiken/r-gesamt_neu.asp?Ptyp=410&Sageb=46002&creg=BBB&anzwer=6>
 
-Original name: Straßenverkehrsunfälle
-English Translation: Street traffic accidents
+Original name: Straßenverkehrsunfälle je 10 000 Einwohner
+English Translation: Street traffic accidents /10K
 Unit: Total
 Year: 2017
 
@@ -311,5 +310,6 @@ Unit: %
 Data obtained from: <https://www.statistik-berlin-brandenburg.de/Statistiken/statistik_SB.asp?Ptyp=700&Sageb=21006&creg=BBB&anzwer=10>
 Excel file, Sheet G3
 Original data:  Sportvereine
+English Translation : Sports Clubs
 Year:2018 
 Unit: Total Number
