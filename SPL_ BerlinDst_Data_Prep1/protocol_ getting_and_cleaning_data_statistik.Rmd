@@ -29,25 +29,12 @@ sheet = "Daten")
 districts = trees[3:14,1]  ## selecting district data
 ```
 
-## Total Trees
-
-Data obtained from 
-<https://de.statista.com/statistik/daten/studie/652680/umfrage/strassenbaeume-in-berlin-nach-bezirken/> 
-Original name: Absoluter Bestand
-English Translation : Total trees
-Unit: Total
-Year:2017
-
-```{r, echo=TRUE}
-total_trees= trees[3:14,2] ## Selecting total number of trees 
-```
-
 ## Trees per km
 
 Data obtained from 
 <https://de.statista.com/statistik/daten/studie/652680/umfrage/strassenbaeume-in-berlin-nach-bezirken/> 
 Original name: Bäume je Kilometer Straße
-English Translation : Trees per km 
+English Translation : Trees per km of the road
 Unit: Total
 Year:2017
 
@@ -57,19 +44,6 @@ trees_km= trees[3:14,3] ### Secelcting total number of trees per kilometer of th
 tree_data = data.frame(districts, total_trees, trees_km) ## mergin the data from the tree data set
 colnames(tree_data)= c("districts", "total trees", "trees km") ## translating the names of the columns
 trees_data_ord=tree_data%>%arrange(districts) ## arranging the data according to the alfabetical order of the districs
-```
-### Total number of dogs 
-Source of data: <https://de.statista.com/statistik/daten/studie/13353/umfrage/hundehalter-und-hunde-in-berlin-nach-bezirken/>
-Original name: Anzahl Hunde insg. 
-English translation: Total number of dogs
-Unit: Total number
-Year: 2017
-
-```{r, echo=TRUE}
-dogs =read_excel("Dirstrict Data/statistic_id13353_hundehalter-und-hunde-im-bundesland-berlin-nach-bezirken-2016.xlsx",sheet = "Daten", range = "B5:D18")
-dogs_data=dogs[-1, -2]## removing the unwanted variables 
-colnames(dogs_data)= c("districts", "total number of dogs") ## translating the names of the columns
-dogs_data_ord= arrange(dogs_data,districts) ## arranging the data according to the alfabetical order of the districs
 ```
 ### Open Green Space
 
