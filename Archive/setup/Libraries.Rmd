@@ -1,0 +1,35 @@
+---
+title: "Libraries"
+author: "Aleksandra Kudaeva"
+date: "13 Januar 2019"
+output: pdf_document
+---
+
+## Packages and libraries 
+
+In order to run the project the following packages should be installed to the computer:
+
+```{r install_packages, include=FALSE, echo=TRUE}
+#default packages to run RMD
+evaluate
+highr
+markdown
+yaml
+xfun
+knitr
+#geo
+install.packages("revgeo")
+dplyr
+
+#reading external files
+if(!require("readxl")){install.packages("readxl")}
+if(!require("rvest")){install.packages("rvest")}
+
+```
+
+```{r libraries, include=FALSE, echo=TRUE}
+
+library(readxl)
+library(rvest)
+
+```

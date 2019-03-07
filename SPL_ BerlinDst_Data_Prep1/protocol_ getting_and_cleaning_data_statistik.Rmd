@@ -1,0 +1,80 @@
+---
+title: "protocol- getting and cleaning statistic data"
+author: "Malgorzata Olesiewicz"
+date: "16 December 2018"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+```
+
+## Source of data https://de.statista.com
+
+The data from the <https://de.statista.com> portal have been acessed on the 20th of November 2018. The have been downloaded from the website and saved on the GitHub website of the project <https://github.com/Olesiewitch/SPL-Project/District-Data>. 
+
+The following protocol documents how diffrent data sets from the <https://de.statista.com> have been merged together into one csv file *statista.csv*. 
+
+## Districts 
+The names of the districts have been keept in accordance to the portal standard. The order has been kep in occordance to *statistic_id652680_strassenbaeume-in-berlin-nach-bezirken-2017.xlsx* file.  
+
+```{r, echo= TRUE}
+library(readxl)
+trees = read_excel("statistic_id652680_strassenbaeume-in-berlin-nach-bezirken-2017.xlsx", 
+sheet = "Daten")
+```
+
+```{r, echo=TRUE}
+districts = trees[3:14,1]  ## selecting district data
+```
+
+## Trees per km
+
+Data obtained from 
+<https://de.statista.com/statistik/daten/studie/652680/umfrage/strassenbaeume-in-berlin-nach-bezirken/> 
+Original name: Bäume je Kilometer Straße
+English Translation : Trees per km of the road
+Unit: Total
+Year:2017
+
+```{r, echo=TRUE}
+trees_km= trees[3:14,3] ### Secelcting total number of trees per kilometer of the road
+
+tree_data = data.frame(districts, total_trees, trees_km) ## mergin the data from the tree data set
+colnames(tree_data)= c("districts", "total trees", "trees km") ## translating the names of the columns
+trees_data_ord=tree_data%>%arrange(districts) ## arranging the data according to the alfabetical order of the districs
+```
+### Open Green Space
+
+Source of data : <https://de.statista.com/statistik/daten/studie/652716/umfrage/oeffentliche-gruenflaechen-in-berlin-nach-bezirken/>
+Original Name: Öffentliche Grünflächen in ha
+English Trnaslation: Open Green Space
+Unit: ha
+Year:2017
+
+```{r, echo=TRUE}
+green=read_excel("Dirstrict Data/statistic_id652716_oeffentliche-gruenflaechen-in-berlin-nach-bezirken-2017.xlsx", sheet = "Daten", range = "B5:C17")
+colnames(green)= c("districts", "open green space") ## translating the names of the columns
+green_data_ord =green%>%arrange(districts) ## arranging the data according to the alfabetical order of the districs
+```
+
+### Merging all the datageing to the district. 
+
+In order to merge all the selected data following steps have been undertaken: 
+1. The names of the districs have been unified among the data sets
+```{r, echo=TRUE}
+dogs_data_ord$districts=trees_data_ord$districts
+```
+2. Mergin the tree and dogs data frames
+```{r, echo=TRUE}
+tree_dogs=merge(trees_data_ord, dogs_data_ord, by="districts")
+```
+3. Merging the tree_dogs data frame with green spaces 
+```{r, echo= TRUE}
+statistik_data=merge(tree_dogs, green_data_ord, by= "districts")
+```
+4. Writting the final csv file
+```{r, echo=TRUE}
+write.csv(statistik_data, file = "statistik_daten.csv")
+```
