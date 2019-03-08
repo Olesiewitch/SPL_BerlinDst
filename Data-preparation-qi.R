@@ -29,10 +29,44 @@ Dstc = c("Mitte",
          "Reinickendorf"
 )
 Dstc = as.data.frame(Dstc)
+colnames(Dstc) = c("Districts"); Dstc
+
+# Ortsteil of district using package rvest
+Oteil = read_html(paste0("https://de.wikipedia.org/wiki/",
+                            "Liste_der_Bezirke_und_Ortsteile_Berlins"))  
+
+Oteil = Oteil %>% 
+              html_nodes("table")%>% 
+              .[[3]] %>%  #the third table in this website give us a dataframe 
+              # witch lists all Orststeile in Berlin and their corresponding districts
+              html_table()
+
+for (i in 1:12){
+    
+}
+Oteil[,"Bezirk"]
+    
+# input: district names
+# output: standard names: lower case & no space & no Umlauts 
+#DistNm = function(NmClmn){
+#    NmClmn = tolower(NmClmn) 
+#    sub = c("ö","ä","ß","ü"," ")
+#    Pattern = paste(sub, collapse="|")
+#    for(grepl(Pattern, NmClmn)){
+#        gsub("ö","oe",NmClmn)
+#        gsub("ö","ue",NmClmn)
+#        gsub("ö","ae",NmClmn)
+#        gsub("ö","ss",NmClmn)
+#        gsub(" ","-",NmClmn)
+#    }
+#}
+
+# Set working directory
+wd = "~/SPL-Project/Archive/Dirstrict Data/"
+
 ## charging station data
 
-Cgst = read_excel("~/SPL-Project/Archive/Dirstrict Data/ladestationen.xls")
-# /Users/qier/SPL-Project/Archive/Dirstrict Data
+Cgst = read_excel(paste0(wd,"ladestationen.xls"))
 # extract post code in column 'ladestationen$Adresse', where information is listed as 
 # e.g. "Malteserstrasse 136<U+2013>138, 12249 Berlin", and create a new column with post code
 
@@ -102,7 +136,6 @@ for(i in 1:12){
 
 ## restaurant 
 
-
 stadtteile = read_html("https://www.berlin.de/restaurants/stadtteile/")
 
 stadtteileList = stadtteile %>% html_nodes("br+ .decoda-list a") %>% html_text() 
@@ -139,6 +172,9 @@ for (i in 1: length(stadtteileList)){
 
 
 # assgin 23 stadtteile to 12 districts
+
+
+
 StDt = read_html("https://reise.naanoo.de/berlin/berliner-bezirke")
 StDt = StDt %>% html_nodes("p+ p , p strong") %>% html_text()
 #StDt %<>% html_nodes("p+ p , p strong") %<>% html_text()
