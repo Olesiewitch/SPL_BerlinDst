@@ -71,21 +71,6 @@ for (i in 1:12){
 }
 colnames(OteilD) = Dstc$District
 
-# input: district names
-# output: standard names: lower case & no space & no Umlauts 
-Replace = function(Clmn){
-    clmn = tolower(clmn) 
-    sub = c("ö","ä","ß","ü"," ")
-    Pattern = paste(sub, collapse="|")
-    for(grepl(Pattern, NmClmn)){
-        gsub("ö","oe",NmClmn)
-        gsub("ö","ue",NmClmn)
-        gsub("ö","ae",NmClmn)
-        gsub("ö","ss",NmClmn)
-        gsub(" ","-",NmClmn)
-    }
-}
-
 # Set working directory
 wd = "~/SPL-Project/Archive/Dirstrict Data/"
 
