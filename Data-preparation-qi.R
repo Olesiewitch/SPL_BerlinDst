@@ -40,40 +40,51 @@ Oteil = Oteil %>%
               # witch lists all Orststeile in Berlin and their corresponding districts
               html_table()
 
-OteilD = c()
-i=3
-for (i in 1:12){ 
-    OteilD[i] = c()
-    j = 1
-    while(Oteil[j,'Bezirk'] %in% Dstc[i,"District"]){
-        OteilD[i] = rbind(OteilD[i],Oteil[j,'Ortsteil'])
-        j =j+1
-    }; OteilD[i] = as.vector(OteilD[i])
+#define a function to replace all german letter which could causes issues
+Replace = function(clmn) {
+    while(any(grepl("ä|ö|ü|ß| ",clmn)) == TRUE) {
+    clmn  %<>% 
+        sub("ä", "ae", .) %<>% 
+        sub("ö", "oe", .) %<>% 
+        sub("ü", "ue", .) %<>% 
+        sub("ß", "ss", .) %<>%
+        sub(" ", "-", .)
+    }
+    return(clmn)
 }
 
+#replace all the german letters in the dataframe
+Oteil$Bezirk = Replace(Oteil$Bezirk)
+Oteil$Ortsteil = Replace(Oteil$Ortsteil)
 
-OteilD = c()
-j = 1
-while(Oteil[j,'Bezirk'] %in% Dstc[1,"District"]){
-    OteilD = rbind(OteilD,Oteil[j,'Ortsteil'])
-    j =j+1
-};OteilD = as.vector(OteilD)
-
+#create a dataframe OteilD which contains Ortsteil in 12 districts
+OteilD = data.frame(matrix(ncol = 12,nrow = 20))
+j=1
+for (i in 1:12){ 
+    j = j
+    k = 1
+    while(Oteil[j,'Bezirk'] == Dstc[i,"District"]){
+        OteilD[k,i] = Oteil[j,'Ortsteil']
+        k = k+1
+        j = j+1
+    }
+}
+colnames(OteilD) = Dstc$District
 
 # input: district names
 # output: standard names: lower case & no space & no Umlauts 
-#DistNm = function(NmClmn){
-#    NmClmn = tolower(NmClmn) 
-#    sub = c("ö","ä","ß","ü"," ")
-#    Pattern = paste(sub, collapse="|")
-#    for(grepl(Pattern, NmClmn)){
-#        gsub("ö","oe",NmClmn)
-#        gsub("ö","ue",NmClmn)
-#        gsub("ö","ae",NmClmn)
-#        gsub("ö","ss",NmClmn)
-#        gsub(" ","-",NmClmn)
-#    }
-#}
+Replace = function(Clmn){
+    clmn = tolower(clmn) 
+    sub = c("ö","ä","ß","ü"," ")
+    Pattern = paste(sub, collapse="|")
+    for(grepl(Pattern, NmClmn)){
+        gsub("ö","oe",NmClmn)
+        gsub("ö","ue",NmClmn)
+        gsub("ö","ae",NmClmn)
+        gsub("ö","ss",NmClmn)
+        gsub(" ","-",NmClmn)
+    }
+}
 
 # Set working directory
 wd = "~/SPL-Project/Archive/Dirstrict Data/"
@@ -183,28 +194,16 @@ for (i in 1: length(stadtteileList)){
                              html_text() )
     }
 }; Nrrs
+RestO = cbind(stadtteileList, Nrrs)
 
-
-# assgin 23 stadtteile to 12 districts
-
-
-
-StDt = read_html("https://reise.naanoo.de/berlin/berliner-bezirke")
-StDt = StDt %>% html_nodes("p+ p , p strong") %>% html_text()
-#StDt %<>% html_nodes("p+ p , p strong") %<>% html_text()
-StDt
-
-Dstc[1]
-Inx = which(grepl("Bezirk",StDt)) 
-# 1  3  4  6  7  9 10 12 13 15 16 18 19 21 22 24 25 27 28 30 31 33 34
-
-for(i in Inx){
-    StDt= StDt[Inx[i]+1]
+#calculate nr. of doctors in every district
+Rest = numeric(length = 12)
+for(i in 1:length(Nrrs)){
+    for(j in 1:12){
+        if(RestO[i,'stadtteileList'] %in% OteilD[,j])
+            Rest[j] = Rest[j] + as.numeric(RestO[i,'Nrrs'])
+    }
 }
-
-
-# summing up from stadtteile to districts
-
 
 ## cycling length
 
@@ -226,16 +225,15 @@ Nrsc<-c(33, 39, 54, 35, 22, 31, 19, 25, 32, 39, 22, 30)
 
 #QiDt = cbind(Nrct, Nrrs, Cyll, Nrdr, Nrsc)
 Nr = 1:12
-QiDt = data.frame(Nr,Dstc$District, Nrct, Cyll, Nrdr, Nrsc)
-colnames(QiDt) = c("District Nr.",
+QiDt = data.frame(Nr,Dstc$District, Nrct, Rest, Cyll, Nrdr, Nrsc)
+colnames(QiDt) = c("DistrictNr.",
                    "District",
-                   "Nr. of charging stations",
-                   #"Nr. of restaurants",
-                   "cycling length",
-                   "Nr. of doctors",
-                   "Nr. of street crossings"
+                   "Nr.of charging stations",
+                   "Nr.of restaurants",
+                   "cyclingLength",
+                   "Nr.of doctors per 10,000 people",
+                   "Nr.of street crossings"
 )
 
 QiDt = as.data.frame(QiDt); QiDt
-
 write.csv(QiDt,"SPL_BerlinDst_Data_prep2_qi.csv")
