@@ -17,12 +17,11 @@ for (package in packages) {
 ################Read helpful functions##########################################
 source("./03_Data_Preparation/helpful_functions.R")
 
+################################################################################
 ####################Upload the data#############################################
-
-
 ################################################################################
-####################Street-Index MAtching Table#################################
-################################################################################
+
+####################Street-Index Matching Table#################################
 
 # Upload street-index matching table from web 
 # Upload list of districts in Berlin
@@ -61,16 +60,8 @@ write.csv2(StrMtch,
            "./03_Data_Preparation/Output/Street_Index_Matching.csv", 
            row.names = FALSE)
 
-################################################################################
 
-# Street name formatting (in order to merge with air pollution data)
-StrMtch$str = StrMtch$Straße %>%
-    ReplaceUmlauts() %>%  # Replace umlauts and switch to lower case
-    sub("str.$|str$|-strasse|strasse|-str.$", "", .)  # Delete street indicator
-
-################################################################################
 #############################Air Pollution Data#################################
-################################################################################
 
 # Read air-pollution data from excel
 ap15 = read_excel("./03_Data_Preparation/Input/Air_Pollution_2015.xls", 
@@ -83,16 +74,30 @@ mtch = read.csv2("./03_Data_Preparation/Input/matching.csv",
 names(ap15) = mtch$new[match(names(ap15), mtch$old)]  # Rename variables
 
 ################################################################################
+####################Format the data#############################################
+################################################################################
+
+####################Street-Index Matching Table#################################
+
+# Street name formatting (in order to merge with air pollution data)
+StrMtch$str = StrMtch$Straße %>%
+    ReplaceUmlauts() %>%  # Replace umlauts and switch to lower case
+    sub("str.$|str$|-strasse|strasse|-str.$", "", .)  # Delete street indicator
+
+####################Air Pollution Data##########################################
 
 ap15$Nr = as.numeric(ap15$Nr)  # Reformat steet section number to "numeric"
 
 # Street name formatting (in order to merge with street-index matching table)
 ap15$str = ap15$Street %>%
     ReplaceUmlauts() %>%  # Replace umlauts and switch to lower case
-    sub("str.$|str$|-strasse|strasse|-str.$", "", .) %>%  # Delete street indicator
+    sub("str.$|str$|-strasse|strasse|-str.$", "", .) %>%  # Delete street ind.
     sub("ak |as |ad ", "", .)  # Delete AK, AS, AD in the beginning
 
 ################################################################################
+###############Merging and summarizing the data#################################
+################################################################################
+
 # Find PM10 and PM15 weighted averages for each street (by length of str.section)
 Pltn = ap15 %>% 
     group_by(str) %>%
