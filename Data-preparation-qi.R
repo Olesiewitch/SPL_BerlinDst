@@ -1,5 +1,5 @@
 ---
-    title: "Data-preparation-qi"
+title: "Data-preparation-qi"
 author: "Wu Qi"
 date: "3/3/2019"
 ---
@@ -13,8 +13,7 @@ for (i in packages) {
     library(i, character.only=TRUE)
 }
 
-##list district names
-
+## list district names
 Dstc = c("Mitte",
          "Friedrichshain-Kreuzberg",
          "Pankow",
@@ -31,7 +30,7 @@ Dstc = c("Mitte",
 Dstc = as.data.frame(Dstc)
 colnames(Dstc) = c("Districts"); Dstc
 
-# Ortsteil of district using package rvest
+# get Ortsteil of district using package rvest
 Oteil = read_html(paste0("https://de.wikipedia.org/wiki/",
                             "Liste_der_Bezirke_und_Ortsteile_Berlins"))  
 
@@ -41,11 +40,23 @@ Oteil = Oteil %>%
               # witch lists all Orststeile in Berlin and their corresponding districts
               html_table()
 
-for (i in 1:12){
-    
+OteilD = c()
+for (i in 1:12){ 
+    j = 1
+    while(Oteil[j,'Bezirk'] %in% Dstc[i,"Districts"]){
+        OteilD[i] = cbind(OteilD[i],Oteil[j,"Ortsteil"])
+        j =j+1
+    }
 }
-Oteil[,"Bezirk"]
-    
+
+OteilD = c()
+j = 1
+while(Oteil[j,'Bezirk'] %in% Dstc[1,"Districts"]){
+    OteilD = rbind(OteilD[1],Oteil[j,'Ortsteil'])
+    j =j+1
+}
+
+
 # input: district names
 # output: standard names: lower case & no space & no Umlauts 
 #DistNm = function(NmClmn){
@@ -223,4 +234,4 @@ colnames(QiDt) = c("district Nr.",
 
 QiDt = as.data.frame(QiDt); QiDt
 
-
+write.csv(QiDt,"SPL_BerlinDst_Data_prep2_qi")
