@@ -67,79 +67,48 @@ NormalizeNegative=function(x){
     (max(x)-x)/(max(x)-min(x))
 }
 
-DistricToFullName = function (column){
-    # Function re-names the districts of Berlin with their full names without 
-    # special signs. The function identifies the district by three or four 
-    # letters of its name. 
-    #
-    # Args:
-    #      column: vector or a column containing names of Berlin districts.
-    #      Name can have any form, special signs can be use and additional 
-    #      information can be added to it. Only first 3-4 letters need ro be
-    #      correct. 
-    #
-    #Returns: 
-    #Vector of replaced district names by its official names  
-    
-    column[grepl("mit",column, ignore.case = TRUE)] = "Mitte" 
-    column[grepl("fri",column, 
-                 ignore.case = TRUE)] = "Friedrichshain-Kreuzberg"
-    column[grepl("pank",column,ignore.case = TRUE)] = "Pankow"
-    column[grepl("mar",column,ignore.case = TRUE)] = "Marzahn-Hellersdorf" 
-    column[grepl("char",column,
-                 ignore.case = TRUE)] = "Charlottenburg-Wilmersdorf"
-    column[grepl("spa",column,ignore.case = TRUE)] = "Spandau" 
-    column[grepl("ste",column,ignore.case = TRUE)] = "Steglitz-Zehlendorf"  
-    column[grepl("tem",column,ignore.case = TRUE)] = "Tempelhof-Schoneberg" 
-    column[grepl("trep",column,ignore.case = TRUE)] = "Treptow-Kopenick" 
-    column[grepl("neu",column,ignore.case = TRUE)] = "Neukolln" 
-    column[grepl("lich",column,ignore.case = TRUE)] = "Lichtenberg" 
-    column[grepl("rein",column,ignore.case = TRUE)] = "Reinickendorf"
-    
-    return(column)
-}
-
 #======================CALCULATING INDEX INDICATORS============================= 
 
-lvSpc = PerCapita(lvbInDt$SpacePC)  # Calc. liv space/cap.
-hsAv  = PerCapita(lvbInDt$Flats)  # Calc. nr of flats/cap.
-dns   = PerHa(lvbInDt$Population)  # Calc. population per ha
-hsAl  = lvbInDt$Hausehold # Choose hous. all. 
-trnDn = PerHa(lvbInDt$Transport)  # Calc. den. of public trans.
-bkLn  = PerHa(lvbInDt$Cycle)  # Calc. den. of cycling lines
-crChr = PerHa(lvbInDt$Charging)  #  Calc.e-car char.stat./ha  
-prkSp = PerCapita(lvbInDt$Parking)  # Calc. nr parking spc./ cap
-trs   = PerCapita(lvbInDt$Tourists)  # Calc. nr of tourist per cap.    # rewrite comment
-# Calculate the hotel occupancy by multipling the total num. of bed  
-# by 365 days in the year (total capacity) and deducting the total 
-            # num. of stays
-htlOc = lvbInDt$Stays/(lvbInDt$Hotel*365)
-sprCl = PerHa(lvbInDt$Sport)  # Choose nr of sport clubs per ha
-res   = PerHa(lvbInDt$Restaurants) # Cal. nr of restaurants per ha
-std   = lvbInDt$Pupils  # Choose nr of pupils per K of inhabitants 
-grdSz = lvbInDt$Pupils/lvbInDt$Grades  # Cal. avg. grade size          
-chU3  = lvbInDt$Child3  # Choose % of kids under 3y/o in daycare 
-chU6  = lvbInDt$Child6  # Choose % of kids 3-6y/o in daycare 
-doc   = PerCapita(lvbInDt$Doctors)  # Cal. number of doctors/cap
-actSn = lvbInDt$SenSport  # Choose % of active seniors 
-actJn = lvbInDt$JunSport  # Choose % of active juniors
-trf   = PerCapita(lvbInDt$Accidents)  # Calc. nr of traff. acc/cap 
-strCr = PerHa(lvbInDt$Crossings)  # Calc.nr street cross/ha
-crm   = lvbInDt$Crime  # Choose nr of criminal offences per 10K ppl
-socHl = PerCapita(lvbInDt$SocHelp)  # Cal. social help rec. / cap
-dsb   = lvbInDt$Disabled1000 # Choose sev. handicapped/ 1K ppl
-emp   = lvbInDt$Employment  # Choose emp./ 1K ppl capable of emp.
-comp  = lvbInDt$Company  # Choose nr of companies
-txRv  = lvbInDt$Revenue  # Choose taxable revenue 
-bnk   = (lvbInDt$Bankruptcy)/(lvbInDt$Company) # Cal. nr bankr./nr.comp. 
-grSp  = PerHa(lvbInDt$GreenSp)  #Cal. green space / ha
-# Cal. ratio of agricultural surface vs. residential & traffic surf.
-agrRe = (lvbInDt$AgrSurface)/(lvbInDt$RsSurface)
-tr    = lvbInDt$Trees # Choose nr of trees per km of the road
-pm10  = lvbInDt$PM10  # Choose PM10 avg. level
-pm25  = lvbInDt$PM25  # # Choose PM2.5 avg. level
+IndDt = data.frame(lvSpc = PerCapita(lvbInDt$SpacePC),  # Calc. liv space/cap.
+                  hsAv  = PerCapita(lvbInDt$Flats),  # Calc. nr of flats/cap.
+                  dns   = PerHa(lvbInDt$Population),  # Calc. population per ha
+                  hsAl  = lvbInDt$Hausehold, # Choose hous. all. 
+                  trnDn = PerHa(lvbInDt$Transport),  # Calc. den. of pub. trans.
+                  bkLn  = PerHa(lvbInDt$Cycle),  # Calc. den. of cycling lines
+                  crChr = PerHa(lvbInDt$Charging),  #  Calc.e-car char.stat./ha  
+                  prkSp = PerCapita(lvbInDt$Parking),  # Calc.nr park. spc./ cap
+                  trs   = PerCapita(lvbInDt$Tourists),  # Calc.nr of tour. /cap.    
+                  # Calculate the hotel occupancy by deviding the total num.   
+                  # of stays by total capacity; number of beds multiplied   
+                  # by 365 days in the year
+                  htlOc = lvbInDt$Stays/(lvbInDt$Hotel*365), 
+                  sprCl = PerHa(lvbInDt$Sport),  # Choose nr of sport clubs/ ha
+                  res   = PerHa(lvbInDt$Restaurants), # Cal.nr of restaurants/ha
+                  std   = lvbInDt$Pupils,  # Choose nr of pupils per K of ppl
+                  grdSz = lvbInDt$Pupils/lvbInDt$Grades,  # Cal. avg. grade size          
+                  chU3  = lvbInDt$Child3,  # Choose % of kids < 3y/o in daycare 
+                  chU6  = lvbInDt$Child6,  # Choose % of kids 3-6y/o in daycare 
+                  doc   = PerCapita(lvbInDt$Doctors),  # Cal.num. of doctors/cap
+                  actSn = lvbInDt$SenSport,  # Choose % of active seniors 
+                  actJn = lvbInDt$JunSport,  # Choose % of active juniors
+                  trf   = PerCapita(lvbInDt$Accidents),  # Calc. traff. acc/cap 
+                  strCr = PerHa(lvbInDt$Crossings),  # Calc.nr street cross/ha
+                  crm   = lvbInDt$Crime,  # Choose criminal offences per 10K ppl
+                  socHl = PerCapita(lvbInDt$SocHelp),  # Cal.soc. help rec. /cap
+                  dsb   = lvbInDt$Disabled1000, # Choose sev. handicapped/1K ppl
+                  emp   = lvbInDt$Employment,  # Choose emp./ 1K ppl cap. of emp.
+                  comp  = lvbInDt$Company,  # Choose nr of companies
+                  txRv  = lvbInDt$Revenue,  # Choose taxable revenue 
+                  # Cal. nr bankr./nr.comp. 
+                  bnk   = (lvbInDt$Bankruptcy)/(lvbInDt$Company),
+                  grSp  = PerHa(lvbInDt$GreenSp),  #Cal. green space / ha
+                  # Cal. ratio of agr surface vs. residential & traffic surf.
+                  agrRe = (lvbInDt$AgrSurface)/(lvbInDt$RsSurface),
+                  tr    = lvbInDt$Trees, # Choose nr of trees per km of the road
+                  pm10  = lvbInDt$PM10,  # Choose PM10 avg. level
+                  pm25  = lvbInDt$PM25)  # # Choose PM2.5 avg. level
 
-InDt = data.frame()
+
 #============================NEGATIVE INDICATORS================================
 
 # Most of the indicators contribute positively to the index, the higher the 
@@ -162,75 +131,97 @@ NgtInd = list(a = which(colnames(IndDt)=="dns"),
 # negatively to the Index. For each     
 
 for (i in 1:(ncol(IndDt))){
-    if ((i+2) %in% NgtInd){
+    if ((i) %in% NgtInd){
         IndDt[,paste(colnames(IndDt[i]),"Scr")] = 
              NormalizeNegative(IndDt[i])
         } else {
-          IndDt[,paste(colnames(InsDt[i]),"Scr")] =
-               NormalizePositive(InsDt[i])
+          IndDt[,paste(colnames(IndDt[i]),"Scr")] =
+               NormalizePositive(IndDt[i])
         }
     }
 
 #==============  CREATING FINAL DATA FRAME FOR INDEX CALCULATION =============== 
+District = lvbInDt$District
 
- 
+IndScr = data.frame(District,IndDt,stringsAsFactors = FALSE) %>% 
+    select("District", grep("Scr", names(.)))
+
+
+write.csv2(IndScr, "IndexSoreData.csv")
  
 #======================== WEIGHTS OF EACH PILLAR ===============================
 
-phys1 = c(0.10)
-phys2 = c(0.15)
-soc   = c(0.25)
-eco   = c(0.25)
-env   = c(0.25)
-
+phys1W = c(0.10)
+phys2W = c(0.15)
+socW   = c(0.25)
+ecoW   = c(0.25)
+envW   = c(0.25)
 
 #==================DEVIDING INDICATORS ACCORDING TO THE PILLARS=================
 
-phys1Inc = cbind( )
-phys2Inc = cbind( )
-ecoInc = cbind( )
-envInc = cbind( )
+phys1Inc = IndScr %>%
+    select("lvSpc.Scr","hsAv.Scr","dns.Scr","hsAl.Scr")
 
-### number of indicators for each category
-p1_ind_nr=4
-p2_ind_nr=4
-soc_ind_nr=16
-eco_ind_nr=4
-env_ind_nr=5 ## Alex
+phys2Inc = IndScr%>%
+    select( "trnDn.Scr","bkLn.Scr","crChr.Scr", "prkSp.Scr")
+
+socInc = IndScr %>%
+    select("trs.Scr","htlOc.Scr","sprCl.Scr","res.Scr","std.Scr",
+           "grdSz.Scr","chU3.Scr","chU6.Scr", "doc.Scr",
+           "actSn.Scr", "actJn.Scr","trf.Scr","strCr.Scr","crm.Scr", 
+           "socHl.Scr", "dsb.Scr")
+
+ecoInc = IndScr %>%
+    select("emp.Scr","comp.Scr","txRv.Scr","bnk.Scr")
+
+envInc = IndScr %>%
+    select("grSp.Scr", "agrRe.Scr","tr.Scr","pm10.Scr","pm25.Scr")
 
 # ======================CALCULATING SUB-INDICATORS============================== 
 
+Phys1INDEX = apply(phys1Inc, 1, sum)
+Phys2INDEX = apply(phys2Inc, 1, sum)
+SocINDEX   = apply(socInc, 1, sum)
+EcoINDEX   = apply(ecoInc, 1, sum)
+EnvINDEX   = apply(envInc, 1, sum)
 
-Physical_index_1=apply(livibility_index[36:39],1,sum)
-Physical_index_2=apply(livibility_index[40:43], 1,sum)
-Social_index=apply(livibility_index[44:59],1,sum)
-Economic_index=apply(livibility_index[60:63],1,sum)
-Enviromental_index= apply(livibility_index[64:68],1,sum) ### Alex
 
-### TOTAL INDEX SCORE
+# ======================CALCULATING LIVIBILITY INDEX ===========================
 
-Total_Index_Score=((Physical_index_1*phys1_weight)+(Physical_index_2*phys2_weight)+(Social_index*social_weight)+(Economic_index*economic_weight)+(Enviromental_index*env_weight))
+PILLARS= data.frame(PhysPilar= sum(Phys1INDEX*phys1W,Phys2INDEX*phys2W), 
+                    SocPilar = SocINDEX*socW,
+                    EcoPilar = EcoINDEX*ecoW,
+                    EnvPilar = EnvINDEX*envW)
+
+    
+TotalINDEX = apply(PILLARS,1, FUN = sum)   
+
+RESULTS = data.frame(District,
+                     Phys1INDEX,  
+                     Phys2INDEX, 
+                     SocINDEX,  
+                     EcoINDEX,  
+                     EnvINDEX,
+                     PILLARS,
+                     TotalINDEX)
+
+write.csv2(RESULTS, "SPL_BerlinDst_Liv_Index.csv")
+
 
 Results=data.frame(livibility_index$nr,livibility_index$district, Physical_index_1,Physical_index_2, Social_index, Economic_index,Enviromental_index, Total_Index_Score)
 colnames(Results)= c(colnames(livibility_index[1:2]),"Physical Index1", "Physical Index 2", "Social Index", "Economic Index", "Enviromental Index", "Total Index Score")
 
+
+#===================Analysis============
+
+
 max_score=(p1_ind_nr*phys1_weight)+(p2_ind_nr*phys2_weight) +(soc_ind_nr*social_weight)+(eco_ind_nr*economic_weight)+(env_ind_nr*env_weight)        
 
-#### Creating heatmaps
 
 
 
-###Comparing to rent data
-mietpreise_in_berlin_2017_nach_bezirken= read_excel("statistic_id259905_mietpreise-in-berlin-2017-nach-bezirken.xlsx", 
-                                                    sheet = "Daten", col_types = c("text", 
-                                                                                   "numeric"), skip = 4)
 
-mietepreise_arr=arrange(mietpreise_in_berlin_2017_nach_bezirken[!mietpreise_in_berlin_2017_nach_bezirken$X__1=="Berlin Durchschnitt",], X__1)
 
-#Results_Rent=merge(Results, mietepreise_arr, by.x="district",by.y="X__1")
-results_arr=arrange(Results, district)
-
-Results_Rent=data.frame(results_arr,mietepreise_arr$`Mietpreis in Euro pro m²`)
 
 
 
