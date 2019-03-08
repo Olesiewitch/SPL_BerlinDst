@@ -9,19 +9,19 @@ library(dplyr)
 #================ READING IN ALL PREPARED DATA SETS ============================
 
 dt1 = read.csv("./SPL_BerlinDst_Liv_Index_Calc/SPL-BerlinDst_Prep_1.csv",
-               sep = ";", row.names = 1)
+               sep = ";", dec = ",", row.names = 1, stringsAsFactors = FALSE )
 
 dt2 = read.csv("./SPL_BerlinDst_Liv_Index_Calc/SPL_BerlinDst_Data_prep2_qi.csv", 
-               row.names = 1)
+               row.names = 1, stringsAsFactors = FALSE)
 
 dt3 = read.csv ("./SPL_BerlinDst_Liv_Index_Calc/SPL-BerlinDst_Prep_3.csv", 
-                sep = ";")
+                sep = ";", dec = ",", stringsAsFactors = FALSE)
 
 
 #==================== MERGE THE DATA SETS ======================================
 
 lvbInDt = merge(dt1, dt2, by.y = "District") %>% 
-    merge(., dt3, by.y = "District")
+    merge(., dt3, by.y = "District") 
 
 #====================PREPERATION OF USEFUL FUNCTIONS =========================== 
 
@@ -35,7 +35,7 @@ PerCapita = function(x){
     # Returns:
     # The vector of data x devided per number of inhabitants of given district
     
-  x/final_data_frame$Population
+  x/lvbInDt$Population
 }
 
 PerHa = function(x){
@@ -48,24 +48,59 @@ PerHa = function(x){
     # Returns:
     # The vector of data x devided by size of the district in ha
     
-  x/final_data_frame$District.Size
+  x/lvbInDt$District.Size
 }
 
-#### Calculating each indicator (following the google spreadsheet link in Markdown)
-liv_spc =per_capita(final_data$Total.living.space)
-house_av=per_ha(final_data$Flats)
-dens=final_data$Population/final_data$District.Size
-hous_allow=final_data$Housing.allowance.housholds
-trans_stops=per_ha(final_data$bus_stops)*100 ### Qi
-bike_lines= final_data$`Lenthg of cycling lines`
-e_car_charge=per_ha(final_data$charging_station)*1000 ## Qi
-park_spc=final_data$Parking.Spaces
-tourist=final_data$Tourist.guests
-hotel_occ =(final_data$Hotel.beds*365)-final_data$Overnight.stays
-restaurant_ha=per_ha(final_data$Nr_of_restaurants)*100 ##Qi
-sport_club=final_data$Sport.Clubs
-pupils=final_data$Puplis.K
-avg_grade=final_data$Puplis/final_data$Grades
+
+NormalizePositive = function(x){
+    # Function normalizes the data in the vector x , by assigning the values 
+    # between 0 and 1. The highest value among the vector recives 1, the lowest 
+    # 0.    
+    # 
+    # Args: 
+    #      x: the vectors of which values should be normalized. The data type 
+    #      must be numeric. 
+    #
+    # Returns: 
+    # Vector of normalised data from vector x 
+    (x-min(x))/(max(x)-min(x))
+}
+
+NormalizeNegative=function(x){
+    # Function normalizes the data in the vector x , by assigning the values 
+    # between 0 and 1. The highest value among the vector recives 0, the lowest 
+    # 1.    
+    # 
+    # Args: 
+    #      x: the vectors of which values should be normalized. The data type 
+    #      must be numeric. 
+    #
+    # Returns: 
+    # Vector of normalised data from vector x 
+    (max(x)-x)/(max(x)-min(x))
+}
+#======================CALCULATING INDEX INDICATORS============================= 
+
+InDt = list(lvSpc = PerCapita(lvbInDt$Total.living.space),  # Calc. liv space/cap.
+            hsAv  = PerHa(lvbInDt$Flats),  # Calc. nr of flats per ha
+            dns   = PerHa(lvbInDt$Population),  # Calc. population per ha
+            hsAl  = lvbInDt$Housing.allowance.households, # Choose hous. all. dt
+            trnDn = PerHa(lvbInDt$Bus.Stop.Number),  # Calc. den. of public trans.
+            bkLn  = lvbInDt$cycling.length,  # Choose cycling lines lenght
+            crChr = PerHa(lvbInDt$Nr..of.charging.stations),  #  Calc.e-car char.stat./ha  
+            prkSp = PerHa(lvbInDt$Parking.Spaces),  # Calc. nr parking spc. per ha
+            trs   = lvbInDt$Tourist.guests,  # Choose nr of tourist guests
+            # Calculate the hotel occupancy by multipling the total num. of bed  
+            # by 365 days in the year (total capacity) and deducting the total 
+            # num. of stays
+            htlOc = (lvbInDt$Hotel.beds*365) - lvbInDt$Overnight.stays, 
+            sprCl = lvbInDt$Sports.Club,  # Choose nr of sport clubs
+            std   = lvbInDt$Pupils,  # Choose nr of pupils per K of inhabitants 
+            grdSz = lvbInDt$Pupils/lvbInDt$Grades,  # Cal. avg. grade size
+            chU3  =    
+            
+            
+        
 child_three_dc=final_data$X..Children.in.daycare.under.3
 child3_six_dc= final_data$X..Children.in.daycare.3..under.6
 nr_docs=final_data$`Nr.of house doctor per 10,000 people`
@@ -86,120 +121,52 @@ trees=final_data$trees.km
 pm_25=final_data$PM25
 pm_10=final_data$PM10
 
+ rst   = PerHa(lvbInDt$)
 
-###Alex look down 
+ IndDt = 
 
-livibility_index =data.frame(final_data$Nr, 
-                             final_data$District,
-                             liv_spc,
-                             house_av,
-                             dens,hous_allow,
-                             trans_stops, 
-                             bike_lines,
-                             e_car_charge,  
-                             park_spc, 
-                             tourist,
-                             hotel_occ,
-                             restaurant_ha, 
-                             sport_club,
-                             pupils,
-                             avg_grade, 
-                             child_three_dc, 
-                             child3_six_dc,
-                             nr_docs,
-                             act_sen, 
-                             act_yth,
-                             traf_acc, 
-                             str_cross,
-                             crime, 
-                             soc_help, 
-                             handi, 
-                             employ, 
-                             comp,
-                             tax_rev, 
-                             bankr,
-                             green_spc, 
-                             agr_res, 
-                             trees, 
-                             pm_25, 
-                             pm_10)
-              
+#============================NEGATIVE INDICATORS================================
 
-colnames(livibility_index)= c("nr", 
-                              "district",
-                              "liv_spc", 
-                              "house_av",
-                              "dens",
-                              "hous_allow",
-                              "trans_stops",
-                              "bike_lines",
-                              "e_car_charge", 
-                              "park_spc",
-                              "tourist",
-                              "hotel_occ",
-                              "restaurant_ha", 
-                              "sport_club", 
-                              "pupils",
-                              "avg_grade",
-                              "child_three_dc",
-                              "child3_six_dc", 
-                              "nr_docs", 
-                              "act_sen", 
-                              " act_yth", 
-                              "traf_acc", 
-                              "str_cross",
-                              "crime", 
-                              "soc_help", 
-                              "handi", 
-                              "employ", 
-                              "comp",
-                              "tax_rev",
-                              "bankr",
-                              "green_spc", 
-                              "agr_res", 
-                              "trees", 
-                              "pm_25", 
-                              "pm_10")
+# Most of the indicators contribute positively to the index, the higher the 
+# value the better the district should be rank. Here are 6 indicators, which
+# contribute negatively to the index calculation
 
-### Creating 4 categories (Physical, Social, Economic, Enviromental)
+ 
+NgtInd = list(a=which(colnames(IndDt)=="dens"), 
+              b=which(colnames(IndDt)=="traf_acc"),
+              c=which(colnames(IndDt)=="bankr"),
+              d=which(colnames(IndDt)=="crime"),
+              e=which(colnames(IndDt)=="pm_25"),
+              f=which(colnames(IndDt)=="pm_10"))
 
-### Positive vs Negative indicator 
-a=which(colnames(livibility_index)=="dens")
-b=which(colnames(livibility_index)=="traf_acc")
-c=which(colnames(livibility_index)=="bankr")
-d=which(colnames(livibility_index)=="crime")
-e=which(colnames(livibility_index)=="pm_25")
-f=which(colnames(livibility_index)=="pm_10")
+ 
+#=========================NORMALIZING THE DATA =================================
 
-negative=c(a,b,c,d,e,f) 
+# We normalise the data according to whether they contribute positivly or 
+# negatively to the Index. For each     
 
-#### Calculating the score for every indicator
+for (i in 1:(ncol(IndDt))){
+    if ((i+2) %in% NgtInd){
+        IndDt[,paste(colnames(IndDt[i]),"Scr")] = 
+             NormalizeNegative(IndDt[i])
+        } else {
+          IndDt[,paste(colnames(InsDt[i]),"Scr")] =
+               NormalizePositive(InsDt[i])
+        }
+    }
 
-### positive and  negative score function 
+#==============  CREATING FINAL DATA FRAME FOR INDEX CALCULATION =============== 
 
-normalized_positive = function(x){
-  (x-min(x))/(max(x)-min(x))}
+#======================== WEIGHTS OF EACH PILLAR ===============================
 
-normalized_negative=function(x){
-  (max(x)-x)/(max(x)-min(x))
-  }
+phys1 = c(0.10)
+phys2 = c(0.15)
+soc   = c(0.25)
+eco   = c(0.25)
+env   = c(0.25)
 
-### creating columns for scores and calculating them according to category
 
-  for (i in 1:(ncol(livibility_index)-2)){
-    if ((i+2) %in% negative) {
-      livibility_index[,paste(colnames(livibility_index[i+2]),"_score")]=normalized_negative(livibility_index[i+2])}
-  else {
-      livibility_index[,paste(colnames(livibility_index[i+2]),"_score")]=normalized_positive(livibility_index[i+2])
-  }
-   }
-
-### Weights of each Index
-phys1_weight=0.10
-phys2_weight=0.15
-social_weight=0.25
-economic_weight=0.25
-env_weight=0.25
+#=======================DE
 
 ### INDEX ACCORDING TO THE CATEGORIES
 
