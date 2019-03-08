@@ -28,7 +28,7 @@ Dstc = c("Mitte",
          "Reinickendorf"
 )
 Dstc = as.data.frame(Dstc)
-colnames(Dstc) = c("Districts"); Dstc
+colnames(Dstc) = c("District"); Dstc
 
 # get Ortsteil of district using package rvest
 Oteil = read_html(paste0("https://de.wikipedia.org/wiki/",
@@ -41,20 +41,23 @@ Oteil = Oteil %>%
               html_table()
 
 OteilD = c()
+i=3
 for (i in 1:12){ 
+    OteilD[i] = c()
     j = 1
-    while(Oteil[j,'Bezirk'] %in% Dstc[i,"Districts"]){
-        OteilD[i] = cbind(OteilD[i],Oteil[j,"Ortsteil"])
+    while(Oteil[j,'Bezirk'] %in% Dstc[i,"District"]){
+        OteilD[i] = rbind(OteilD[i],Oteil[j,'Ortsteil'])
         j =j+1
-    }
+    }; OteilD[i] = as.vector(OteilD[i])
 }
+
 
 OteilD = c()
 j = 1
-while(Oteil[j,'Bezirk'] %in% Dstc[1,"Districts"]){
-    OteilD = rbind(OteilD[1],Oteil[j,'Ortsteil'])
+while(Oteil[j,'Bezirk'] %in% Dstc[1,"District"]){
+    OteilD = rbind(OteilD,Oteil[j,'Ortsteil'])
     j =j+1
-}
+};OteilD = as.vector(OteilD)
 
 
 # input: district names
@@ -223,8 +226,9 @@ Nrsc<-c(33, 39, 54, 35, 22, 31, 19, 25, 32, 39, 22, 30)
 
 #QiDt = cbind(Nrct, Nrrs, Cyll, Nrdr, Nrsc)
 Nr = 1:12
-QiDt = cbind(Nr, Nrct, Cyll, Nrdr, Nrsc)
-colnames(QiDt) = c("district Nr.",
+QiDt = data.frame(Nr,Dstc$District, Nrct, Cyll, Nrdr, Nrsc)
+colnames(QiDt) = c("District Nr.",
+                   "District",
                    "Nr. of charging stations",
                    #"Nr. of restaurants",
                    "cycling length",
@@ -234,4 +238,4 @@ colnames(QiDt) = c("district Nr.",
 
 QiDt = as.data.frame(QiDt); QiDt
 
-write.csv(QiDt,"SPL_BerlinDst_Data_prep2_qi")
+write.csv(QiDt,"SPL_BerlinDst_Data_prep2_qi.csv")
