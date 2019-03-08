@@ -11,6 +11,14 @@ Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula 
 
 ```{r chunck_6, echo=TRUE, tidy=TRUE}
 #dummy comment
-dummy_variable = 6
+install.packages("dplyr")
+library(dplyr)
+
+smmr = summarize(col, 
+                 avg = mean(col),
+                 min = min(col), 
+                 max = max(col), 
+                 med = median(col)) %>%
+    apply(data, .)
 ```
 

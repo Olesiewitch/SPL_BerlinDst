@@ -7,10 +7,126 @@ output: pdf_document
 
 ## Preparation of Air-Pollution Data
 
-Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam dictum felis eu pede mollis pretium. Integer tincidunt. Cras dapibus. Vivamus elementum semper nisi. Aenean vulputate eleifend tellus. Aenean leo ligula, porttitor eu, consequat vitae, eleifend ac, enim. Aliquam lorem ante, dapibus in, viverra quis, feugiat a, tellus. Phasellus viverra nulla ut metus varius laoreet. Quisque rutrum. Aenean imperdiet. Etiam ultricies nisi vel augue. Curabitur ullamcorper ultricies nisi. Nam eget dui. Etiam rhoncus. Maecenas tempus, tellus eget condimentum rhoncus, sem quam semper libero, sit amet adipiscing sem neque sed ipsum. Nam quam nunc, blandit vel, luctus pulvinar, hendrerit id, lorem. Maecenas nec odio et ante tincidunt tempus. Donec vitae sapien ut libero venenatis faucibus. Nullam quis ante. Etiam sit amet orci eget eros faucibus tincidunt. Duis leo. Sed fringilla mauris sit amet nibh. Donec sodales sagittis magna.
+The folloving packages were installed for data preparation of air pollution data:
+rvest
+readxl
 
-```{r chunck_5, echo=TRUE, tidy=TRUE}
-#dummy comment
-dummy_variable = 5
+```{r libraries_dp3, echo=TRUE, tidy=FALSE, message=FALSE, warning=FALSE}
+#install and upload packages
+packages = c("rvest", 
+             "readxl")
+
+for (package in packages) {
+    if(!require(package, character.only = TRUE)){
+        install.packages(package, character.only = TRUE)
+    }
+    library(package, character.only = TRUE)
+}
+
+```
+
+### Uploading Air-Pollution Data
+
+The data itself was downloaded in xls format from: 
+"https://fbinter.stadt-berlin.de/fb/index.jsp"
+
+```{r ap_data, echo=TRUE, tidy=FALSE}
+# Upload the data
+ap15 = read_excel("./Input/Air_Pollution_2015.xls", 
+                  sheet = 1)
+
+# Original names are too long and contain special symbols and spaces
+# Upload matching table for short names
+mtch = read.csv2("./Input/matching.csv", 
+                 sep = ";")
+
+# Rename variables
+names(ap15) = mtch$new[match(names(ap15), mtch$old)]
+
+```
+
+The data contains XXX street sections, XX unique street names, and data for NO2, PM10 and PM25 Pollution for each street section. As air-pollution data does not have an indicator of a district, we had to match those names with appropriate postal indixes and as follows district names.
+
+### Uploading additional tables
+
+Unfortunately, it was not possible to find a table of correspondence of street names and post indixes available for direct download. That is why I had to download it from the following web page separately for each district with help of "rvest" package:
+"https://berlin.kauperts.de"
+
+```{r districts, eval=FALSE, echo=FALSE, tidy=FALSE}
+# Upload list of districts 
+districts = read.csv2("./Input/List_of_districts.csv", 
+                      header = TRUE, 
+                      sep=";", 
+                      dec=",", 
+                      stringsAsFactors = FALSE
+)
+```
+
+
+
+
+```{r chunck_5, eval=FALSE, echo=TRUE, tidy=FALSE}
+
+#IMPORTANT: internet connection is needed
+
+#create table with data for the whole Berlin
+Berlin_streets = data.frame()
+
+for (i in 1:dim(districts)[1]) {
+    #generate a link to data for all the districts and sub-districts
+    link=paste0("https://berlin.kauperts.de/Bezirke/",
+                districts$District[i],"/Ortsteile/",
+                districts$Sub.district[i],"/Strassen")
+    
+    #upload the data from the web-page with generated link
+    webpage = read_html(link)
+    tbls = html_nodes(webpage, "table")
+    tab=html_table(tbls)[[1]]
+    
+    #add columns for district and sub-district
+    tab$district=districts$District[i]
+    tab$subdistrict=districts$Sub.district[i]
+    
+    #add created table to the table for the whole Berlin
+    Berlin_streets=rbind(Berlin_streets, tab)
+}
+
+#save resulting table to csv
+write.csv2(Berlin_streets, "./Output/Berlin_Streets.csv", row.names = FALSE)
+```
+
+### Data preparation
+
+Several columns of initial air pollution data needed to be reformated (e.g. Street section number was initially non-numeric). 
+
+Another problem was different ways of writing street name, e.g. Adamstr./ Africanische Str. and so on. For the purpose of further matching, I substract unique part of street name (e.g. Adamstr. - Adam).
+
+```{r ap_format, echo=TRUE, tidy=FALSE}
+# Reformat street section number
+ap15$Nr = as.numeric(ap15$Nr)
+
+# Format street names in both tables in order to merge them by street name
+ap15$str = sub("str.$|Straße|str$|-Straße|Strasse|-Strasse|straße|strasse|Str.$|-Str.$", 
+               "", 
+               ap15$Street
+)
+
+Berlin_streets$str = sub("str.$|Straße|str$|-Straße|Strasse|-Strasse|straße|strasse|Str.$|-Str.$",
+                         "", 
+                         Berlin_streets$Straße)
+
+
+# Function: Replace all the Umlauts
+replace_umlauts=function(column){
+    column=sub("ä", "ae", column)
+    column=sub("ö", "oe", column)
+    column=sub("ü", "ue", column)
+    column=sub("ß", "ss", column)
+    
+    return(column)
+}
+
+
+
 ```
 
