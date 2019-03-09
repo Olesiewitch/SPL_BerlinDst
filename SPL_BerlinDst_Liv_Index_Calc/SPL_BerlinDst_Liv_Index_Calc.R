@@ -207,15 +207,30 @@ RESULTS = data.frame(District,
 
 write.csv2(RESULTS, "SPL_BerlinDst_Liv_Index.csv")
 
+Results=data.frame(livibility_index$nr,
+                   livibility_index$district, 
+                   Physical_index_1,
+                   Physical_index_2, 
+                   Social_index, 
+                   Economic_index,
+                   Enviromental_index, 
+                   Total_Index_Score)
 
-Results=data.frame(livibility_index$nr,livibility_index$district, Physical_index_1,Physical_index_2, Social_index, Economic_index,Enviromental_index, Total_Index_Score)
-colnames(Results)= c(colnames(livibility_index[1:2]),"Physical Index1", "Physical Index 2", "Social Index", "Economic Index", "Enviromental Index", "Total Index Score")
+colnames(Results)= c(colnames(livibility_index[1:2]),
+                     "Physical Index1", 
+                     "Physical Index 2", 
+                     "Social Index", 
+                     "Economic Index", 
+                     "Enviromental Index", 
+                     "Total Index Score")
 
+#===============================Analysis========================================
 
-#===================Analysis============
-
-
-max_score=(p1_ind_nr*phys1_weight)+(p2_ind_nr*phys2_weight) +(soc_ind_nr*social_weight)+(eco_ind_nr*economic_weight)+(env_ind_nr*env_weight)        
+max_score=(p1_ind_nr*phys1_weight)+
+          (p2_ind_nr*phys2_weight) +
+          (soc_ind_nr*social_weight)+
+          (eco_ind_nr*economic_weight)+
+          (env_ind_nr*env_weight)        
 
 
 
