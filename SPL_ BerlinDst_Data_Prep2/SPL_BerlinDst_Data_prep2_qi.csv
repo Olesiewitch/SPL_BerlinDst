@@ -1,4 +1,4 @@
-"","DistrictNr.","District","Nr.of charging stations","Nr.of restaurants","cyclingLength","Nr.of doctors per 10,000 people","Nr.of street crossings"
+"","Nr","District","Charging","Restaurants","Cycle","Doctors","Crossings"
 "1",1,"Mitte",33,718,169677.4,66.7,33
 "2",2,"Friedrichshain-Kreuzberg",13,565,90134.7,66.6,39
 "3",3,"Pankow",8,384,161242.6,65.3,54
