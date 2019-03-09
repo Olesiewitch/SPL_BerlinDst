@@ -211,13 +211,13 @@ Nrsc<-c(33, 39, 54, 35, 22, 31, 19, 25, 32, 39, 22, 30)
 #QiDt = cbind(Nrct, Nrrs, Cyll, Nrdr, Nrsc)
 Nr = 1:12
 QiDt = data.frame(Nr,Dstc$District, Nrct, Rest, Cyll, Nrdr, Nrsc)
-colnames(QiDt) = c("DistrictNr.",
+colnames(QiDt) = c("Nr",
                    "District",
-                   "Nr.of charging stations",
-                   "Nr.of restaurants",
-                   "cyclingLength",
-                   "Nr.of doctors per 10,000 people",
-                   "Nr.of street crossings"
+                   "Charging",
+                   "Restaurants",
+                   "Cycle",
+                   "Doctors",
+                   "Crossings"
 )
 
 QiDt = as.data.frame(QiDt); QiDt
