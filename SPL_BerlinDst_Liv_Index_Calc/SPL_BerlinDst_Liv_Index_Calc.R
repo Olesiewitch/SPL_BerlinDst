@@ -3,6 +3,10 @@
 library(xlsx)
 library(tidyr)
 library(dplyr)
+library(xtable)
+options(xtable.floating = FALSE)
+options(xtable.timestamp = "")
+library(reshape2)
 
 #==================== READING IN THE  DATA SETS ================================
 
@@ -112,8 +116,8 @@ IndDt = data.frame(lvSpc = PerCapita(lvbInDt$SpacePC),  # Calc. liv space/cap.
 #============================NEGATIVE INDICATORS================================
 
 # Most of the indicators contribute positively to the index, the higher the 
-# value the better the district should be rank. Here are 6 indicators, which
-# contribute negatively to the index calculation
+# value the better the district should be rank. Here are 7 indicators, which
+# contribute negatively to the index calculation:
 
  
 NgtInd = list(a = which(colnames(IndDt)=="dns"), 
@@ -141,10 +145,11 @@ for (i in 1:(ncol(IndDt))){
     }
 
 #==============  CREATING FINAL DATA FRAME FOR INDEX CALCULATION =============== 
+Nr = lvbInDt$Nr 
 District = lvbInDt$District
 
-IndScr = data.frame(District,IndDt,stringsAsFactors = FALSE) %>% 
-    select("District", grep("Scr", names(.)))
+IndScr = data.frame(Nr, District,IndDt,stringsAsFactors = FALSE) %>% 
+    select("Nr", "District", grep("Scr", names(.)))
 
 
 write.csv2(IndScr, "IndexSoreData.csv")
@@ -188,13 +193,27 @@ EnvINDEX   = apply(envInc, 1, sum)
 
 # ======================CALCULATING LIVIBILITY INDEX ===========================
 
-PILLARS= data.frame(PhysPilar= sum(Phys1INDEX*phys1W,Phys2INDEX*phys2W), 
+# Calculate the contribution of each pilar to the Liveability Index 
+
+PILLARS= data.frame(PhysPilar= (Phys1INDEX*phys1W+Phys2INDEX*phys2W), 
                     SocPilar = SocINDEX*socW,
                     EcoPilar = EcoINDEX*ecoW,
                     EnvPilar = EnvINDEX*envW)
 
+# Calculate total Liveability Index 
     
 TotalINDEX = apply(PILLARS,1, FUN = sum)   
+
+MaxScoreIndex = sum(length(phys1Inc)*phys1W,length(phys2Inc)*phys2W,
+                    length(socInc)*socW, length(ecoInc)*ecoW,
+                    length(envInc)*envW)
+
+
+
+MaxScore = c("Max Score", length(phys1Inc),length(phys2Inc), length(socInc), 
+             length(ecoInc), length(envInc),(length(phys1Inc)*phys1W+
+             length(phys2Inc)*phys2W), length(socInc)*socW, 
+             length(ecoInc)*ecoW, length(envInc)*envW, MaxScoreIndex)
 
 RESULTS = data.frame(District,
                      Phys1INDEX,  
@@ -204,26 +223,58 @@ RESULTS = data.frame(District,
                      EnvINDEX,
                      PILLARS,
                      TotalINDEX)
+    
+    rbind(., "Max Score" = MaxScore)
+
 
 write.csv2(RESULTS, "SPL_BerlinDst_Liv_Index.csv")
 
 
-Results=data.frame(livibility_index$nr,livibility_index$district, Physical_index_1,Physical_index_2, Social_index, Economic_index,Enviromental_index, Total_Index_Score)
-colnames(Results)= c(colnames(livibility_index[1:2]),"Physical Index1", "Physical Index 2", "Social Index", "Economic Index", "Enviromental Index", "Total Index Score")
+
+#============================= RESULTS =========================================
 
 
-#===================Analysis============
+View(RESULTS[, 1:6])  # See results for sub-Indexes
+
+xtable(RESULTS[, 1:6])  # Get the latex code for the report (table XX )
+
+View(RESULTS[,-(2:6)])  # See final Index results 
+
+xtable(RESULTS[, -(2:6)])  # Get the latex code for the report (table XX )
 
 
-max_score=(p1_ind_nr*phys1_weight)+(p2_ind_nr*phys2_weight) +(soc_ind_nr*social_weight)+(eco_ind_nr*economic_weight)+(env_ind_nr*env_weight)        
+#============================= BOXPLOT =========================================
+
+
+ggplot(data = melt(RESULTS[, -c(1,7:11)]), aes(x=variable,y=value)) +
+    geom_boxplot(aes(fill = variable)) + theme_bw() +
+    theme(panel.border = element_blank(), panel.grid.minor = element_blank(),
+          panel.grid.major = element_blank(), 
+          axis.line = element_line(colour = "black")) + coord_flip()
+
+
+#============================ BAR PLOT =========================================
+
+data.m = melt(RESULTS[, -c(7:11)],id.vars = "District")
+
+ggplot(data.m, aes(x = District,y = value, 
+                   fill = variable)) + geom_bar(stat = "identity",
+                                                width = 0.5)+ theme_calc() +
+    theme(panel.border = element_blank(), panel.grid.minor = element_blank(),
+          panel.grid.major = element_blank(), 
+          axis.line = element_line(colour = "black"), 
+          legend.position = "bottom", legend.box = "horizontal",
+          axis.title.x=element_blank()) +
+    labs(title="Berlin District Liveability Index")+
+    guides(fill=guide_legend(title="Sub-Index")) + 
+    coord_flip() 
+    
+   
 
 
 
 
-
-
-
-
-
-
+    geom_bar(aes(fill = drv), position = position_stack(reverse = TRUE)) +
+    coord_flip() +
+    theme(legend.position = "top")
 
