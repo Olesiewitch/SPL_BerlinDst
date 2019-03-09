@@ -180,22 +180,47 @@ envW   = c(0.25)
 
 
 phy1Ind = indScrDt %>%
-    select("lvSpc.Scr","hsAv.Scr","dns.Scr","hsAl.Scr")
+    select("lvSpc.Scr",
+           "hsAv.Scr",
+           "dns.Scr",
+           "hsAl.Scr")
 
 phy2Ind = indScrDt %>%
-    select( "trnDn.Scr","bkLn.Scr","crChr.Scr", "prkSp.Scr")
+    select( "trnDn.Scr",
+            "bkLn.Scr",
+            "crChr.Scr", 
+            "prkSp.Scr")
 
 socInd = indScrDt %>%
-    select("trs.Scr","htlOc.Scr","sprCl.Scr","res.Scr","std.Scr",
-           "grdSz.Scr","chU3.Scr","chU6.Scr", "doc.Scr",
-           "actSn.Scr", "actJn.Scr","trf.Scr","strCr.Scr","crm.Scr", 
-           "socHl.Scr", "dsb.Scr")
+    select("trs.Scr",
+           "htlOc.Scr",
+           "sprCl.Scr",
+           "res.Scr",
+           "std.Scr",
+           "grdSz.Scr",
+           "chU3.Scr",
+           "chU6.Scr",
+           "doc.Scr",
+           "actSn.Scr",
+           "actJn.Scr",
+           "trf.Scr",
+           "strCr.Scr",
+           "crm.Scr", 
+           "socHl.Scr",
+           "dsb.Scr")
 
 ecoInd = indScrDt %>%
-    select("emp.Scr","comp.Scr","txRv.Scr","bnk.Scr")
+    select("emp.Scr",
+           "comp.Scr",
+           "txRv.Scr",
+           "bnk.Scr")
 
 envInd = indScrDt %>%
-    select("grSp.Scr", "agrRe.Scr","tr.Scr","pm10.Scr","pm25.Scr")
+    select("grSp.Scr",
+           "agrRe.Scr",
+           "tr.Scr",
+           "pm10.Scr",
+           "pm25.Scr")
 
 # ======================CALCULATING SUB-INDICATORS============================== 
 

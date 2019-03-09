@@ -261,7 +261,7 @@ colnames(wbsDt) = c("Nr",
   
 # read in sport clubs memberships data and convert columns to numeric
 
-sprtMb = read.xlsx("SPL_ BerlinDst_Data_Prep1/SB_B05-01-00_2018j01_BE.xls",
+sprtMb = read.xlsx("SPL_BerlinDst_Data_Prep1/SB_B05-01-00_2018j01_BE.xls",
                    sheetName = "T9", startRow = 4, encoding = "UTF-8",
                    as.data.frame = TRUE) %>%
     mutate_at(vars("bis.6":"X61.und.mehr"),DataToNumeric) %>%
@@ -272,7 +272,7 @@ sprtMb = read.xlsx("SPL_ BerlinDst_Data_Prep1/SB_B05-01-00_2018j01_BE.xls",
 # Ignore Warning message: "In (function (column)  : NAs introduced by coercion"
 
   
-sprtCl = read.xlsx("SPL_ BerlinDst_Data_Prep1/SB_B05-01-00_2018j01_BE.xls",
+sprtCl = read.xlsx("SPL_BerlinDst_Data_Prep1/SB_B05-01-00_2018j01_BE.xls",
                    sheetName = "G3", encoding = "UTF-8", 
                    as.data.frame = TRUE) %>% 
     mutate_at(vars("NA..9"),DataToNumeric) %>%
@@ -322,11 +322,11 @@ colnames(clbsDt) = c("District", "Sport")  # Name the column
 # Read in district borders coordinates
 # Ignore warnings: no altitude values for KML object 1 - 16
 
-dstrBrd = getKMLcoordinates("SPL_ BerlinDst_Data_Prep1/bezirksgrenzen.kml")
+dstrBrd = getKMLcoordinates("SPL_BerlinDst_Data_Prep1/bezirksgrenzen.kml")
 
 # Read in bus stops data
 
-bsStp = read.csv("SPL_ BerlinDst_Data_Prep1/public transportation stops.csv")  
+bsStp = read.csv("SPL_BerlinDst_Data_Prep1/public transportation stops.csv")  
 
   
 #================== PREPARING BUS STOP DATA FOR MERGING ======================
@@ -366,7 +366,7 @@ colnames(bsStpDt)= c("District",
 
 #==========================READING IN CRIME DATA==============================
   
-crm = read.xlsx("SPL_ BerlinDst_Data_Prep1/Fallzahlen&HZ 2012-2017.xlsx",
+crm = read.xlsx("SPL_BerlinDst_Data_Prep1/Fallzahlen&HZ 2012-2017.xlsx",
                 sheetName = "HZ_2017", encoding = "UTF-8",
                 startRow = 3, as.data.frame = TRUE) %>% 
     select("LOR.Schlüssel..Bezirksregion.", 
@@ -432,7 +432,7 @@ colnames(prkDt) = c("District", "Parking")  # name columns
 # Ignore Warning: Warning message: In DataToNumeric(NA..1) : NAs introduced 
 # by coercion
 
-trNm = paste0("SPL_ BerlinDst_Data_Prep1/statistic_id652680_strassenbaeume-",
+trNm = paste0("SPL_BerlinDst_Data_Prep1/statistic_id652680_strassenbaeume-",
               "in-berlin-nach-bezirken-2017.xlsx")
 
 tr = read.xlsx(trNm, sheetName = "Daten", as.data.frame = TRUE , 
@@ -461,7 +461,7 @@ colnames(trDt) = c("District", "Trees") # name columns
 
 # Read in green space data
 
-grSpNm = paste0("SPL_ BerlinDst_Data_Prep1/statistic_id652716_oeffentliche-",
+grSpNm = paste0("SPL_BerlinDst_Data_Prep1/statistic_id652716_oeffentliche-",
                 "gruenflaechen-in-berlin-nach-bezirken-2017.xlsx")
 
 grSpDt = read.xlsx(grSpNm, sheetName = "Daten", startRow = 5, 
@@ -484,8 +484,8 @@ FnlDt = merge(wbsDt,spMbDt, by.y = "District") %>%
     merge(.,grSpDt,by.y = "District")  # merge all the data sets by the district
 
 
-write.csv2(FnlDt, "SPL_ BerlinDst_Data_Prep1/SPL_BerlinDst_Prep_1.csv")
+write.csv2(FnlDt, "SPL_BerlinDst_Data_Prep1/SPL_BerlinDst_Data_Prep_1.csv")
 
 # Read in best with: 
-# read.csv("SPL_ BerlinDst_Data_Prep1/SPL_BerlinDst_Prep_1.csv"", 
+# read.csv("SPL_BerlinDst_Data_Prep1/SPL_BerlinDst_Data_Prep_1.csv", 
 # sep = ";", dec = ",", row.names = 1, stringsAsFactors = FALSE)
