@@ -73,7 +73,7 @@ colnames(OteilD) = Dstc$District
 View(OteilD)
 
 # Set working directory
-wd = "~/SPL-Project/Archive/Dirstrict Data/"
+wd = "~/SPL-Project/SPL_ BerlinDst_Data_Prep2"
 
 #============================charging station===================================
 
@@ -98,8 +98,7 @@ Cgst1=data.frame(Cgst,Adss11)
 
 #extract the post code of each district from the original excel file 'ZuordnungderBezirkezuPostleitzahlen'
 
-Pscd = read_excel(paste0("~/SPL-Project/Archive/Dirstrict Data/"
-                         ,"ZuordnungderBezirkezuPostleitzahlen.xls"))
+Pscd = read_excel(paste0(wd,"ZuordnungderBezirkezuPostleitzahlen.xls"))
 
 Dstc01<-as.numeric(unlist(as.list(Pscd[6:8,3:12])))
 Dstc02<-as.numeric(unlist(as.list(Pscd[10:11,3:12])))
