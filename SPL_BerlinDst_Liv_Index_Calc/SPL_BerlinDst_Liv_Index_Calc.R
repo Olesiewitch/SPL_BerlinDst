@@ -7,6 +7,8 @@ library(xtable)
 options(xtable.floating = FALSE)
 options(xtable.timestamp = "")
 library(reshape2)
+library(ggplot2)
+library(ggthemes)
 
 #==================== READING IN THE  DATA SETS ================================
 
@@ -204,17 +206,6 @@ PILLARS= data.frame(PhysPilar= (Phys1INDEX*phys1W+Phys2INDEX*phys2W),
     
 TotalINDEX = apply(PILLARS,1, FUN = sum)   
 
-MaxScoreIndex = sum(length(phys1Inc)*phys1W,length(phys2Inc)*phys2W,
-                    length(socInc)*socW, length(ecoInc)*ecoW,
-                    length(envInc)*envW)
-
-
-
-MaxScore = c("Max Score", length(phys1Inc),length(phys2Inc), length(socInc), 
-             length(ecoInc), length(envInc),(length(phys1Inc)*phys1W+
-             length(phys2Inc)*phys2W), length(socInc)*socW, 
-             length(ecoInc)*ecoW, length(envInc)*envW, MaxScoreIndex)
-
 RESULTS = data.frame(District,
                      Phys1INDEX,  
                      Phys2INDEX, 
@@ -223,20 +214,31 @@ RESULTS = data.frame(District,
                      EnvINDEX,
                      PILLARS,
                      TotalINDEX)
-    
-    rbind(., "Max Score" = MaxScore)
 
+#==================== CALCULATE MAXIMUM SCORE ==================
+
+MaxScoreIndex = sum(length(phys1Inc)*phys1W,length(phys2Inc)*phys2W,
+                    length(socInc)*socW, length(ecoInc)*ecoW,
+                    length(envInc)*envW)
+
+    
+MaxScore = data.frame("Max Score", length(phys1Inc),length(phys2Inc), 
+                      length(socInc), length(ecoInc), length(envInc),
+                      (length(phys1Inc)*phys1W + length(phys2Inc)*phys2W),
+                      length(socInc)*socW, length(ecoInc)*ecoW,
+                      length(envInc)*envW, MaxScoreIndex,
+                      stringsAsFactors = FALSE) 
+
+colnames(MaxScore) = colnames(RESULTS)
 
 write.csv2(RESULTS, "SPL_BerlinDst_Liv_Index.csv")
-
-
 
 #============================= RESULTS =========================================
 
 
 View(RESULTS[, 1:6])  # See results for sub-Indexes
 
-xtable(RESULTS[, 1:6])  # Get the latex code for the report (table XX )
+xtable(rbind(RESULTS[, 1:6], MaxScore[1:6]))  # Get the latex code for the report (table XX )
 
 View(RESULTS[,-(2:6)])  # See final Index results 
 
@@ -259,14 +261,15 @@ data.m = melt(RESULTS[, -c(7:11)],id.vars = "District")
 
 ggplot(data.m, aes(x = District,y = value, 
                    fill = variable)) + geom_bar(stat = "identity",
-                                                width = 0.5)+ theme_calc() +
-    theme(panel.border = element_blank(), panel.grid.minor = element_blank(),
-          panel.grid.major = element_blank(), 
-          axis.line = element_line(colour = "black"), 
-          legend.position = "bottom", legend.box = "horizontal",
-          axis.title.x=element_blank()) +
-    labs(title="Berlin District Liveability Index")+
-    guides(fill=guide_legend(title="Sub-Index")) + 
+                                                width = 0.5)+ theme_bw() +
+    scale_fill_economist() + theme(panel.border = element_blank(),
+                                panel.grid.minor = element_blank(),
+                                panel.grid.major = element_blank(),
+                                legend.position = "bottom",
+                                legend.box = "horizontal",
+                                axis.title.x=element_blank()) +
+    labs(title="Berlin District Liveability Index") +
+    guides(fill=guide_legend(title="Sub-Indexes: ")) + 
     coord_flip() 
     
    
