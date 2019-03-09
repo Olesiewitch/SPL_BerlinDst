@@ -4,25 +4,21 @@ author: "Wu Qi"
 date: "3/3/2019"
 ---
 #packages:
-#install.packages("styler")
-library(styler)
-library(devtools)
-#install.packages("factoextra")
-library(factoextra)
 install_github("vqv/ggbiplot")
 #error: "failed to set default locale"
 #solution: system('defaults write org.R-project.R force.LANG en_US.UTF-8') -> restart R
 library(ggbiplot)
-library(readr)
 
-
-FData = read_delim("~/SPL_BerlinDst_Data_Desc.csv", ";", 
-                   escape_double = FALSE, col_types = cols(X1 = col_skip()), 
-                   trim_ws = TRUE)
+packages = c("styler","devtools","factoextra","ggthemes","readr","ggplot2") 
+for (i in packages) {                          
+    if(!require(i, character.only=TRUE))
+    {install.packages(i, character.only=TRUE)}
+    library(i, character.only=TRUE)
+}
 
 #principle component 
 
-data.pca <- prcomp(FData[,5:46],center = TRUE,scale. = TRUE)
+data.pca <- prcomp(IndexFull[,-(1:2)],center = TRUE,scale. = TRUE)
 #centure: whether the variables should be shifted to be zero centered
 #scale: whether the variables should be scaled to have unit variance before the analysis takes place
 summary(data.pca)  # Importance of components 
@@ -44,30 +40,42 @@ fviz_pca_var(data.pca,
              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
              repel = TRUE     # Avoid text overlapping
 )
+
 ggbiplot(data.pca)
-
-
-
 
 #=================================Clustering====================================
 
 
-Index = read_delim("SPL_BerlinDst_Liv_Index_Calc/SPL_BerlinDst_Liv_Index.csv", 
-                   ";", escape_double = FALSE, 
-                   col_types = cols(X1 = col_skip()), trim_ws = TRUE)
+options(digits=6) 
+# Physical1; Physical2; Social; Economical; and enviromental Index as well as the respectively weighted Index
 
-IndexFull = read_delim("SPL_BerlinDst_Liv_Index_Calc/IndexSoreData.csv", 
-                        ";", escape_double = FALSE, 
-                       col_types = cols(X1 = col_skip()), trim_ws = TRUE)
+Index = read.csv("SPL_BerlinDst_Liv_Index_Calc/SPL_BerlinDst_Liv_Index.csv",
+         sep = ";", dec = ",", row.names = 1, stringsAsFactors = FALSE)
 
-kmeans(Index[,-1], centers = 2, 
-       iter.max = 10, nstart = 5, 
-       algorithm = "Hartigan-Wong",trace=FALSE)
+#Full data set with normalised data as individual index
+IndexFull = read.csv("SPL_BerlinDst_Liv_Index_Calc/IndexSoreData.csv",
+                 sep = ";", dec = ",", row.names = 1, stringsAsFactors = FALSE)
 
 
+ggplot(Index, aes(Phys1INDEX, Phys2INDEX), color = Index$District) + 
+    theme_bw() + geom_point()
 
 
+# k mean clustering 
+k = kmeans(Index[,-as.numeric(which(colnames(Index) == 'District'))], 
+           centers = 2, iter.max = 10, nstart = 20, 
+           algorithm = "Hartigan-Wong",trace=FALSE)
 
+kFull = kmeans(IndexFull[,-(1:2)], 
+           centers = 2, iter.max = 10, nstart = 20, 
+           algorithm = "Hartigan-Wong",trace=FALSE)
+str(k)
+str(kFull)
+
+# plot the data points according to the first two principal components that explain the majority of the variance.
+
+
+fviz_cluster(kFull, data = IndexFull[,-(1:2)])
 
 
 
