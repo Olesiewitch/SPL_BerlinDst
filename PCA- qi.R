@@ -2,14 +2,7 @@
 title: "PCA"
 author: "Wu Qi"
 date: "3/3/2019"
-output: pdf_document
 ---
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-```{r}
 #packages:
 #install.packages("styler")
 library(styler)
@@ -20,17 +13,16 @@ install_github("vqv/ggbiplot")
 #error: "failed to set default locale"
 #solution: system('defaults write org.R-project.R force.LANG en_US.UTF-8') -> restart R
 library(ggbiplot)
-
-```
-
+library(readr)
 
 
-```{r}
-#find a better way to group and weight the indices(variables), e.g. principle component
+FData = read_delim("~/SPL_BerlinDst_Data_Desc.csv", ";", 
+                   escape_double = FALSE, col_types = cols(X1 = col_skip()), 
+                   trim_ws = TRUE)
 
 #principle component 
 
-data.pca <- prcomp(final_data[,3:48],center = TRUE,scale. = TRUE)
+data.pca <- prcomp(FData[,5:46],center = TRUE,scale. = TRUE)
 #centure: whether the variables should be shifted to be zero centered
 #scale: whether the variables should be scaled to have unit variance before the analysis takes place
 summary(data.pca)  # Importance of components 
@@ -43,7 +35,7 @@ fviz_pca_ind(data.pca,
              col.ind = "cos2", # Color by the quality of representation
              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
              repel = TRUE     # Avoid text overlapping
-             )
+)
 
 #Graph of variables. Positive correlated variables point to the same side of the plot. Negative correlated variables point to opposite sides of the graph.
 
@@ -51,14 +43,33 @@ fviz_pca_var(data.pca,
              col.var = "contrib", # Color by contributions to the PC
              gradient.cols = c("#00AFBB", "#E7B800", "#FC4E07"),
              repel = TRUE     # Avoid text overlapping
-             )
+)
 ggbiplot(data.pca)
 
-```
 
 
-```{r}
-#Clustering: good and bad district 
+
+#=================================Clustering====================================
+
+
+Index = read_delim("SPL_BerlinDst_Liv_Index_Calc/SPL_BerlinDst_Liv_Index.csv", 
+                   ";", escape_double = FALSE, 
+                   col_types = cols(X1 = col_skip()), trim_ws = TRUE)
+
+IndexFull = read_delim("SPL_BerlinDst_Liv_Index_Calc/IndexSoreData.csv", 
+                        ";", escape_double = FALSE, 
+                       col_types = cols(X1 = col_skip()), trim_ws = TRUE)
+
+kmeans(Index[,-1], centers = 2, 
+       iter.max = 10, nstart = 5, 
+       algorithm = "Hartigan-Wong",trace=FALSE)
+
+
+
+
+
+
+
 
 #sensitivity analysis: if we change the weight of different index, how is the result gonna change
 #calculate the new living Index according to principle component
@@ -68,4 +79,3 @@ ggbiplot(data.pca)
 
 
 
-```

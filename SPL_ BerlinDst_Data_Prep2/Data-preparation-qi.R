@@ -58,9 +58,9 @@ Oteil$Bezirk = Replace(Oteil$Bezirk)
 Oteil$Ortsteil = Replace(Oteil$Ortsteil)
 
 #create a dataframe OteilD which contains Ortsteil in 12 districts
-OteilD = data.frame(matrix(ncol = 12,nrow = 20))
+OteilD = data.frame(matrix(ncol = length(Dstc$District),nrow = 20))
 j=1
-for (i in 1:12){ 
+for (i in 1:length(Dstc$District)){
     j = j
     k = 1
     while(Oteil[j,'Bezirk'] == Dstc[i,"District"]){
@@ -70,11 +70,12 @@ for (i in 1:12){
     }
 }
 colnames(OteilD) = Dstc$District
+View(OteilD)
 
 # Set working directory
 wd = "~/SPL-Project/Archive/Dirstrict Data/"
 
-## charging station data
+#============================charging station===================================
 
 Cgst = read_excel(paste0(wd,"ladestationen.xls"))
 # extract post code in column 'ladestationen$Adresse', where information is listed as 
@@ -144,7 +145,7 @@ for(i in 1:12){
 #write.csv(count_chargingsta,"~/SPL-Project/Dirstrict Data/chargingstations.csv")
 
 
-## restaurant 
+#=================================restaurant====================================
 
 stadtteile = read_html("https://www.berlin.de/restaurants/stadtteile/")
 
@@ -181,7 +182,7 @@ for (i in 1: length(stadtteileList)){
 }; Nrrs
 RestO = cbind(stadtteileList, Nrrs)
 
-#calculate nr. of doctors in every district
+#calculate nr. of restaurants in every district
 Rest = numeric(length = 12)
 for(i in 1:length(Nrrs)){
     for(j in 1:12){
@@ -190,23 +191,22 @@ for(i in 1:length(Nrrs)){
     }
 }
 
-## cycling length
+#===============================cycling length==================================
 
 Cyll = c(169677.40,90134.7,161242.6,169577.9,165372.5,194599.2,
          148588.8,104444, 202059.2, 118019.1, 100257, 140794.4
 )
 
-## nr.doctor
+#===============================nr.doctor=======================================
 
 # Nr. of house doctor per 10,000 people 
 Nrdr<-c(66.7,66.6,65.3,86.7,63.2,67.3,73.5,59.5,53.2,61.8,51.8,64.2)  
 
-## street crossings
+#===========================street crossings====================================
 
-# street crossings per district 
 Nrsc<-c(33, 39, 54, 35, 22, 31, 19, 25, 32, 39, 22, 30)  
 
-## merging the data
+#============================merging the data===================================
 
 #QiDt = cbind(Nrct, Nrrs, Cyll, Nrdr, Nrsc)
 Nr = 1:12
