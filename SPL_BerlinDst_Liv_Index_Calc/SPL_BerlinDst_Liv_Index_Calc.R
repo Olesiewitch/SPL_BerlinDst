@@ -75,7 +75,9 @@ NormalizeNegative=function(x){
 
 #======================CALCULATING INDEX INDICATORS============================= 
 
-IndDt = data.frame(lvSpc = PerCapita(lvbInDt$SpacePC),  # Calc. liv space/cap.
+#Create indicators data frame 
+
+indDt = data.frame(lvSpc = PerCapita(lvbInDt$SpacePC),  # Calc. liv space/cap.
                   hsAv  = PerCapita(lvbInDt$Flats),  # Calc. nr of flats/cap.
                   dns   = PerHa(lvbInDt$Population),  # Calc. population per ha
                   hsAl  = lvbInDt$Hausehold, # Choose hous. all. 
@@ -122,41 +124,51 @@ IndDt = data.frame(lvSpc = PerCapita(lvbInDt$SpacePC),  # Calc. liv space/cap.
 # contribute negatively to the index calculation:
 
  
-NgtInd = list(a = which(colnames(IndDt)=="dns"), 
-              b = which(colnames(IndDt)=="trf"),
-              c = which(colnames(IndDt)=="bnk"),
-              d = which(colnames(IndDt)=="crm"),
-              e = which(colnames(IndDt)=="grdSz"),
-              f = which(colnames(IndDt)=="pm25"),
-              g = which(colnames(IndDt)=="pm10"))
+ngtInd = list(a = which(colnames(indDt)=="dns"), 
+              b = which(colnames(indDt)=="trf"),
+              c = which(colnames(indDt)=="bnk"),
+              d = which(colnames(indDt)=="crm"),
+              e = which(colnames(indDt)=="grdSz"),
+              f = which(colnames(indDt)=="pm25"),
+              g = which(colnames(indDt)=="pm10"))
 
  
 #=========================NORMALIZING THE DATA =================================
 
-# We normalise the data according to whether they contribute positivly or 
-# negatively to the Index. For each     
+# Normalize the data according to whether the indicators contribute positivly or 
+# negatively to the Index. for every indicatore, strore the score in new column 
+# where letters "Scr" are added to the original name of the indicator
 
-for (i in 1:(ncol(IndDt))){
-    if ((i) %in% NgtInd){
-        IndDt[,paste(colnames(IndDt[i]),"Scr")] = 
-             NormalizeNegative(IndDt[i])
+for (i in 1:(ncol(indDt))){
+    if ((i) %in% ngtInd){
+        indDt[,paste(colnames(indDt[i]),"Scr")] = 
+             NormalizeNegative(indDt[i])
         } else {
-          IndDt[,paste(colnames(IndDt[i]),"Scr")] =
-               NormalizePositive(IndDt[i])
+          indDt[,paste(colnames(indDt[i]),"Scr")] =
+               NormalizePositive(indDt[i])
         }
     }
 
 #==============  CREATING FINAL DATA FRAME FOR INDEX CALCULATION =============== 
-Nr = lvbInDt$Nr 
-District = lvbInDt$District
 
-IndScr = data.frame(Nr, District,IndDt,stringsAsFactors = FALSE) %>% 
+Nr = lvbInDt$Nr  # Choose district numbers  
+
+District = lvbInDt$District  # Choose district names
+
+# Create the final data frame and select only the variable scores and not 
+# absolute values 
+
+indScrDt = data.frame(Nr, District,indDt,stringsAsFactors = FALSE) %>% 
     select("Nr", "District", grep("Scr", names(.)))
 
 
-write.csv2(IndScr, "IndexSoreData.csv")
+write.csv2(indScrDt, "SPL_BerlinDst_Liv_Index_Calc/Index_Sore_Data.csv")
+
+# Read in best with: 
+# read.csv("SPL_BerlinDst_Liv_Index_Calc/Index_Sore_Data.csv", 
+# sep = ";", dec = ",", row.names = 1, stringsAsFactors = FALSE)
  
-#======================== WEIGHTS OF EACH PILLAR ===============================
+#======================== WEIGHTS OF EACH SUB-INDEX ============================
 
 phys1W = c(0.10)
 phys2W = c(0.15)
@@ -166,73 +178,83 @@ envW   = c(0.25)
 
 #==================DEVIDING INDICATORS ACCORDING TO THE PILLARS=================
 
-phys1Inc = IndScr %>%
+
+phy1Ind = indScrDt %>%
     select("lvSpc.Scr","hsAv.Scr","dns.Scr","hsAl.Scr")
 
-phys2Inc = IndScr%>%
+phy2Ind = indScrDt %>%
     select( "trnDn.Scr","bkLn.Scr","crChr.Scr", "prkSp.Scr")
 
-socInc = IndScr %>%
+socInd = indScrDt %>%
     select("trs.Scr","htlOc.Scr","sprCl.Scr","res.Scr","std.Scr",
            "grdSz.Scr","chU3.Scr","chU6.Scr", "doc.Scr",
            "actSn.Scr", "actJn.Scr","trf.Scr","strCr.Scr","crm.Scr", 
            "socHl.Scr", "dsb.Scr")
 
-ecoInc = IndScr %>%
+ecoInd = indScrDt %>%
     select("emp.Scr","comp.Scr","txRv.Scr","bnk.Scr")
 
-envInc = IndScr %>%
+envInd = indScrDt %>%
     select("grSp.Scr", "agrRe.Scr","tr.Scr","pm10.Scr","pm25.Scr")
 
 # ======================CALCULATING SUB-INDICATORS============================== 
 
-Phys1INDEX = apply(phys1Inc, 1, sum)
-Phys2INDEX = apply(phys2Inc, 1, sum)
-SocINDEX   = apply(socInc, 1, sum)
-EcoINDEX   = apply(ecoInc, 1, sum)
-EnvINDEX   = apply(envInc, 1, sum)
+Phy1In = apply(phy1Ind, 1, sum)
+Phy2In = apply(phy2Ind, 1, sum)
+SocIn   = apply(socInd, 1, sum)
+EcoIn   = apply(ecoInd, 1, sum)
+EnvIn  = apply(envInd, 1, sum)
 
 
 # ======================CALCULATING LIVIBILITY INDEX ===========================
 
 # Calculate the contribution of each pilar to the Liveability Index 
 
-PILLARS= data.frame(PhysPilar= (Phys1INDEX*phys1W+Phys2INDEX*phys2W), 
-                    SocPilar = SocINDEX*socW,
-                    EcoPilar = EcoINDEX*ecoW,
-                    EnvPilar = EnvINDEX*envW)
+Pllrs= data.frame(PhyPl= (Phy1In*phys1W + Phy2In*phys2W), 
+                    SocPl = SocIn*socW,
+                    EcoPl = EcoIn*ecoW,
+                    EnvPl = EnvIn*envW)
 
 # Calculate total Liveability Index 
     
-TotalINDEX = apply(PILLARS,1, FUN = sum)   
+TotalIn = apply(Pllrs,1, FUN = sum)   
 
-RESULTS = data.frame(District,
-                     Phys1INDEX,  
-                     Phys2INDEX, 
-                     SocINDEX,  
-                     EcoINDEX,  
-                     EnvINDEX,
-                     PILLARS,
-                     TotalINDEX)
+RsltDt = data.frame(District,
+                     Phy1In,  
+                     Phy2In, 
+                     SocIn,  
+                     EcoIn,  
+                     EnvIn,
+                     Pllrs,
+                     TotalIn)
 
 #==================== CALCULATE MAXIMUM SCORE ==================
 
-MaxScoreIndex = sum(length(phys1Inc)*phys1W,length(phys2Inc)*phys2W,
-                    length(socInc)*socW, length(ecoInc)*ecoW,
-                    length(envInc)*envW)
+MaxScoreIndex = sum(length(phy1Ind)*phys1W,length(phy2Ind)*phys2W,
+                    length(socInd)*socW, length(ecoInd)*ecoW,
+                    length(envInd)*envW)
 
     
-MaxScore = data.frame("Max Score", length(phys1Inc),length(phys2Inc), 
-                      length(socInc), length(ecoInc), length(envInc),
-                      (length(phys1Inc)*phys1W + length(phys2Inc)*phys2W),
-                      length(socInc)*socW, length(ecoInc)*ecoW,
-                      length(envInc)*envW, MaxScoreIndex,
+MaxScore = data.frame("Max Score",
+                      length(phy1Ind),
+                      length(phy2Ind), 
+                      length(socInd),
+                      length(ecoInd),
+                      length(envInd),
+                      (length(phy1Ind)*phys1W + length(phy2Ind)*phys2W),
+                      length(socInd)*socW, 
+                      length(ecoInd)*ecoW,
+                      length(envInd)*envW,
+                      MaxScoreIndex,
                       stringsAsFactors = FALSE) 
 
-colnames(MaxScore) = colnames(RESULTS)
+colnames(MaxScore) = colnames(RsltDt)
 
-write.csv2(RESULTS, "SPL_BerlinDst_Liv_Index.csv")
+write.csv2(RsltDt, "SPL_BerlinDst_Liv_Index_Calc/SPL_BerlinDst_Liv_Index.csv")
 
+# Read in best with: 
+# read.csv("SPL_BerlinDst_Liv_Index_Calc/SPL_BerlinDst_Liv_Index.csv", 
+# sep = ";", dec = ",", row.names = 1, stringsAsFactors = FALSE)
 #============================= RESULTS =========================================
 
 

@@ -55,7 +55,7 @@ Year: 2017
 Data obtained from <https://www.statistik-berlin-brandenburg.de/regionalstatistiken/r-gesamt_neu.asp?Ptyp=410&Sageb=13003&creg=BBB&anzwer=6>
 
 Original name: " Davon Erwerbstätige 1000"
-English Translation: "Employment"
+English Translation: "Employment per 1K ppl in employment"
 Unit: Thousand
 Year: 2017
 
