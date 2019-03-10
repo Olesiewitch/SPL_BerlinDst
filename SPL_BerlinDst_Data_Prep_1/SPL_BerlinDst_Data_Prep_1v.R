@@ -491,3 +491,6 @@ write.csv2(FnlDt, "SPL_BerlinDst_Data_Prep_1/SPL_BerlinDst_Data_Prep_1.csv")
 # Read in best with: 
 # read.csv("SPL_BerlinDst_Data_Prep1/SPL_BerlinDst_Data_Prep_1.csv", 
 # sep = ";", dec = ",", row.names = 1, stringsAsFactors = FALSE)
+
+# ========================END OF THE SCRIPT=====================================
+# ==============================================================================

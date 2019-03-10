@@ -363,12 +363,12 @@ ggplot(TtlMltDt, aes(x = District,y = value, fill = variable)) +  # Creat ggplot
     labs(x = "Total Liveability Index") +  # Add x axis label 
     theme(panel.grid.minor = element_blank(),  # Remove the minor grid
           panel.grid.major = element_blank(),  # Remove the major grid
-          legend.position = "bottom",  # Place the legend on the graph
-          legend.box = "horizontal",  # Horizontally
+          legend.position  = "bottom",  # Place the legend on the graph
+          legend.box       = "horizontal",  # Horizontally
           axis.title.x     = element_text(size = 10), # X axis lebel font size
-          legend.title = element_text(size = 8),  # Legend title font size
-          legend.text = element_text(size = 8),  # Legend font size
-          axis.title.y = element_blank()) +  # Remove y axis labels
+          legend.title     = element_text(size = 8),  # Legend title font size
+          legend.text      = element_text(size = 8),  # Legend font size
+          axis.title.y     = element_blank()) +  # Remove y axis labels
     guides(fill=guide_legend(title="Pillars")) +  # Add legent title
     coord_flip()  # Flip the chart to be horizontal
 
@@ -376,3 +376,7 @@ ggplot(TtlMltDt, aes(x = District,y = value, fill = variable)) +  # Creat ggplot
 
 ggsave("Total Index BarPlot.png", plot = last_plot(),scale = 1, device = "png", 
        path = "SPL_BerlinDst_Liv_Index_Calc/")
+
+
+# ========================END OF THE SCRIPT=====================================
+# ==============================================================================
