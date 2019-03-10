@@ -1,21 +1,21 @@
 #================ READING IN ALL PREPARED DATA SETS ============================
 
-dt1 = read.csv2("./04_Data_Description/SPL-BerlinDst_Prep_1.csv",
+dt1 = read.csv2("./04_Data_Description/SPL_BerlinDst_Data_Prep_1.csv",
                 sep = ";",
                 dec = ",", 
                 row.names = 1,
                 stringsAsFactors = FALSE)
 
-dt2 = read.csv2("./04_Data_Description/SPL_BerlinDst_Prep_2.csv", 
+dt2 = read.csv2("./04_Data_Description/SPL_BerlinDst_Data_Prep_2.csv", 
                 sep = ",",
                 dec = ".",
                 row.names = 1,
                 stringsAsFactors = FALSE)
 
-naming = read.csv2("./naming.csv", sep = ";")
-names(dt2) = naming$new[match(names(dt2), naming$old)]  # Rename variables
+# naming = read.csv2("./naming.csv", sep = ";")
+# names(dt2) = naming$new[match(names(dt2), naming$old)]  # Rename variables
 
-dt3 = read.csv2("./04_Data_Description/SPL-BerlinDst_Prep_3.csv", 
+dt3 = read.csv2("./04_Data_Description/SPL_BerlinDst_Data_Prep_3.csv", 
                 sep = ";",
                 dec = ",", 
                 stringsAsFactors = FALSE)

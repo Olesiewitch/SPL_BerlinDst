@@ -1,15 +1,15 @@
 #===================== PREPARING THE ENVIROMENT ================================
-
 library(xlsx)
 library(tidyr)
 library(dplyr)
-library(xtable)
-options(xtable.floating = FALSE)
-options(xtable.timestamp = "")
 library(reshape2)
 library(ggplot2)
 library(ggthemes)
+library(xtable)
 
+
+options(xtable.floating = FALSE)
+options(xtable.timestamp = "")
 #==================== READING IN THE  DATA SETS ================================
 
 lvbInDt = read.csv("SPL_BerlinDst_Liv_Index_Calc/SPL_BerlinDst_Data_Desc.csv",
@@ -47,32 +47,50 @@ PerHa = function(x){
 
 NormalizePositive = function(x){
     # Function normalizes the data in the vector x , by assigning the values 
-    # between 0 and 1. The highest value among the vector recives 1, the lowest 
-    # 0.    
+    # between 0 and 1 for every observation. The highest value among the
+    # vector recives 1, the lowest 0.    
     # 
     # Args: 
-    #      x: the vectors of which values should be normalized. The data type 
+    #      x: the vectors of which values are to be normalized. The data type 
     #      must be numeric. 
     #
     # Returns: 
-    # Vector of normalised data from vector x 
+    # Vector of normalized data of vector x 
     (x-min(x))/(max(x)-min(x))
 }
 
 NormalizeNegative=function(x){
     # Function normalizes the data in the vector x , by assigning the values 
-    # between 0 and 1. The highest value among the vector recives 0, the lowest 
-    # 1.    
-    # 
+    # between 0 and 1 for every observation.. The highest value among the vector
+    # recives 0, the lowest 1.   
+    #  
     # Args: 
-    #      x: the vectors of which values should be normalized. The data type 
+    #      x: the vectors of which values are to be normalized. The data type 
     #      must be numeric. 
     #
     # Returns: 
-    # Vector of normalised data from vector x 
+    # Vector of normalised data of vector x 
     (max(x)-x)/(max(x)-min(x))
 }
 
+IsOutlier =  function(y) {
+    # Function checks if the given observation in vector y is an outlier or not.
+    # The outlier is defined as an observation smaller than the first quantile 
+    # minus 1,5 times the interquartile range of the vector OR bigger than the 
+    # third quantile plus the 1.5 times the interquartile range of the vector.  
+    # The interquartile range is calculated using IQR function. 
+    # For more information see ?IQR.  
+    #
+    # Agrs: 
+    #      y: vector of data for which outliers are to be found. The type of 
+    #         data must be numeric.  
+    #
+    # Returns: Logical statment "TRUE" for the outlier, "FALSE"  otherwise
+    
+    return(y < quantile(y,
+                        0.25) - 1.5 * IQR(y) | 
+               y > quantile(y, 0.75) + 1.5 * IQR(y))
+}
 #======================CALCULATING INDEX INDICATORS============================= 
 
 #Create indicators data frame 
@@ -136,16 +154,16 @@ ngtInd = list(a = which(colnames(indDt)=="dns"),
 #=========================NORMALIZING THE DATA =================================
 
 # Normalize the data according to whether the indicators contribute positivly or 
-# negatively to the Index. for every indicatore, strore the score in new column 
-# where letters "Scr" are added to the original name of the indicator
+# negatively to the Index. For each indicatore, strore the score in new column 
+# where letters "Scr" are added to the original name of the indicator.
 
-for (i in 1:(ncol(indDt))){
+for (i in 1:(ncol(indDt))){  # Run function for every column in the indDt file
     if ((i) %in% ngtInd){
-        indDt[,paste(colnames(indDt[i]),"Scr")] = 
-             NormalizeNegative(indDt[i])
+        indDt[,paste(colnames(indDt[i]),"Scr")] =  # create new col. with "score"
+             NormalizeNegative(indDt[i])  # If indicator in ngtInd use Neg. fun
         } else {
-          indDt[,paste(colnames(indDt[i]),"Scr")] =
-               NormalizePositive(indDt[i])
+          indDt[,paste(colnames(indDt[i]),"Scr")] = 
+               NormalizePositive(indDt[i]) # If not in ngtInd use Pos. fun
         }
     }
 
@@ -155,14 +173,15 @@ Nr = lvbInDt$Nr  # Choose district numbers
 
 District = lvbInDt$District  # Choose district names
 
-# Create the final data frame and select only the variable scores and not 
+# Create the final data frame and select only the variables' scores and not 
 # absolute values 
 
 indScrDt = data.frame(Nr, District,indDt,stringsAsFactors = FALSE) %>% 
     select("Nr", "District", grep("Scr", names(.)))
 
+# Write csv file with the data 
 
-write.csv2(indScrDt, "SPL_BerlinDst_Liv_Index_Calc/Index_Sore_Data.csv")
+write.csv2(indScrDt,"SPL_BerlinDst_Liv_Index_Calc/Index_Sore_Data.csv")
 
 # Read in best with: 
 # read.csv("SPL_BerlinDst_Liv_Index_Calc/Index_Sore_Data.csv", 
@@ -183,13 +202,13 @@ phy1Ind = indScrDt %>%
     select("lvSpc.Scr",
            "hsAv.Scr",
            "dns.Scr",
-           "hsAl.Scr")
+           "hsAl.Scr")  # Select Indicators of Physical 1 Sub-Index 
 
 phy2Ind = indScrDt %>%
     select( "trnDn.Scr",
             "bkLn.Scr",
             "crChr.Scr", 
-            "prkSp.Scr")
+            "prkSp.Scr") # Select Indicators of Physical 2 Sub-Index 
 
 socInd = indScrDt %>%
     select("trs.Scr",
@@ -207,35 +226,35 @@ socInd = indScrDt %>%
            "strCr.Scr",
            "crm.Scr", 
            "socHl.Scr",
-           "dsb.Scr")
+           "dsb.Scr")  # Select Indicators of Social Sub-Index 
 
 ecoInd = indScrDt %>%
     select("emp.Scr",
            "comp.Scr",
            "txRv.Scr",
-           "bnk.Scr")
+           "bnk.Scr")  # Select Indicators of Economic Sub-Index 
 
 envInd = indScrDt %>%
     select("grSp.Scr",
            "agrRe.Scr",
            "tr.Scr",
            "pm10.Scr",
-           "pm25.Scr")
+           "pm25.Scr")  # Select Indicators of Enviromental Sub-Index 
 
-# ======================CALCULATING SUB-INDICATORS============================== 
+# =======================CALCULATING SUB-INDEXES================================ 
 
 Phy1In = apply(phy1Ind, 1, sum)
 Phy2In = apply(phy2Ind, 1, sum)
-SocIn   = apply(socInd, 1, sum)
-EcoIn   = apply(ecoInd, 1, sum)
+SocIn  = apply(socInd, 1, sum)
+EcoIn  = apply(ecoInd, 1, sum)
 EnvIn  = apply(envInd, 1, sum)
 
 
 # ======================CALCULATING LIVIBILITY INDEX ===========================
 
-# Calculate the contribution of each pilar to the Liveability Index 
+# Calculate the contribution of each pillar to the Liveability Index 
 
-Pllrs= data.frame(PhyPl= (Phy1In*phys1W + Phy2In*phys2W), 
+Pllrs= data.frame(PhyPl   = (Phy1In*phys1W + Phy2In*phys2W), 
                     SocPl = SocIn*socW,
                     EcoPl = EcoIn*ecoW,
                     EnvPl = EnvIn*envW)
@@ -243,6 +262,8 @@ Pllrs= data.frame(PhyPl= (Phy1In*phys1W + Phy2In*phys2W),
 # Calculate total Liveability Index 
     
 TotalIn = apply(Pllrs,1, FUN = sum)   
+
+# Creat final data frame with the results 
 
 RsltDt = data.frame(District,
                      Phy1In,  
@@ -252,14 +273,22 @@ RsltDt = data.frame(District,
                      EnvIn,
                      Pllrs,
                      TotalIn)
+# Write csv file
 
-#==================== CALCULATE MAXIMUM SCORE ==================
+write.csv2(RsltDt, "SPL_BerlinDst_Liv_Index_Calc/SPL_BerlinDst_Liv_Index.csv")
+
+# Read in best with: 
+# read.csv("SPL_BerlinDst_Liv_Index_Calc/SPL_BerlinDst_Liv_Index.csv", 
+# sep = ";", dec = ",", row.names = 1, stringsAsFactors = FALSE)
+
+#======================= CALCULATE MAXIMUM SCORE ===============================
 
 MaxScoreIndex = sum(length(phy1Ind)*phys1W,length(phy2Ind)*phys2W,
                     length(socInd)*socW, length(ecoInd)*ecoW,
-                    length(envInd)*envW)
+                    length(envInd)*envW)  # Calculate max score of Total Index
 
-    
+# Creat data frame with max score for each result 
+
 MaxScore = data.frame("Max Score",
                       length(phy1Ind),
                       length(phy2Ind), 
@@ -273,91 +302,75 @@ MaxScore = data.frame("Max Score",
                       MaxScoreIndex,
                       stringsAsFactors = FALSE) 
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-Results=data.frame(livibility_index$nr,
-                   livibility_index$district, 
-                   Physical_index_1,
-                   Physical_index_2, 
-                   Social_index, 
-                   Economic_index,
-                   Enviromental_index, 
-                   Total_Index_Score)
+colnames(MaxScore) = colnames(RsltDt)  #  sure that the col. names are the same
 
-colnames(Results)= c(colnames(livibility_index[1:2]),
-                     "Physical Index1", 
-                     "Physical Index 2", 
-                     "Social Index", 
-                     "Economic Index", 
-                     "Enviromental Index", 
-                     "Total Index Score")
-
-#===============================Analysis========================================
-
-max_score=(p1_ind_nr*phys1_weight)+
-          (p2_ind_nr*phys2_weight) +
-          (soc_ind_nr*social_weight)+
-          (eco_ind_nr*economic_weight)+
-          (env_ind_nr*env_weight)        
-
-=======
-colnames(MaxScore) = colnames(RESULTS)
->>>>>>> 1e78107ca8e4b2a08bd9c4c6bfb6d4cfce70e8f8
-=======
-colnames(MaxScore) = colnames(RsltDt)
->>>>>>> 983c5196e054878324beacdffe06d348cf08257e
-
-write.csv2(RsltDt, "SPL_BerlinDst_Liv_Index_Calc/SPL_BerlinDst_Liv_Index.csv")
-
-# Read in best with: 
-# read.csv("SPL_BerlinDst_Liv_Index_Calc/SPL_BerlinDst_Liv_Index.csv", 
-# sep = ";", dec = ",", row.names = 1, stringsAsFactors = FALSE)
 #============================= RESULTS =========================================
 
+View(RsltDt[, 1:6])  # See results for sub-Indexes
 
-View(RESULTS[, 1:6])  # See results for sub-Indexes
+xtable(rbind(RsltDt[, 1:6], MaxScore[1:6])) # Get the latex code for the report (table XX )
 
-xtable(rbind(RESULTS[, 1:6], MaxScore[1:6]))  # Get the latex code for the report (table XX )
+View(RsltDt[,-(2:6)])  # See final Index results 
 
-View(RESULTS[,-(2:6)])  # See final Index results 
-
-xtable(RESULTS[, -(2:6)])  # Get the latex code for the report (table XX )
-
+xtable(RsltDt[, -(2:6)])  # Get the latex code for the report (table XX )
 
 
 #============================= BOXPLOT =========================================
 
+subMlt = melt(RsltDt[, -c(7:11)],id.vars = "District")  # Melt Sub-Index Results
 
-ggplot(data = melt(RESULTS[, -c(1,7:11)]), aes(x=variable,y=value)) +
-    geom_boxplot(aes(fill = variable)) + theme_bw() +
-    theme(panel.border = element_blank(), panel.grid.minor = element_blank(),
-          panel.grid.major = element_blank(), 
-          axis.line = element_line(colour = "black")) + coord_flip()
+Districtlable = as.character(subMlt$District)  # Convert district names to chr. 
+
+# Create final data frame for plotting, group the data according to the
+# Sub-Index (variable) and creat new column which checks for outliers
+
+subMltDt = data.frame(Districtlable,subMlt[, -1],stringsAsFactors = FALSE)%>%
+    group_by(variable) %>%
+    mutate(Outlier = ifelse(IsOutlier(value), Districtlable , ""))
+
+
+ggplot(subMltDt, aes(x=variable,y=value, group = variable)) +  # Create ggplot 
+    geom_boxplot(aes(fill = variable)) +  # Create boxplot for every Sub-Index
+    # Add District lebels for outliers
+    geom_text(aes(label = Outlier), size = 3,  vjust = - 0.5) +    
+    theme_bw() +  # Choose black and white theme 
+    scale_fill_economist() +  # Choose color palet
+    labs(x = "Sub-Index", y = "Score") +  # Name the axises
+    theme(panel.grid.minor = element_blank(),  # Remove the minor grid
+          panel.grid.major = element_blank(),  # Remove the major grid
+          axis.title.x     = element_text(size = 10), # X axis lebel font size
+          axis.title.y     = element_text(size = 10), # Y axis lebel font size
+          axis.text.x      = element_blank(),  # Remove x axis labels
+          legend.title     = element_blank(), # Remove legent title
+          legend.text      = element_text(size = 9),  # Legend font size
+          legend.position  = "bottom",  # Place the legend on the graph
+          legend.box       = "horizontal")  # Horizontally
+    
+ggsave("Sub-Index Boxplot.png", plot = last_plot(),scale = 1, device = "png", 
+       path = "SPL_BerlinDst_Liv_Index_Calc/")
 
 
 #============================ BAR PLOT =========================================
 
-data.m = melt(RESULTS[, -c(7:11)],id.vars = "District")
+TtlMltDt = melt(RsltDt[, -c(2:6,11)],id.vars = "District")  # Melt Pillars Data
 
-ggplot(data.m, aes(x = District,y = value, 
-                   fill = variable)) + geom_bar(stat = "identity",
-                                                width = 0.5)+ theme_bw() +
-    scale_fill_economist() + theme(panel.border = element_blank(),
-                                panel.grid.minor = element_blank(),
-                                panel.grid.major = element_blank(),
-                                legend.position = "bottom",
-                                legend.box = "horizontal",
-                                axis.title.x=element_blank()) +
-    labs(title="Berlin District Liveability Index") +
-    guides(fill=guide_legend(title="Sub-Indexes: ")) + 
-    coord_flip() 
-    
-   
+ggplot(TtlMltDt, aes(x = District,y = value, fill = variable)) +  # Creat ggplot 
+    geom_bar(stat = "identity", width = 0.5)+  # Creat barplot
+    theme_bw() +  # Use black and white theme
+    scale_fill_economist() +  # Chose color palet 
+    labs(x = "Total Liveability Index") +  # Add x axis label 
+    theme(panel.grid.minor = element_blank(),  # Remove the minor grid
+          panel.grid.major = element_blank(),  # Remove the major grid
+          legend.position = "bottom",  # Place the legend on the graph
+          legend.box = "horizontal",  # Horizontally
+          axis.title.x     = element_text(size = 10), # X axis lebel font size
+          legend.title = element_text(size = 8),  # Legend title font size
+          legend.text = element_text(size = 8),  # Legend font size
+          axis.title.y = element_blank()) +  # Remove y axis labels
+    guides(fill=guide_legend(title="Pillars")) +  # Add legent title
+    coord_flip()  # Flip the chart to be horizontal
 
+ 
 
-
-
-    geom_bar(aes(fill = drv), position = position_stack(reverse = TRUE)) +
-    coord_flip() +
-    theme(legend.position = "top")
-
+ggsave("Total Index BarPlot.png", plot = last_plot(),scale = 1, device = "png", 
+       path = "SPL_BerlinDst_Liv_Index_Calc/")
