@@ -110,7 +110,7 @@ indDt = data.frame(lvSpc = PerCapita(lvbInDt$SpacePC),  # Calc. liv space/cap.
                   htlOc = lvbInDt$Stays/(lvbInDt$Hotel*365), 
                   sprCl = PerHa(lvbInDt$Sport),  # Choose nr of sport clubs/ ha
                   res   = PerHa(lvbInDt$Restaurants), # Cal.nr of restaurants/ha
-                  std   = lvbInDt$Pupils,  # Choose nr of pupils per K of ppl
+                  std   = lvbInDt$Puplis1000,  # Choose nr of pupils per K of ppl
                   grdSz = lvbInDt$Pupils/lvbInDt$Grades,  # Cal. avg. grade size          
                   chU3  = lvbInDt$Child3,  # Choose % of kids < 3y/o in daycare 
                   chU6  = lvbInDt$Child6,  # Choose % of kids 3-6y/o in daycare 
@@ -345,14 +345,16 @@ ggplot(subMltDt, aes(x=variable,y=value, group = variable)) +  # Create ggplot
           legend.text      = element_text(size = 9),  # Legend font size
           legend.position  = "bottom",  # Place the legend on the graph
           legend.box       = "horizontal")  # Horizontally
-    
+ 
+# Print the plot   
 ggsave("Sub-Index Boxplot.png", plot = last_plot(),scale = 1, device = "png", 
        path = "SPL_BerlinDst_Liv_Index_Calc/")
 
 
 #============================ BAR PLOT =========================================
 
-TtlMltDt = melt(RsltDt[, -c(2:6,11)],id.vars = "District")  # Melt Pillars Data
+TtlMltDt = melt(RsltDt[, -c(2:6,11)],id.vars = "District") # Melt Pillars Data
+    
 
 ggplot(TtlMltDt, aes(x = District,y = value, fill = variable)) +  # Creat ggplot 
     geom_bar(stat = "identity", width = 0.5)+  # Creat barplot
@@ -370,7 +372,7 @@ ggplot(TtlMltDt, aes(x = District,y = value, fill = variable)) +  # Creat ggplot
     guides(fill=guide_legend(title="Pillars")) +  # Add legent title
     coord_flip()  # Flip the chart to be horizontal
 
- 
+# Print the plot
 
 ggsave("Total Index BarPlot.png", plot = last_plot(),scale = 1, device = "png", 
        path = "SPL_BerlinDst_Liv_Index_Calc/")
