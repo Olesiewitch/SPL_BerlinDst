@@ -109,8 +109,8 @@ indDt = data.frame(lvSpc = PerCapita(lvbInDt$SpacePC),  # Calc. liv space/cap.
                   # by 365 days in the year
                   htlOc = lvbInDt$Stays/(lvbInDt$Hotel*365), 
                   sprCl = PerHa(lvbInDt$Sport),  # Choose nr of sport clubs/ ha
-                  res   = PerHa(lvbInDt$Restaurants), # Cal.nr of restaurants/ha
-                  std   = lvbInDt$Puplis1000,  # Choose nr of pupils per K of ppl
+                  res   = PerHa(lvbInDt$Restaurants),  # Cal.nr of restaur./ha
+                  std   = lvbInDt$Puplis1000,  # Choose nr of pupils/ K of ppl
                   grdSz = lvbInDt$Pupils/lvbInDt$Grades,  # Cal. avg. grade size          
                   chU3  = lvbInDt$Child3,  # Choose % of kids < 3y/o in daycare 
                   chU6  = lvbInDt$Child6,  # Choose % of kids 3-6y/o in daycare 
@@ -351,16 +351,42 @@ ggsave("Sub-Index Boxplot.png", plot = last_plot(),scale = 1, device = "png",
        path = "SPL_BerlinDst_Liv_Index_Calc/")
 
 
-#============================ BAR PLOT =========================================
+#============================ BAR PLOTS =========================================
 
 TtlMltDt = melt(RsltDt[, -c(2:6,11)],id.vars = "District") # Melt Pillars Data
-    
+
+
+# Creat showing all individual pillars 
 
 ggplot(TtlMltDt, aes(x = District,y = value, fill = variable)) +  # Creat ggplot 
-    geom_bar(stat = "identity", width = 0.5)+  # Creat barplot
+    geom_bar(stat = "identity", position = "dodge", width = 0.8)+  # Creat barplot 
     theme_bw() +  # Use black and white theme
     scale_fill_economist() +  # Chose color palet 
-    labs(x = "Total Liveability Index") +  # Add x axis label 
+    labs(y = "Liveability Index: Per Pillar Comparison") +  # Add x axis label 
+    theme(panel.grid.minor = element_blank(),  # Remove the minor grid
+          panel.grid.major = element_blank(),  # Remove the major grid
+          legend.position  = "bottom",  # Place the legend on the graph
+          legend.box       = "horizontal",  # Horizontally
+          axis.title.x     = element_text(size = 10), # X axis lebel font size
+          legend.title     = element_text(size = 8),  # Legend title font size
+          legend.text      = element_text(size = 8),  # Legend font size
+          axis.title.y     = element_blank()) +  # Remove y axis labels
+    guides(fill=guide_legend(title="Pillars:")) +  # Add legent title
+    coord_flip()  # Flip the chart to be horizontal
+
+# Print the plot
+
+ggsave("Per Pillar BarPlot.png", plot = last_plot(),scale = 1, device = "png", 
+       path = "SPL_BerlinDst_Liv_Index_Calc/")
+
+
+# Creat cummulative Index Plot
+
+ggplot(TtlMltDt, aes(x = District,y = value, fill = variable)) +  # Creat ggplot 
+    geom_bar(stat = "identity", width = 0.5)+  # Creat barplot  #possition =dogge
+    theme_bw() +  # Use black and white theme
+    scale_fill_economist() +  # Chose color palet 
+    labs(y = "Total Liveability Index") +  # Add x axis label 
     theme(panel.grid.minor = element_blank(),  # Remove the minor grid
           panel.grid.major = element_blank(),  # Remove the major grid
           legend.position  = "bottom",  # Place the legend on the graph
