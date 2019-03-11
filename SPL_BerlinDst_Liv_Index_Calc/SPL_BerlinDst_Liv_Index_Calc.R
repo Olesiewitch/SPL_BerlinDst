@@ -161,11 +161,11 @@ for (i in 1:(ncol(indDt))){  # Run function for every column in the indDt file
     if ((i) %in% ngtInd){
         indDt[,paste(colnames(indDt[i]),"Scr")] =  # create new col. with "score"
              NormalizeNegative(indDt[i])  # If indicator in ngtInd use Neg. fun
-        } else {
+    } else {
           indDt[,paste(colnames(indDt[i]),"Scr")] = 
                NormalizePositive(indDt[i]) # If not in ngtInd use Pos. fun
-        }
     }
+}
 
 #==============  CREATING FINAL DATA FRAME FOR INDEX CALCULATION =============== 
 
@@ -334,7 +334,8 @@ ggplot(subMltDt, aes(x=variable,y=value, group = variable)) +  # Create ggplot
     # Add District lebels for outliers
     geom_text(aes(label = Outlier), size = 3,  vjust = - 0.5) +    
     theme_bw() +  # Choose black and white theme 
-    scale_fill_economist() +  # Choose color palet
+    scale_fill_economist(labels = c("Housing","Infrastructure","Social",# Chose color palet
+                                    "Economic", "Enviromental")) +  # Choose color palet
     labs(x = "Sub-Index", y = "Score") +  # Name the axises
     theme(panel.grid.minor = element_blank(),  # Remove the minor grid
           panel.grid.major = element_blank(),  # Remove the major grid
@@ -361,8 +362,9 @@ TtlMltDt = melt(RsltDt[, -c(2:6,11)],id.vars = "District") # Melt Pillars Data
 ggplot(TtlMltDt, aes(x = District,y = value, fill = variable)) +  # Creat ggplot 
     geom_bar(stat = "identity", position = "dodge", width = 0.8)+  # Creat barplot 
     theme_bw() +  # Use black and white theme
-    scale_fill_economist() +  # Chose color palet 
-    labs(y = "Liveability Index: Per Pillar Comparison") +  # Add x axis label 
+    scale_fill_economist(labels = c("Physical","Social",# Chose color palet
+                                    "Economic", "Enviromental")) +  # Chose color palet 
+    labs(y = "Liveability Index: Pillars Comparison") +  # Add x axis label 
     theme(panel.grid.minor = element_blank(),  # Remove the minor grid
           panel.grid.major = element_blank(),  # Remove the major grid
           legend.position  = "bottom",  # Place the legend on the graph
@@ -385,7 +387,8 @@ ggsave("Per Pillar BarPlot.png", plot = last_plot(),scale = 1, device = "png",
 ggplot(TtlMltDt, aes(x = District,y = value, fill = variable)) +  # Creat ggplot 
     geom_bar(stat = "identity", width = 0.5)+  # Creat barplot  #possition =dogge
     theme_bw() +  # Use black and white theme
-    scale_fill_economist() +  # Chose color palet 
+    scale_fill_economist(labels = c("Physical", "Social",# Chose color palet
+                                    "Economic", "Enviromental")) +   
     labs(y = "Total Liveability Index") +  # Add x axis label 
     theme(panel.grid.minor = element_blank(),  # Remove the minor grid
           panel.grid.major = element_blank(),  # Remove the major grid
@@ -395,7 +398,7 @@ ggplot(TtlMltDt, aes(x = District,y = value, fill = variable)) +  # Creat ggplot
           legend.title     = element_text(size = 8),  # Legend title font size
           legend.text      = element_text(size = 8),  # Legend font size
           axis.title.y     = element_blank()) +  # Remove y axis labels
-    guides(fill=guide_legend(title="Pillars")) +  # Add legent title
+    guides(fill=guide_legend(title="Pillars:")) +  # Add legent title
     coord_flip()  # Flip the chart to be horizontal
 
 # Print the plot
