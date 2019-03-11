@@ -42,13 +42,18 @@ Oteil = Oteil %>%
 
 #define a function to replace all german letter which could causes issues
 Replace = function(clmn) {
+    # author: Aleksandra Kudaeva
+    # Input:  column where you want to replace umlauts
+    # Output: column without umlauts
+    # check if at least one element of a vector has any umlauts in it
+    # replaces umlauts until there are no one left
     while(any(grepl("ä|ö|ü|ß| ",clmn)) == TRUE) {
     clmn  %<>% 
         sub("ä", "ae", .) %<>% 
         sub("ö", "oe", .) %<>% 
         sub("ü", "ue", .) %<>% 
         sub("ß", "ss", .) %<>%
-        sub(" ", "-", .)
+        sub(" ", "-", .) # also replace all space with '-'
     }
     return(clmn)
 }
@@ -73,7 +78,7 @@ colnames(OteilD) = Dstc$District
 View(OteilD)
 
 # Set working directory
-wd = "~/SPL-Project/SPL_ BerlinDst_Data_Prep2"
+wd = "~/SPL-Project/SPL_ BerlinDst_Data_Prep2/"
 
 #============================charging station===================================
 
@@ -188,21 +193,26 @@ for(i in 1:length(Nrrs)){
         if(RestO[i,'stadtteileList'] %in% OteilD[,j])
             Rest[j] = Rest[j] + as.numeric(RestO[i,'Nrrs'])
     }
-}
+}; Rest 
+
+# all given data below obtained from Internet site : 
 
 #===============================cycling length==================================
 
+#data obtained from <http://www.stadtentwicklung.berlin.de//geoinformation/fis-broker/>
 Cyll = c(169677.40,90134.7,161242.6,169577.9,165372.5,194599.2,
-         148588.8,104444, 202059.2, 118019.1, 100257, 140794.4
-)
+         148588.8,104444, 202059.2, 118019.1, 100257, 140794.4)
 
 #===============================nr.doctor=======================================
 
 # Nr. of house doctor per 10,000 people 
+#data obtained from <https://www.berlin.de/ba-lichtenberg/auf-einen-blick/buergerservice/gesundheit/artikel.596005.php> 
+
 Nrdr<-c(66.7,66.6,65.3,86.7,63.2,67.3,73.5,59.5,53.2,61.8,51.8,64.2)  
 
 #===========================street crossings====================================
 
+#data obtained from <http://www.stadtentwicklung.berlin.de//geoinformation/fis-broker/>
 Nrsc<-c(33, 39, 54, 35, 22, 31, 19, 25, 32, 39, 22, 30)  
 
 #============================merging the data===================================
@@ -216,8 +226,7 @@ colnames(QiDt) = c("Nr",
                    "Restaurants",
                    "Cycle",
                    "Doctors",
-                   "Crossings"
-)
+                   "Crossings")
 
 QiDt = as.data.frame(QiDt); QiDt
-write.csv(QiDt,"SPL_BerlinDst_Data_prep2_qi.csv")
+write.csv(QiDt,paste0(wd,"SPL_BerlinDst_Data_Prep_2.csv"))
