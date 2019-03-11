@@ -22,20 +22,20 @@ dt3 = read.csv2("./04_Data_Description/SPL_BerlinDst_Data_Prep_3.csv",
 
 #==================== MERGE THE DATA SETS ======================================
 DistricToFullName = function (column){
-    column[grepl("mit",column, ignore.case = TRUE)] = "Mitte" 
-    column[grepl("fri",column, 
+    column[grepl("mit",  column, ignore.case = TRUE)] = "Mitte" 
+    column[grepl("fri",  column, 
                  ignore.case = TRUE)] = "Friedrichshain-Kreuzberg"
-    column[grepl("pank",column,ignore.case = TRUE)] = "Pankow"
-    column[grepl("mar",column,ignore.case = TRUE)] = "Marzahn-Hellersdorf" 
-    column[grepl("char",column,
+    column[grepl("pank", column, ignore.case = TRUE)] = "Pankow"
+    column[grepl("mar",  column, ignore.case = TRUE)] = "Marzahn-Hellersdorf" 
+    column[grepl("char", column,
                  ignore.case = TRUE)] = "Charlottenburg-Wilmersdorf"
-    column[grepl("spa",column,ignore.case = TRUE)] = "Spandau" 
-    column[grepl("ste",column,ignore.case = TRUE)] = "Steglitz-Zehlendorf"  
-    column[grepl("tem",column,ignore.case = TRUE)] = "Tempelhof-Schoneberg" 
-    column[grepl("trep",column,ignore.case = TRUE)] = "Treptow-Kopenick" 
-    column[grepl("neu",column,ignore.case = TRUE)] = "Neukolln" 
-    column[grepl("lich",column,ignore.case = TRUE)] = "Lichtenberg" 
-    column[grepl("rein",column,ignore.case = TRUE)] = "Reinickendorf"
+    column[grepl("spa",  column, ignore.case = TRUE)] = "Spandau" 
+    column[grepl("ste",  column, ignore.case = TRUE)] = "Steglitz-Zehlendorf"  
+    column[grepl("tem",  column, ignore.case = TRUE)] = "Tempelhof-Schoneberg" 
+    column[grepl("trep", column, ignore.case = TRUE)] = "Treptow-Kopenick" 
+    column[grepl("neu",  column, ignore.case = TRUE)] = "Neukolln" 
+    column[grepl("lich", column, ignore.case = TRUE)] = "Lichtenberg" 
+    column[grepl("rein", column, ignore.case = TRUE)] = "Reinickendorf"
     
     return(column)
 }

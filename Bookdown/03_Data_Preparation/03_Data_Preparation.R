@@ -27,8 +27,8 @@ source("./03_Data_Preparation/helpful_functions.R")
 # Upload list of districts in Berlin
 dstr = read.csv2("03_Data_Preparation/Input/List_of_districts.csv", 
                  header = TRUE, 
-                 sep=";", 
-                 dec=",", 
+                 sep    = ";", 
+                 dec    = ",", 
                  stringsAsFactors = FALSE)
 
 # Create table with data for the whole Berlin
@@ -44,11 +44,11 @@ for (i in 1:dim(dstr)[1]) {
     
     # Download the data from the web-page with generated link
     webpage = read_html(link)
-    tbls = html_nodes(webpage, "table")
-    tab = html_table(tbls)[[1]]
+    tbls    = html_nodes(webpage, "table")
+    tab     = html_table(tbls)[[1]]
     
     # Add columns for district and sub-district
-    tab$District = dstr$District[i]
+    tab$District    = dstr$District[i]
     tab$SubDistrict = dstr$Sub.district[i]
     
     # Add created table to the table for the whole Berlin
@@ -69,7 +69,8 @@ ap15 = read_excel("./03_Data_Preparation/Input/Air_Pollution_2015.xls",
 
 # Original names are too long and contain special symbols and spaces
 mtch = read.csv2("./03_Data_Preparation/Input/matching.csv", 
-                 sep = ";")  # Upload matching table for short names
+                 sep = ";", 
+                 stringsAsFactors = FALSE)  # Matching table for short names
 
 names(ap15) = mtch$new[match(names(ap15), mtch$old)]  # Rename variables
 
