@@ -40,7 +40,7 @@ Oteil = read_html(paste0("https://de.wikipedia.org/wiki/",
 Oteil = Oteil %>% 
               html_nodes("table")%>% 
               .[[3]] %>%  #the third table in this website give us a dataframe 
-              # witch lists all Orststeile in Berlin and their corresponding districts
+              # lists all Orststeile in Berlin and their corresponding districts
               html_table()
 
 #define a function to replace all german letter which could causes issues
@@ -67,13 +67,14 @@ Oteil$Ortsteil = Replace(Oteil$Ortsteil)
 
 #create a dataframe OteilD which contains Ortsteil in 12 districts
 OteilD = data.frame(matrix(ncol = length(Dstc$District),
-                           nrow = 20))  # nrow can be any number bigger than or equal to the maximum number of Ortsteil in a district
+                           nrow = 20))  
+# nrow can be any number bigger than the maximum number of Ortsteil in district
 
-j=1  # start with the first observation in dataframe Oteil
+j = 1  # start with the first observation in dataframe Oteil
 
 for (i in 1:length(Dstc$District)){  # a loop with number of districts
     
-    j = j  # every loop start with a current j value where the last while loop ends
+    j = j  # every loop start with current j value where last while loop ends
     k = 1  # k start from 1 for every column in the new dataframe OteilD
     
     while(Oteil[j,'Bezirk'] == Dstc[i,"District"]){
@@ -92,49 +93,51 @@ wddt = "~/SPL-Project/SPL_ BerlinDst_Data_Prep_2/"
 #============================charging station===================================
 
 Cgst = read_excel(paste0(wddt,"ladestationen.xls"))
-# extract post code in column 'ladestationen$Adresse', where information is listed as 
-# e.g. "Malteserstrasse 136<U+2013>138, 12249 Berlin", and create a new column with post code
+# extract post code in column 'ladestationen$Adresse', 
+# where information listed as e.g."Malteserstrasse 136<U+2013>138, 12249 Berlin" 
+# and create a new column with post code
 
-Adss=strsplit(Cgst$Adresse,"[,]")
-Adss1=c()
+Adss = strsplit(Cgst$Adresse,"[,]")
+Adss1 = c()
 for(i in 1:length(Adss)) {
-    Adss1[i]<- Adss[[i]][2] 
+    Adss1[i]= Adss[[i]][2] 
 }   ;  Adss1                           
-Adss1<-as.character(Adss1)
-Adss1<-strsplit(Adss1," ")
-Adss11<-c()
+Adss1 = as.character(Adss1)
+Adss1 = strsplit(Adss1," ")
+Adss11 = c()
 for(i in 1:length(Adss)) {
-    Adss11[i]<- Adss1[[i]][2] 
+    Adss11[i] = Adss1[[i]][2] 
 }   
 
-#create a new dataframe with the name ladestationen1 with the new column of post code
-Cgst1=data.frame(Cgst,Adss11)
+#create new dataframe with name ladestationen1 with the new column of post code
+Cgst1 = data.frame(Cgst,Adss11)
 
-#extract the post code of each district from the original excel file 'ZuordnungderBezirkezuPostleitzahlen'
+#extract post code of district from file 'ZuordnungderBezirkezuPostleitzahlen'
 
 Pscd = read_excel(paste0(wddt,"ZuordnungderBezirkezuPostleitzahlen.xls"))
 
-Dstc01<-as.numeric(unlist(as.list(Pscd[6:8,3:12])))
-Dstc02<-as.numeric(unlist(as.list(Pscd[10:11,3:12])))  # ignore warning of NA since it doesn't effect our use of the data
-Dstc03<-as.numeric(unlist(as.list(Pscd[13:15,3:12])))
-Dstc04<-as.numeric(unlist(as.list(Pscd[17:20,3:12])))
-Dstc05<-as.numeric(unlist(as.list(Pscd[22:23,3:12])))
-Dstc06<-as.numeric(unlist(as.list(Pscd[25:27,3:12])))
-Dstc07<-as.numeric(unlist(as.list(Pscd[29:32,3:12])))
-Dstc08<-as.numeric(unlist(as.list(Pscd[34:36,3:12])))
-Dstc09<-as.numeric(unlist(as.list(Pscd[38:39,3:12])))
-Dstc10<-as.numeric(unlist(as.list(Pscd[41:42,3:12])))
-Dstc11<-as.numeric(unlist(as.list(Pscd[44:45,3:12])))
-Dstc12<-as.numeric(unlist(as.list(Pscd[47:48,3:12])))
+Dstc01 = as.numeric(unlist(as.list(Pscd[6:8,3:12])))
+Dstc02 = as.numeric(unlist(as.list(Pscd[10:11,3:12])))  
+# ignore warning of NA since it doesn't effect our use of the data
+Dstc03 = as.numeric(unlist(as.list(Pscd[13:15,3:12])))
+Dstc04 = as.numeric(unlist(as.list(Pscd[17:20,3:12])))
+Dstc05 = as.numeric(unlist(as.list(Pscd[22:23,3:12])))
+Dstc06 = as.numeric(unlist(as.list(Pscd[25:27,3:12])))
+Dstc07 = as.numeric(unlist(as.list(Pscd[29:32,3:12])))
+Dstc08 = as.numeric(unlist(as.list(Pscd[34:36,3:12])))
+Dstc09 = as.numeric(unlist(as.list(Pscd[38:39,3:12])))
+Dstc10 = as.numeric(unlist(as.list(Pscd[41:42,3:12])))
+Dstc11 = as.numeric(unlist(as.list(Pscd[44:45,3:12])))
+Dstc12 = as.numeric(unlist(as.list(Pscd[47:48,3:12])))
 
-Pscd<- as.data.frame(cbind(Dstc01,Dstc02,Dstc03,Dstc04,
+Pscd= as.data.frame(cbind(Dstc01,Dstc02,Dstc03,Dstc04,
                            Dstc05,Dstc06,Dstc07,Dstc08,
-                           Dstc09,Dstc10,Dstc11,Dstc12))  # ignore warning since we don't mind repeating of same value in the same column
-
+                           Dstc09,Dstc10,Dstc11,Dstc12))  
+# ignore warning since we don't mind repeating of same value in the same column
 
 ##assign districts to every charging station and count for each districs
 
-#compare the post code of each ladestation, and assgin a district to each ladestation
+#compare post code of each ladestation, assgin a district to each ladestation
 DsLd = rep(0,length(Cgst1$Adss11))
 for(i in 1:length(Cgst1$Adss11)){
     for(j in 1:12){
@@ -168,9 +171,9 @@ for (i in 1: length(SteilList)){
     R_html[i] = paste0("https://www.berlin.de/restaurants/stadtteile/",
                                 SteilList[i],"/")
 }
-Nrrs=rep(0,length(SteilList))
+Nrrs = rep(0,length(SteilList))
 
-system.time(  # this takes a short while so I also add the code to calculate the system time
+system.time(  # this takes a short while so I calculated the system time
 for (i in 1: length(SteilList)){
     Nrrs[i] = length(read_html(R_html[i]) %>% 
                          html_nodes(".main-content .list--arrowlist a") %>%
@@ -211,26 +214,28 @@ Rad = Rad %>% select('Bezirk','Länge [m]')
 
 Rad$Bezirk = Replace(Rad$Bezirk)  # replace all German letters in Bezirk
 
-CyllVec = list()  # define a list to store all the cycling length in different districts
+CyllVec = list()  # define a list to store all cycling length in districts
 
 for(i in 1:length(Dstc$District)){
     CyllVec[[i]] = Rad$`Länge [m]`[which(Rad$Bezirk == Dstc$District[i])]
 }
 
-Cyll = sapply(CyllVec,sum)  # calculte the total length in each distric by summing them up
+Cyll = sapply(CyllVec,sum)  # total length in each districts by summing up
 Cyll
 
 #===============================nr.doctor=======================================
 
 # Nr. of house doctor per 10,000 people 
-#data obtained from <https://www.berlin.de/ba-lichtenberg/auf-einen-blick/buergerservice/gesundheit/artikel.596005.php> 
+#data obtained from 
+#<https://www.berlin.de/ba-lichtenberg/auf-einen-blick/buergerservice/gesundheit/artikel.596005.php>
 
-Nrdr<-c(66.7,66.6,65.3,86.7,63.2,67.3,73.5,59.5,53.2,61.8,51.8,64.2)  
+Nrdr = c(66.7,66.6,65.3,86.7,63.2,67.3,73.5,59.5,53.2,61.8,51.8,64.2)  
 
 #===========================street crossings====================================
 
-#data obtained from <http://www.stadtentwicklung.berlin.de//geoinformation/fis-broker/>
-Nrsc<-c(33, 39, 54, 35, 22, 31, 19, 25, 32, 39, 22, 30)  
+#data obtained from 
+#<http://www.stadtentwicklung.berlin.de//geoinformation/fis-broker/>
+Nrsc = c(33, 39, 54, 35, 22, 31, 19, 25, 32, 39, 22, 30)  
 
 #============================merging the data===================================
 
