@@ -112,10 +112,11 @@ for(i in 1:length(Adss)) {
 #create new dataframe with name ladestationen1 with the new column of post code
 Cgst1 = data.frame(Cgst,Adss11)
 
-#extract post code of district from file 'ZuordnungderBezirkezuPostleitzahlen'
+# extract post code of district from file 'ZuordnungderBezirkezuPostleitzahlen'
 
 Pscd = read_excel(paste0(wddt,"ZuordnungderBezirkezuPostleitzahlen.xls"))
 
+# Post code for each district
 Dstc01 = as.numeric(unlist(as.list(Pscd[6:8,3:12])))
 Dstc02 = as.numeric(unlist(as.list(Pscd[10:11,3:12])))  
 # ignore warning of NA since it doesn't effect our use of the data
