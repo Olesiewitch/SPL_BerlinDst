@@ -96,43 +96,43 @@ IsOutlier =  function(y) {
 #Create indicators data frame 
 
 indDt = data.frame(lvSpc = PerCapita(lvbInDt$SpacePC),  # Calc. liv space/cap.
-                  hsAv  = PerCapita(lvbInDt$Flats),  # Calc. nr of flats/cap.
-                  dns   = PerHa(lvbInDt$Population),  # Calc. population per ha
-                  hsAl  = lvbInDt$Hausehold, # Choose hous. all. 
-                  trnDn = PerHa(lvbInDt$Transport),  # Calc. den. of pub. trans.
-                  bkLn  = PerHa(lvbInDt$Cycle),  # Calc. den. of cycling lines
-                  crChr = PerHa(lvbInDt$Charging),  #  Calc.e-car char.stat./ha  
-                  prkSp = PerCapita(lvbInDt$Parking),  # Calc.nr park. spc./ cap
-                  trs   = PerCapita(lvbInDt$Tourists),  # Calc.nr of tour. /cap.    
+                  hsAv   = PerCapita(lvbInDt$Flats),  # Calc. nr of flats/cap.
+                  dns    = PerHa(lvbInDt$Population),  # Calc. population per ha
+                  hsAl   = lvbInDt$Hausehold, # Choose hous. all. 
+                  trnDn  = PerHa(lvbInDt$Transport),  # Calc. den. of pub. trans.
+                  bkLn   = PerHa(lvbInDt$Cycle),  # Calc. den. of cycling lines
+                  crChr  = PerHa(lvbInDt$Charging),  #  Calc.e-car char.stat./ha  
+                  prkSp  = PerCapita(lvbInDt$Parking),  # Calc.nr park. spc./ cap
+                  trs    = PerCapita(lvbInDt$Tourists),  # Calc.nr of tour. /cap.    
                   # Calculate the hotel occupancy by deviding the total num.   
                   # of stays by total capacity; number of beds multiplied   
                   # by 365 days in the year
-                  htlOc = lvbInDt$Stays/(lvbInDt$Hotel*365), 
-                  sprCl = PerHa(lvbInDt$Sport),  # Choose nr of sport clubs/ ha
-                  res   = PerHa(lvbInDt$Restaurants),  # Cal.nr of restaur./ha
-                  std   = lvbInDt$Puplis1000,  # Choose nr of pupils/ K of ppl
-                  grdSz = lvbInDt$Pupils/lvbInDt$Grades,  # Cal. avg. grade size          
-                  chU3  = lvbInDt$Child3,  # Choose % of kids < 3y/o in daycare 
-                  chU6  = lvbInDt$Child6,  # Choose % of kids 3-6y/o in daycare 
-                  doc   = PerCapita(lvbInDt$Doctors),  # Cal.num. of doctors/cap
-                  actSn = lvbInDt$SenSport,  # Choose % of active seniors 
-                  actJn = lvbInDt$JunSport,  # Choose % of active juniors
-                  trf   = PerCapita(lvbInDt$Accidents),  # Calc. traff. acc/cap 
-                  strCr = PerHa(lvbInDt$Crossings),  # Calc.nr street cross/ha
-                  crm   = lvbInDt$Crime,  # Choose criminal offences per 10K ppl
-                  socHl = PerCapita(lvbInDt$SocHelp),  # Cal.soc. help rec. /cap
-                  dsb   = lvbInDt$Disabled1000, # Choose sev. handicapped/1K ppl
-                  emp   = lvbInDt$Employment,  # Choose emp./ 1K ppl cap. of emp.
-                  comp  = lvbInDt$Company,  # Choose nr of companies
-                  txRv  = lvbInDt$Revenue,  # Choose taxable revenue 
+                  htlOc  = lvbInDt$Stays/(lvbInDt$Hotel*365), 
+                  sprCl  = PerHa(lvbInDt$Sport),  # Choose nr of sport clubs/ ha
+                  res    = PerHa(lvbInDt$Restaurants),  # Cal.nr of restaur./ha
+                  std    = lvbInDt$Puplis1000,  # Choose nr of pupils/ K of ppl
+                  grdSz  = lvbInDt$Pupils/lvbInDt$Grades,  # Cal. avg. grade size          
+                  chU3   = lvbInDt$Child3,  # Choose % of kids < 3y/o in daycare 
+                  chU6   = lvbInDt$Child6,  # Choose % of kids 3-6y/o in daycare 
+                  doc    = PerCapita(lvbInDt$Doctors),  # Cal.num. of doctors/cap
+                  actSn  = lvbInDt$SenSport,  # Choose % of active seniors 
+                  actJn  = lvbInDt$JunSport,  # Choose % of active juniors
+                  trf    = PerCapita(lvbInDt$Accidents),  # Calc. traff. acc/cap 
+                  strCr  = PerHa(lvbInDt$Crossings),  # Calc.nr street cross/ha
+                  crm    = lvbInDt$Crime,  # Choose criminal offences per 10K ppl
+                  socHl  = PerCapita(lvbInDt$SocHelp),  # Cal.soc. help rec. /cap
+                  dsb    = lvbInDt$Disabled1000, # Choose sev. handicapped/1K ppl
+                  emp    = lvbInDt$Employment,  # Choose emp./ 1K ppl cap. of emp.
+                  comp   = lvbInDt$Company,  # Choose nr of companies
+                  txRv   = lvbInDt$Revenue,  # Choose taxable revenue 
                   # Cal. nr bankr./nr.comp. 
-                  bnk   = (lvbInDt$Bankruptcy)/(lvbInDt$Company),
-                  grSp  = PerHa(lvbInDt$GreenSp),  #Cal. green space / ha
+                  bnk    = (lvbInDt$Bankruptcy)/(lvbInDt$Company),
+                  grSp   = PerHa(lvbInDt$GreenSp),  #Cal. green space / ha
                   # Cal. ratio of agr surface vs. residential & traffic surf.
-                  agrRe = (lvbInDt$AgrSurface)/(lvbInDt$RsSurface),
-                  tr    = lvbInDt$Trees, # Choose nr of trees per km of the road
-                  pm10  = lvbInDt$PM10,  # Choose PM10 avg. level
-                  pm25  = lvbInDt$PM25)  # # Choose PM2.5 avg. level
+                  agrRe  = (lvbInDt$AgrSurface)/(lvbInDt$RsSurface),
+                  tr     = lvbInDt$Trees, # Choose nr of trees per km of the road
+                  pm10   = lvbInDt$PM10,  # Choose PM10 avg. level
+                  pm25   = lvbInDt$PM25)  # # Choose PM2.5 avg. level
 
 
 #============================NEGATIVE INDICATORS================================
@@ -305,14 +305,14 @@ MaxScore = data.frame("Max Score",
 colnames(MaxScore) = colnames(RsltDt)  #  sure that the col. names are the same
 
 #============================= RESULTS =========================================
+# See results for sub-Indexes, Pilars and TotaL Liveability Index
 
-View(RsltDt[, 1:6])  # See results for sub-Indexes
+View(RsltDt)  
 
-xtable(rbind(RsltDt[, 1:6], MaxScore[1:6])) # Get the latex code for the report (table XX )
+# Get the latex code for the report (table XX )
 
-View(RsltDt[,-(2:6)])  # See final Index results 
-
-xtable(RsltDt[, -(2:6)])  # Get the latex code for the report (table XX )
+xtable(RsltDt)
+xtable(MaxScore)  
 
 
 #============================= BOXPLOT =========================================
@@ -334,8 +334,9 @@ ggplot(subMltDt, aes(x=variable,y=value, group = variable)) +  # Create ggplot
     # Add District lebels for outliers
     geom_text(aes(label = Outlier), size = 3,  vjust = - 0.5) +    
     theme_bw() +  # Choose black and white theme 
-    scale_fill_economist(labels = c("Housing","Infrastructure","Social",# Chose color palet
-                                    "Economic", "Enviromental")) +  # Choose color palet
+    scale_fill_economist(labels = c("Housing","Infrastructure",  # Choose color palet
+                                    "Social", "Economic", 
+                                    "Enviromental")) +  # Names the labes
     labs(x = "Sub-Index", y = "Score") +  # Name the axises
     theme(panel.grid.minor = element_blank(),  # Remove the minor grid
           panel.grid.major = element_blank(),  # Remove the major grid
@@ -385,10 +386,10 @@ ggsave("Per Pillar BarPlot.png", plot = last_plot(),scale = 1, device = "png",
 # Creat cummulative Index Plot
 
 ggplot(TtlMltDt, aes(x = District,y = value, fill = variable)) +  # Creat ggplot 
-    geom_bar(stat = "identity", width = 0.5)+  # Creat barplot  #possition =dogge
+    geom_bar(stat = "identity", width = 0.5)+  # Creat barplot 
     theme_bw() +  # Use black and white theme
-    scale_fill_economist(labels = c("Physical", "Social",# Chose color palet
-                                    "Economic", "Enviromental")) +   
+    scale_fill_economist(labels = c("Physical", "Social",  # Chose color palet
+                                    "Economic", "Enviromental")) +  # Name labels   
     labs(y = "Total Liveability Index") +  # Add x axis label 
     theme(panel.grid.minor = element_blank(),  # Remove the minor grid
           panel.grid.major = element_blank(),  # Remove the major grid
