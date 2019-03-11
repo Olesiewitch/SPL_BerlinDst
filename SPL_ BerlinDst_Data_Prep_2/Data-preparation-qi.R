@@ -1,19 +1,20 @@
----
-title: "Data-preparation-qi"
-author: "Wu Qi"
-date: "3/3/2019"
----
+
+# title: "Data-preparation-qi"
+# author: "Wu Qi"
+# date: "3/3/2019"
+
     
-##install and run pacages
+#=========================install and run pacages===============================
     
-packages = c("rvest","readxl","magrittr","dplyr") 
+packages = c('rvest','readxl','magrittr','dplyr') 
+
 for (i in packages) {                          
     if(!require(i, character.only=TRUE))
     {install.packages(i, character.only=TRUE)}
     library(i, character.only=TRUE)
 }
 
-## list district names
+#=============================list district names===============================
 Dstc = c("Mitte",
          "Friedrichshain-Kreuzberg",
          "Pankow",
@@ -30,7 +31,9 @@ Dstc = c("Mitte",
 Dstc = as.data.frame(Dstc)
 colnames(Dstc) = c("District"); Dstc
 
-# get Ortsteil of district using package rvest
+#======================Ortsteil in every district ==============================
+
+#using package rvest to read internet page
 Oteil = read_html(paste0("https://de.wikipedia.org/wiki/",
                             "Liste_der_Bezirke_und_Ortsteile_Berlins"))  
 
@@ -63,26 +66,32 @@ Oteil$Bezirk = Replace(Oteil$Bezirk)
 Oteil$Ortsteil = Replace(Oteil$Ortsteil)
 
 #create a dataframe OteilD which contains Ortsteil in 12 districts
-OteilD = data.frame(matrix(ncol = length(Dstc$District),nrow = 20))
-j=1
-for (i in 1:length(Dstc$District)){
-    j = j
-    k = 1
+OteilD = data.frame(matrix(ncol = length(Dstc$District),
+                           nrow = 20))  # nrow can be any number bigger than or equal to the maximum number of Ortsteil in a district
+
+j=1  # start with the first observation in dataframe Oteil
+
+for (i in 1:length(Dstc$District)){  # a loop with number of districts
+    
+    j = j  # every loop start with a current j value where the last while loop ends
+    k = 1  # k start from 1 for every column in the new dataframe OteilD
+    
     while(Oteil[j,'Bezirk'] == Dstc[i,"District"]){
         OteilD[k,i] = Oteil[j,'Ortsteil']
         k = k+1
         j = j+1
     }
-}
+}  # ignore the error message hier : missing value where TRUE/FALSE needed
 colnames(OteilD) = Dstc$District
 View(OteilD)
 
-# Set working directory
-wd = "~/SPL-Project/SPL_ BerlinDst_Data_Prep2/"
+#========================= Set working directory================================
+#working directory for loading the data
+wddt = "~/SPL-Project/SPL_ BerlinDst_Data_Prep_2/"
 
 #============================charging station===================================
 
-Cgst = read_excel(paste0(wd,"ladestationen.xls"))
+Cgst = read_excel(paste0(wddt,"ladestationen.xls"))
 # extract post code in column 'ladestationen$Adresse', where information is listed as 
 # e.g. "Malteserstrasse 136<U+2013>138, 12249 Berlin", and create a new column with post code
 
@@ -103,7 +112,7 @@ Cgst1=data.frame(Cgst,Adss11)
 
 #extract the post code of each district from the original excel file 'ZuordnungderBezirkezuPostleitzahlen'
 
-Pscd = read_excel(paste0(wd,"ZuordnungderBezirkezuPostleitzahlen.xls"))
+Pscd = read_excel(paste0(wddt,"ZuordnungderBezirkezuPostleitzahlen.xls"))
 
 Dstc01<-as.numeric(unlist(as.list(Pscd[6:8,3:12])))
 Dstc02<-as.numeric(unlist(as.list(Pscd[10:11,3:12])))
@@ -126,7 +135,7 @@ Pscd<- as.data.frame(cbind(Dstc01,Dstc02,Dstc03,Dstc04,
 ##assign districts to every charging station and count for each districs
 
 #compare the post code of each ladestation, and assgin a district to each ladestation
-DsLd= rep(0,length(Cgst1$Adss11))
+DsLd = rep(0,length(Cgst1$Adss11))
 for(i in 1:length(Cgst1$Adss11)){
     for(j in 1:12){
         if(Cgst1$Adss11[i] %in% Pscd[,j]){
@@ -151,57 +160,68 @@ for(i in 1:12){
 
 #=================================restaurant====================================
 
-stadtteile = read_html("https://www.berlin.de/restaurants/stadtteile/")
+Steil = read_html("https://www.berlin.de/restaurants/stadtteile/")
 
-stadtteileList = stadtteile %>% html_nodes("br+ .decoda-list a") %>% html_text() 
-stadtteileList[12] = "Prenzlauer-Berg"
+SteilList = Steil %>% html_nodes("br+ .decoda-list a") %>% html_text() 
 
+SteilList = Replace(SteilList); SteilList
 
-stadtteileList = gsub("ö", "oe", stadtteileList)  # substitute germanletters
-stadtteileList = gsub("ß","ss",stadtteileList)  # substitute germanletters
-stadtteileList
-
-restaurant_html = c()
-for (i in 1: length(stadtteileList)){
-    restaurant_html[i] = paste0("https://www.berlin.de/restaurants/stadtteile/",
-                                stadtteileList[i],"/")
+R_html = c()
+for (i in 1: length(SteilList)){
+    R_html[i] = paste0("https://www.berlin.de/restaurants/stadtteile/",
+                                SteilList[i],"/")
 }
-Nrrs=rep(0,length(stadtteileList))
+Nrrs=rep(0,length(SteilList))
 
-
-for (i in 1: length(stadtteileList)){
-    Nrrs[i] = length(read_html(restaurant_html[i]) %>% 
+system.time(
+for (i in 1: length(SteilList)){
+    Nrrs[i] = length(read_html(R_html[i]) %>% 
                          html_nodes(".main-content .list--arrowlist a") %>%
                          html_text() )
     if(Nrrs[i]==0){
-        Nrrs[i] = length(read_html(restaurant_html[i]) %>% 
+        Nrrs[i] = length(read_html(R_html[i]) %>% 
                              html_nodes(".basis .heading a") %>%
                              html_text() )
     }
     if(Nrrs[i]==1){
-        Nrrs[i] = length(read_html(restaurant_html[i]) %>% 
+        Nrrs[i] = length(read_html(R_html[i]) %>% 
                              html_nodes(".basis .heading a") %>%
                              html_text() )
     }
-}; Nrrs
-RestO = cbind(stadtteileList, Nrrs)
+}); Nrrs
+RestO = cbind(SteilList, Nrrs)
 
 #calculate nr. of restaurants in every district
 Rest = numeric(length = 12)
 for(i in 1:length(Nrrs)){
     for(j in 1:12){
-        if(RestO[i,'stadtteileList'] %in% OteilD[,j])
+        if(RestO[i,'SteilList'] %in% OteilD[,j])
             Rest[j] = Rest[j] + as.numeric(RestO[i,'Nrrs'])
     }
 }; Rest 
 
-# all given data below obtained from Internet site : 
 
 #===============================cycling length==================================
 
 #data obtained from <http://www.stadtentwicklung.berlin.de//geoinformation/fis-broker/>
-Cyll = c(169677.40,90134.7,161242.6,169577.9,165372.5,194599.2,
-         148588.8,104444, 202059.2, 118019.1, 100257, 140794.4)
+
+Rad = read_excel(paste0(wddt,"Radverkehrsanlagen.xls"))
+View(Rad)  # have a look at the data 
+unique(Rad$`RVA-Typ`)  # have a better understanding of the data
+
+# select the column in dataset we need
+Rad = Rad %>% select('Bezirk','Länge [m]')
+
+Rad$Bezirk = Replace(Rad$Bezirk)  # replace all German letters in Bezirk
+
+CyllVec = list()  # define a list to store all the cycling length in different districts
+
+for(i in 1:length(Dstc$District)){
+    CyllVec[[i]] = Rad$`Länge [m]`[which(Rad$Bezirk == Dstc$District[i])]
+}
+
+Cyll = sapply(CyllVec,sum)  # calculte the total length in each distric by summing them up
+
 
 #===============================nr.doctor=======================================
 
@@ -229,4 +249,4 @@ colnames(QiDt) = c("Nr",
                    "Crossings")
 
 QiDt = as.data.frame(QiDt); QiDt
-write.csv(QiDt,paste0(wd,"SPL_BerlinDst_Data_Prep_2.csv"))
+write.csv(QiDt,paste0(wddt,"SPL_BerlinDst_Data_Prep_2.csv"))
