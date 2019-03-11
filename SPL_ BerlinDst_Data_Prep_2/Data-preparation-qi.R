@@ -115,7 +115,7 @@ Cgst1=data.frame(Cgst,Adss11)
 Pscd = read_excel(paste0(wddt,"ZuordnungderBezirkezuPostleitzahlen.xls"))
 
 Dstc01<-as.numeric(unlist(as.list(Pscd[6:8,3:12])))
-Dstc02<-as.numeric(unlist(as.list(Pscd[10:11,3:12])))
+Dstc02<-as.numeric(unlist(as.list(Pscd[10:11,3:12])))  # ignore warning of NA since it doesn't effect our use of the data
 Dstc03<-as.numeric(unlist(as.list(Pscd[13:15,3:12])))
 Dstc04<-as.numeric(unlist(as.list(Pscd[17:20,3:12])))
 Dstc05<-as.numeric(unlist(as.list(Pscd[22:23,3:12])))
@@ -129,7 +129,7 @@ Dstc12<-as.numeric(unlist(as.list(Pscd[47:48,3:12])))
 
 Pscd<- as.data.frame(cbind(Dstc01,Dstc02,Dstc03,Dstc04,
                            Dstc05,Dstc06,Dstc07,Dstc08,
-                           Dstc09,Dstc10,Dstc11,Dstc12))
+                           Dstc09,Dstc10,Dstc11,Dstc12))  # ignore warning since we don't mind repeating of same value in the same column
 
 
 ##assign districts to every charging station and count for each districs
@@ -154,9 +154,6 @@ for(i in 1:12){
     }
 };Nrct
 
-#count_chargingsta<- data.frame(Dstc,Nrct)
-#write.csv(count_chargingsta,"~/SPL-Project/Dirstrict Data/chargingstations.csv")
-
 
 #=================================restaurant====================================
 
@@ -173,7 +170,7 @@ for (i in 1: length(SteilList)){
 }
 Nrrs=rep(0,length(SteilList))
 
-system.time(
+system.time(  # this takes a short while so I also add the code to calculate the system time
 for (i in 1: length(SteilList)){
     Nrrs[i] = length(read_html(R_html[i]) %>% 
                          html_nodes(".main-content .list--arrowlist a") %>%
@@ -188,7 +185,7 @@ for (i in 1: length(SteilList)){
                              html_nodes(".basis .heading a") %>%
                              html_text() )
     }
-}); Nrrs
+}); Nrrs  # Nrrs gives the number of each restaurant in each Ortsteil
 RestO = cbind(SteilList, Nrrs)
 
 #calculate nr. of restaurants in every district
@@ -221,7 +218,7 @@ for(i in 1:length(Dstc$District)){
 }
 
 Cyll = sapply(CyllVec,sum)  # calculte the total length in each distric by summing them up
-
+Cyll
 
 #===============================nr.doctor=======================================
 
@@ -249,4 +246,5 @@ colnames(QiDt) = c("Nr",
                    "Crossings")
 
 QiDt = as.data.frame(QiDt); QiDt
+
 write.csv(QiDt,paste0(wddt,"SPL_BerlinDst_Data_Prep_2.csv"))
