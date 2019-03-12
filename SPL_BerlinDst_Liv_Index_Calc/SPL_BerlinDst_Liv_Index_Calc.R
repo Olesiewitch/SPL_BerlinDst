@@ -1,11 +1,21 @@
 #===================== PREPARING THE ENVIROMENT ================================
-library(xlsx)
-library(tidyr)
-library(dplyr)
-library(reshape2)
-library(ggplot2)
-library(ggthemes)
-library(xtable)
+#setwd("~/SPL-Project-New")
+
+pcks = list("ggplot2",
+            "magrittr",
+            "reshape2",
+            "ggthemes",
+            "rlang",
+            "dplyr",
+            "tidyr",
+            "xlsx",
+            "xtable")  # list pakages required 
+
+for (i in pcks) {                          
+    if(!require(i, character.only=TRUE))
+    {install.packages(i, character.only=TRUE)}
+    library(i, character.only=TRUE)
+}
 
 
 options(xtable.floating = FALSE)

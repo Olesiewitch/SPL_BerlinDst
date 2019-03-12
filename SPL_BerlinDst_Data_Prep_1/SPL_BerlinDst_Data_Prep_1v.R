@@ -1,21 +1,21 @@
-
-
 #=========================PREPARING THE ENVIROMENT==============================
 
 #setwd("~/SPL-Project-New")
 
 pcks = list("rvest",
            "magrittr",
-           "readxl",
            "rlang",
            "dplyr",
            "tidyr",
            "rgdal",
-           "maptools",
-           "xlsx", 
-           "data.table")  # list pakages required 
+           "xlsx")  # list pakages required 
   
-library(rvest)
+for (i in pcks) {                          
+    if(!require(i, character.only=TRUE))
+    {install.packages(i, character.only=TRUE)}
+    library(i, character.only=TRUE)
+}
+
   
 #========FUNCTIONS FOR CLEANING AND ARRANGING THE DATA========================
 
