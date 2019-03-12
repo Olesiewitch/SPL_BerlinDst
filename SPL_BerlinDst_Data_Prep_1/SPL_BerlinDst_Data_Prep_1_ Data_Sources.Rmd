@@ -331,3 +331,60 @@ Excel file, Sheet G3
 Original data:  Sportvereine
 Year:2018 
 Unit: Total Number
+
+## Source of data https://de.statista.com
+
+The data from the <https://de.statista.com> portal have been acessed on the 20th of November 2018. The have been downloaded from the website and saved on the GitHub website of the project <https://github.com/Olesiewitch/SPL-Project/District-Data>. 
+
+The following protocol documents how diffrent data sets from the <https://de.statista.com> have been merged together into one csv file *statista.csv*. 
+
+## Districts 
+The names of the districts have been keept in accordance to the portal standard. The order has been kep in occordance to *statistic_id652680_strassenbaeume-in-berlin-nach-bezirken-2017.xlsx* file.  
+
+```{r, echo= TRUE}
+library(readxl)
+trees = read_excel("statistic_id652680_strassenbaeume-in-berlin-nach-bezirken-2017.xlsx", 
+sheet = "Daten")
+```
+
+```{r, echo=TRUE}
+districts = trees[3:14,1]  ## selecting district data
+```
+
+## Trees per km
+
+Data obtained from 
+<https://de.statista.com/statistik/daten/studie/652680/umfrage/strassenbaeume-in-berlin-nach-bezirken/> 
+Original name: Bäume je Kilometer Straße
+English Translation : Trees per km of the road
+Unit: Total
+Year:2017
+
+### Open Green Space
+
+Source of data : <https://de.statista.com/statistik/daten/studie/652716/umfrage/oeffentliche-gruenflaechen-in-berlin-nach-bezirken/>
+Original Name: Öffentliche Grünflächen in ha
+English Trnaslation: Open Green Space
+Unit: ha
+Year:2017
+
+## Source of data: Berliner Verkehr in Zahlen 2013
+
+The project uses the report *Berliner Verkehr in Zahlen 2013* (the report) as the source of data regarding parking spaces. To read full report please visit: <https://www.berlin.de/senuvk/verkehr/politik_planung/zahlen_fakten/download/Mobilitaet_dt_komplett.pdf>
+
+The report has been acessed on the 16th of December 2018
+
+## Processing the data
+
+As the mobility data is only avaiable as a part of the written report, this protocol documents how the data have been collected into the csv file *berliner_verkehr_zahlen_daten.csv*, which has been uploaded on the GitHub side of the project (https://github.com/Olesiewitch/SPL-Project/tree/master/data)
+
+
+## Parking spaces 
+
+The data regarding parking spaces in the districs of Berlin have been sourced from the page 32 of the report. Original name of data "Bewirtschaftete Stellplätze im öffentlichen  Straßenraum". 
+
+
+## Getting the Public Transportation Stops Data
+
+The public tranbsportation data has been acessed from Berlin Open Data Portal under <https://daten.berlin.de/datensaetze/vbb-fahrplandaten-gtfs> on the 28th of December 2018. 
+From the downloaded data the data set of *stops* have been chosen. The following document is a protocol of the conducted data processing 

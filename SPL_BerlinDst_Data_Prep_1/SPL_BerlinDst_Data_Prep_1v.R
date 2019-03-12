@@ -1,9 +1,8 @@
 
 
-  #=========================PREPARING THE ENVIROMENT==============================
+#=========================PREPARING THE ENVIROMENT==============================
 
-setwd("~/SPL-Project-New")
-
+#setwd("~/SPL-Project-New")
 
 pcks = list("rvest",
            "magrittr",
@@ -21,14 +20,21 @@ library(rvest)
 #========FUNCTIONS FOR CLEANING AND ARRANGING THE DATA========================
 
 GetDataUnderURL = function(URL){
-    # Obtain the data from the table stored under URL
-    # 
+    # Function returns the data table from under the URL address.
+    # Firstly, the URL address is read (webpage). Secondly, the data of 
+    # the type "table" is extracted from the HTML document with the CSS 
+    # selector (?html_nodes). The data table is read, stored and
+    # returned as a table.  
+    #
     # Args:
-    #   URL: URL adress. Under the URL the table which contains required data 
-    #   must be the first table [[1]] on the page. 
-    # 
+    #   URL: URL address under which the required data are 
+    #        stored. The table which contains the data must  
+    #        be the first table [[1]] on the page. 
+    #
     # Returns: 
-    # Matrix with the data stored in the first table under from the URL adress 
+    # Matrix with the data stored in the first table under from 
+    # the URL address 
+ 
     webpage = read_html(URL)    
     table = html_table(html_nodes(webpage, "table")[[1]], 
                        fill = TRUE,trim = TRUE)
@@ -51,18 +57,19 @@ DataToNumeric = function(column){
 }
 
 DistricToFullName = function (column){
-    # Function re-names the districts of Berlin with their full names without 
-    # special signs. The function identifies the district by three or four 
-    # letters of its name. 
+    # Function re-names the districts of Berlin with their full names 
+    # without special signs. The function identifies the district by 
+    # three #or four letters of its name. 
     #
     # Args:
-    #      column: vector or a column containing names of Berlin districts.
-    #      Name can have any form, special signs can be use and additional 
-    #      information can be added to it. Only first 3-4 letters need ro be
-    #      correct. 
+    #      column: vector or a column containing names of Berlin
+    #      districts.Name can have any form, special signs can be
+    #      use and additional information can be added to it.
+    #      Only first 3-4letters need to be correct. 
     #
     #Returns: 
-    #Vector of replaced district names by its official names  
+    #        Vector of replaced district names by its official names  
+    #        without special signs.  
     
     column[grepl("mit",column, ignore.case = TRUE)] = "Mitte" 
     column[grepl("fri",column, 
@@ -82,20 +89,21 @@ DistricToFullName = function (column){
     return(column)
 }
   
-NrofBusStops= function(district){
-    # Function checkes based on the geografical coordinates, if public
-    # transportation stops (in file bsStp) are in the chosen Berlin district  
+NrofStops= function(district){
+    # Function checkes based on the geografical coordinates, how many public
+    # transportation stops (in file bsStp) are in the chosen Berlin district
     # and counts their number. 
     #
     # Args:
-    # district: names of the polygon file with the coordinates of the given 
-    # Berlin district.The lontitutude coordinates  must be the first column 
-    # of the file, the latitute the second column.  
+    #     district: names of the polygon file with the coordinates of the 
+    #     given Berlin district.The longitude coordinates  must be the 
+    #     first column of the file, the latitude the second column. 
     #
     # Returns: 
-    # Number of public transportation stops in the given district or on 
-    # its border ( in whichstops function 1 = in the polygon, 2 = on the  
-    # border of the polygon ,0 = not in the polygon). 
+    # Number of public transportation stops in the given district
+    # or on its border ( in whichstops function 1 = in the 
+    # polygon, 2 = on the border of the polygon ,0 = not in the 
+    # polygon).  
     whichstops = point.in.polygon(bsStp$stop_lon, bsStp$stop_lat, 
                                   district[, 1],district[, 2]) 
     nrstops = length(whichstops[whichstops != 0])
@@ -353,7 +361,7 @@ dstLst = list( rein = dstrBrd [[1]],  # chose polygon of Reinickendorf
   
 # Apply NrofBusStops function to all the districts: 
 
-bsLst = lapply(dstLst, NrofBusStops) 
+bsLst = lapply(dstLst, NrofStops) 
 
 # Creat data frame from list names and computed elements
 
