@@ -28,10 +28,10 @@ ber_adj["y","min"] = ber_adj["y","min"]-0.02
 
 map = get_stamenmap(ber_adj, maptype="toner-lite", zoom = 11)
 
-#source: https://data.technologiestiftung-berlin.de/dataset/bezirksgrenzen
+#source: https://data.technologiestiftung-berlin.de/dataset/bezirksgrenzen        # add space after #
 test = readOGR("./06_Results_Visualization/bezirksgrenzen.kml")
 Bezirk = fortify(test)
-Bezirk$District = case_when(Bezirk$id=="0" ~ "Reinickendorf",
+Bezirk$District = case_when(Bezirk$id == "0" ~ "Reinickendorf",                   # changes spaces between ==
                             Bezirk$id=="1" ~ "Charlottenburg-Wilmersdorf",
                             Bezirk$id=="10" ~ "Friedrichshain-Kreuzberg",
                             Bezirk$id=="11" ~ "Tempelhof-Schoneberg",
@@ -161,7 +161,7 @@ print(p2)
 ggplot(LablesDt, aes(x=Rent, y=TotalIn)) +
   geom_point(size = 3, 
              colour = "steelblue") +  # Use hollow circles
-  geom_smooth(method=lm,  # Add linear regression line
+  geom_smooth(method=lm,  # Add linear regression line                           #space = 
               se=FALSE) +  # Don't add shaded confidence region
   theme_bw()+
   theme(panel.grid.major = element_blank(),
@@ -216,7 +216,7 @@ plot = ggplot(IndRntDt,
               aes(long, lat, group = group)) +
   geom_polygon(aes(fill = variable), 
                colour = "darkcyan") +
-  geom_path(data = Wall, aes(x=long, y=lat), 
+  geom_path(data = Wall, aes(x=long, y=lat),                                    # SPACE ====
             color="bisque4",
             size = 1.5) +
   scale_fill_gradient(low = "snow1", 
