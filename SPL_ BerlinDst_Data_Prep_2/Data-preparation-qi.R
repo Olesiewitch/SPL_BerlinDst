@@ -6,7 +6,10 @@
     
 #=========================install and run pacages===============================
     
-packages = c('rvest','readxl','magrittr','dplyr') 
+packages = c('rvest',
+             'readxl',
+             'magrittr',
+             'dplyr') 
 
 for (i in packages) {                          
     if(!require(i, character.only=TRUE))
@@ -26,24 +29,23 @@ Dstc = c("Mitte",
          "Treptow-Koepenick",
          "Marzahn-Hellersdorf",
          "Lichtenberg",
-         "Reinickendorf"
-)
+         "Reinickendorf")
+
 Dstc = as.data.frame(Dstc)
 colnames(Dstc) = c("District"); Dstc
 
 #======================Ortsteil in every district ==============================
 
-#using package rvest to read internet page
+# using package rvest to read internet page
 Oteil = read_html(paste0("https://de.wikipedia.org/wiki/",
-                            "Liste_der_Bezirke_und_Ortsteile_Berlins"))  
+                         "Liste_der_Bezirke_und_Ortsteile_Berlins"))  
 
 Oteil = Oteil %>% 
-              html_nodes("table")%>% 
-              .[[3]] %>%  #the third table in this website give us a dataframe 
-              # lists all Orststeile in Berlin and their corresponding districts
-              html_table()
+    html_nodes("table") %>% 
+    .[[3]] %>%  # the third table in this website give us a dataframe 
+    html_table()  # lists all Orststeile in Berlin and their corresponding districts
 
-#define a function to replace all german letter which could causes issues
+# define a function to replace all german letter which could causes issues
 Replace = function(clmn) {
     # author: Aleksandra Kudaeva
     # Input:  column where you want to replace umlauts
@@ -61,11 +63,11 @@ Replace = function(clmn) {
     return(clmn)
 }
 
-#replace all the german letters in the dataframe
+# replace all the german letters in the dataframe
 Oteil$Bezirk = Replace(Oteil$Bezirk)
 Oteil$Ortsteil = Replace(Oteil$Ortsteil)
 
-#create a dataframe OteilD which contains Ortsteil in 12 districts
+# create a dataframe OteilD (sub-district) which contains Ortsteil in 12 districts
 OteilD = data.frame(matrix(ncol = length(Dstc$District),
                            nrow = 20))  
 # nrow can be any number bigger than the maximum number of Ortsteil in district
@@ -134,11 +136,11 @@ Dstc12 = as.numeric(unlist(as.list(Pscd[47:48,3:12])))
 Pscd= as.data.frame(cbind(Dstc01,Dstc02,Dstc03,Dstc04,
                            Dstc05,Dstc06,Dstc07,Dstc08,
                            Dstc09,Dstc10,Dstc11,Dstc12))  
-# ignore warning since we don't mind repeating of same value in the same column
+# ignore warning since we don't mind repetition of the same value in the same column
 
-##assign districts to every charging station and count for each districs
+# assign districts to every charging station and count for each districs
 
-#compare post code of each ladestation, assgin a district to each ladestation
+# compare post code of each ladestation, assgin a district to each ladestation
 DsLd = rep(0,length(Cgst1$Adss11))
 for(i in 1:length(Cgst1$Adss11)){
     for(j in 1:12){
@@ -163,7 +165,9 @@ for(i in 1:12){
 
 Steil = read_html("https://www.berlin.de/restaurants/stadtteile/")
 
-SteilList = Steil %>% html_nodes("br+ .decoda-list a") %>% html_text() 
+SteilList = Steil %>% 
+    html_nodes("br+ .decoda-list a") %>% 
+    html_text() 
 
 SteilList = Replace(SteilList); SteilList
 
@@ -173,9 +177,8 @@ for (i in 1: length(SteilList)){
                                 SteilList[i],"/")
 }
 Nrrs = rep(0,length(SteilList))
-
-system.time(  # this takes a short while so I calculated the system time
-for (i in 1: length(SteilList)){
+# this takes a short while so I calculated the system time
+system.time(for (i in 1: length(SteilList)){
     Nrrs[i] = length(read_html(R_html[i]) %>% 
                          html_nodes(".main-content .list--arrowlist a") %>%
                          html_text() )
@@ -187,13 +190,15 @@ for (i in 1: length(SteilList)){
     if(Nrrs[i]==1){
         Nrrs[i] = length(read_html(R_html[i]) %>% 
                              html_nodes(".basis .heading a") %>%
-                             html_text() )
+                             html_text())
     }
-}); Nrrs  # Nrrs gives the number of each restaurant in each Ortsteil
+    }); Nrrs  # Nrrs gives the number of each restaurant in each Ortsteil
+
 RestO = cbind(SteilList, Nrrs)
 
 #calculate nr. of restaurants in every district
 Rest = numeric(length = 12)
+
 for(i in 1:length(Nrrs)){
     for(j in 1:12){
         if(RestO[i,'SteilList'] %in% OteilD[,j])
@@ -206,12 +211,13 @@ for(i in 1:length(Nrrs)){
 
 #data obtained from <http://www.stadtentwicklung.berlin.de//geoinformation/fis-broker/>
 
-Rad = read_excel(paste0(wddt,"Radverkehrsanlagen.xls"))
+Rad = read_excel(paste0(wddt,"Radverkehrsanlagen.xls"))                         #read.xlsx (u se encoding = UTF8)
 View(Rad)  # have a look at the data 
 unique(Rad$`RVA-Typ`)  # have a better understanding of the data
 
 # select the column in dataset we need
-Rad = Rad %>% select('Bezirk','Länge [m]')
+Rad = Rad %>% 
+    select('Bezirk','Länge [m]')
 
 Rad$Bezirk = Replace(Rad$Bezirk)  # replace all German letters in Bezirk
 
@@ -254,3 +260,5 @@ colnames(QiDt) = c("Nr",
 QiDt = as.data.frame(QiDt); QiDt
 
 write.csv(QiDt,paste0(wddt,"SPL_BerlinDst_Data_Prep_2.csv"))
+
+###best read with 
