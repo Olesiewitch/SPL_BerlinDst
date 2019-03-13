@@ -1,22 +1,26 @@
 #=========================PREPARING THE ENVIROMENT==============================
 
-#setwd("~/SPL-Project-New")
+#setwd("~/SPL_BerlinDst")
 
-pcks = list("rvest",
-           "magrittr",
-           "rlang",
-           "dplyr",
-           "tidyr",
-           "rgdal",
-           "xlsx")  # list pakages required 
+install.packages("rvest")
+install.packages("magrittr")
+install.packages("rlang")
+install.packages("dplyr")
+install.packages("tidyr")
+install.packages("rgdal")
+install.packages("xlsx")
+install.packages("maptools")# install pakages required 
   
-for (i in pcks) {                          
-    if(!require(i, character.only=TRUE))
-    {install.packages(i, character.only=TRUE)}
-    library(i, character.only=TRUE)
-}
+library(rvest)
+library(magrittr)
+library(rlang)
+library(dplyr)
+library(tidyr)
+library(rgdal)
+library(xlsx)
+library(maptools) # load required packages
 
-  
+
 #========FUNCTIONS FOR CLEANING AND ARRANGING THE DATA========================
 
 GetDataUnderURL = function(URL){
@@ -267,26 +271,48 @@ colnames(wbsDt) = c("Nr",
                     "Allowance")
   
 #==================READING IN THE SPORT DATA FILES==============================
+
+# Data source paset0("https://www.statistik-berlin-brandenburg.de/Statistiken/",
+#"statistik_SB.asp?Ptyp=700&Sageb=21006&creg=BBB&anzwer=10")
   
-  
-# read in sport clubs memberships data and convert columns to numeric
+# Due to usage of German characters and not standard format of naming columns, 
+# reading columns by their names causes a lot of issue. Every computer seems
+# to read in data slightly diffrently even though encoding is set up to "UTF-8".
+
+# Package xlxs has also ben tested and worked well at the HU PC in PC Pool 25 
+# but caling columns by their names did not work at the author's 
+# british computer.To avoid issues with running the code the names of the 
+# columns have been given again. 
 
 sprtMb = read.xlsx("SPL_BerlinDst_Data_Prep_1/SB_B05-01-00_2018j01_BE.xls",
                    sheetName = "T9", startRow = 4, encoding = "UTF-8",
-                   as.data.frame = TRUE) %>%
-    mutate_at(vars("bis.6":"X61.und.mehr"),DataToNumeric) %>%
-    mutate_at(vars("NA..1"),as.character)
+                   as.data.frame = TRUE)
+colnames(sprtMb) = c("NA.", "NA..1", "NA..2", "bis.6", "X.7...14", "X15...18", 
+                     "X19...20","X21...26", "X27...40", "X41...50", "X51...60", 
+                     "X61.und.mehr")
 
-  
-# Read in sport clubs numbers data and convert columns to numeric
-# Ignore Warning message: "In (function (column)  : NAs introduced by coercion"
+# Read in sport clubs memberships data and convert columns to numeric.
 
-  
+sprtMb = sprtMb %>%
+  mutate_at(vars("bis.6": "X61.und.mehr"),DataToNumeric) %>%  
+  mutate_at(vars("NA..1"),as.character)  
+
+# Read in sport clubs numbers data and rename the columns
+
 sprtCl = read.xlsx("SPL_BerlinDst_Data_Prep_1/SB_B05-01-00_2018j01_BE.xls",
-                   sheetName = "G3", encoding = "UTF-8", 
-                   as.data.frame = TRUE) %>% 
-    mutate_at(vars("NA..9"),DataToNumeric) %>%
-    mutate_at(vars("NA..8"),as.character)
+                   sheetName = "G3", encoding = "UTF-8", startRow = 2,
+                   as.data.frame = TRUE) 
+colnames(sprtCl)
+
+colnames(sprtCl) = c("NA.", "NA..1", "NA..2","NA..3", "NA..4", "NA..5", 
+                     "NA..6", "NA..7", "Bezirk", "X.Sportvereine",
+                     "X.Betriebssportgemeinschaften")
+
+# Convert columns to numeric
+# Ignore Warning message: "In (function (column)  : NAs introduced by coercion"
+sprtCl = sprtCl %>% 
+  mutate_at(vars("X.Sportvereine"),DataToNumeric) %>% 
+  mutate_at(vars("Bezirk"),as.character)  
 
   
 #=================== PREPARING SPORT DATA FOR MERGING ========================
@@ -312,10 +338,10 @@ colnames(spMbDt) = c("District","JunSport","SenSport")  # name the columns
 
 # Sport Clubs
 
-clbDst = c(sprtCl$NA..8[2:13]) %>%  # Chose sport club district name data
+clbDst = c(sprtCl$Bezirk[1:12]) %>%  # Chose sport club district name data
     DistricToFullName(.)
 
-clbNm = c(sprtCl$NA..9[2:13])  # Chose sport club number data
+clbNm = c(sprtCl$X.Sportvereine[1:12])  
 
 
 clbsDt = data.frame(clbDst, 
@@ -335,6 +361,7 @@ colnames(clbsDt) = c("District", "Sport")  # Name the column
 dstrBrd = getKMLcoordinates("SPL_BerlinDst_Data_Prep_1/bezirksgrenzen.kml")
 
 # Read in bus stops data
+# Source: https://daten.berlin.de/datensaetze/vbb-fahrplandaten-gtfs
 
 bsStp = read.csv("SPL_BerlinDst_Data_Prep_1/public transportation stops.csv")  
 
@@ -375,25 +402,29 @@ colnames(bsStpDt)= c("District",
                      "Transport") # name the columns
 
 #==========================READING IN CRIME DATA==============================
-  
-crm = read.xlsx("SPL_BerlinDst_Data_Prep_1/Fallzahlen&HZ 2012-2017.xlsx",
-                sheetName = "HZ_2017", encoding = "UTF-8",
-                startRow = 3, as.data.frame = TRUE) %>% 
-    select("LOR.Schlüssel..Bezirksregion.", 
-           "Bezeichnung..Bezirksregion.", "Straftaten...insgesamt.") %>%
-    mutate_at(vars("Bezeichnung..Bezirksregion."), as.character)
+# Similar problem with encoding as before. Only three columns of interest,
+# which we can easily select by maching first letters. Columns of interst start
+# with:  
 
+crmCl= c("LOR", "Bezei", "Straft") 
+
+crm = read.xlsx("SPL_BerlinDst_Data_Prep_1/Fallzahlen&HZ 2012-2017.xls",
+                sheetName = "HZ_2017", encoding = "UTF-8",
+                startRow = 3, as.data.frame = TRUE) %>%
+    select(grep(paste(crmCl,collapse="|"), names(.))) %>%
+  mutate_at(grep("Bezei", names(.)), as.character)
   
+   # Vector with begining of column names 
 #========================PREPARING CRIME DATA FOR MERGING=====================
 
-# Select data based on their "LOR Schlussel" where districts are coded with the
+# Select data based on their "LOR Schlussel"[, 1] where districts are coded with the
 # last 4 numbers being "0000". Select only required data. Convert names of the
-# dis
+# districts to full names, the rest of the data to numeric
 
-crmDt = crm[grep("0000", crm$LOR.Schlüssel..Bezirksregion.), ] %>%
-    select("Bezeichnung..Bezirksregion.", "Straftaten...insgesamt.") %>%
-    mutate_at(vars("Bezeichnung..Bezirksregion."), DistricToFullName) %>% 
-    mutate_at(vars("Straftaten...insgesamt."),DataToNumeric)   
+crmDt = crm[grep("0000", crm[, 1]), ] %>%
+    select(2:3) %>%
+    mutate_at(grep("Bezei", names(.)), DistricToFullName) %>%  
+    mutate_at(grep("Straft", names(.)), DataToNumeric)  
 
 
 colnames(crmDt) = c("District", "Crime")  # name the columns
@@ -401,8 +432,9 @@ colnames(crmDt) = c("District", "Crime")  # name the columns
 
 #======================= READING IN THE PARKING SPACES DATA===================
 
-# Writte in manualy numbers of parking spaces from mobility report. See the 
-# protocol for more details  
+# Writte in manualy numbers of parking spaces from mobility report. See:
+# paset0("https://www.berlin.de/senuvk/verkehr/politik_planung/zahlen_",
+#"fakten/download/Mobilitaet_dt_komplett.pdf")
 
 
 rprtDt = c(26488, 4090, 26000, 20500, 2726, 7400, 7150)  # avaiable data
@@ -438,25 +470,28 @@ colnames(prkDt) = c("District", "Parking")  # name columns
 
 #======================READING IN TREES DATA==================================
 
+# Data Source: paste0("https://de.statista.com/statistik/daten/studie/652680/",
+#"umfrage/strassenbaeume-in-berlin-nach-bezirken/")
 # Read in the trees data
 # Ignore Warning: Warning message: In DataToNumeric(NA..1) : NAs introduced 
 # by coercion
 
-trNm = paste0("SPL_BerlinDst_Data_Prep_1/statistic_id652680_strassenbaeume-",
-              "in-berlin-nach-bezirken-2017.xlsx")
+trNm = paste0("SPL_BerlinDst_Data_Prep_1/",
+              "statistic_id652680_strassenbaeume-in-",
+              "berlin-nach-bezirken-2017.xls")
 
 tr = read.xlsx(trNm, sheetName = "Daten", as.data.frame = TRUE , 
                encoding = "UTF-8") %>%
-    mutate_at(vars("NA..1"), DataToNumeric) %>%  # convert data to numeric
-    mutate_at(vars("Straßenbäume.in.Berlin.nach.Bezirken.2017"),
-              as.character)
+    mutate_at(grep("Berlin", names(.)), as.character) %>% 
+    mutate_at(-grep("Berlin", names(.)), DataToNumeric)  # convert data to numeric
+    
 
 #====================PREPARINF TREES DATA FOR MERGING=========================
 
-trDst = tr[3:14, "Straßenbäume.in.Berlin.nach.Bezirken.2017"] %>% 
+trDst = tr[3:14, grep("Berlin", names(tr))] %>% 
     DistricToFullName(.) # select district names and mutate them  to full form
 
-trKM = tr[3:14, "NA..1"] # select total number of trees per km of the road
+trKM = tr[3:14, 3] # select total number of trees per km of the road
 
 
 trDt = data.frame(trDst,
@@ -470,15 +505,20 @@ colnames(trDt) = c("District", "Trees") # name columns
 #=========READING IN  AND PREPARING FOR MERGING GREEN SPACE DATA ============
 
 # Read in green space data
+# Data source: Source of data : paste0("https://de.statista.com/statistik/",
+# "daten/studie/652716/umfrage/oeffentliche-gruenflaechen-in-berlin-nach-",
+# "bezirken/") 
+#  Intrested in "Öffentliche.Grünflächen.in.ha" use "lich" to identify column
+
 
 grSpNm = paste0("SPL_BerlinDst_Data_Prep_1/statistic_id652716_oeffentliche-",
                 "gruenflaechen-in-berlin-nach-bezirken-2017.xlsx")
 
 grSpDt = read.xlsx(grSpNm, sheetName = "Daten", startRow = 5, 
                    as.data.frame = TRUE, encoding = "UTF-8") %>%
-    mutate_at(vars("Öffentliche.Grünflächen.in.ha"),DataToNumeric) %>%
-    mutate_at(vars("NA."), as.character) %>%
-    mutate_at(vars("NA."), DistricToFullName)
+    mutate_at(vars(grep("lich", names(.))),DataToNumeric) %>%
+    mutate_at(vars(- grep("lich", names(.))), as.character) %>%
+    mutate_at(vars(- grep("lich", names(.))), DistricToFullName)
 
 colnames(grSpDt) = c("District", "GreenSp")
 

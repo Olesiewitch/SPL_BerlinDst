@@ -1,0 +1,63 @@
+\newpage
+\section{Liveability Index}
+
+The following chapter will used the final Data Set to calculate the Liveavility Index for each district of Berlin. Firstly, code used for indicators calculation and their normalization will be explained. Secondly, Sub- and Total Indexes will be calculated and thirdly, the results will presented and discussed .
+
+\subsection{Indicators}
+\subsubsection{Calculating Indicators}
+To calculate Berlin Districts Liveability Index the total of 33 indicators have been considered. To be able to compare the indicators between districts, the relative values (rather then the absolute) of the variables had to be consider. For this purpose, most of the variables have been converted to per capita or per Hectare terms. In the code two functions have been written:
+
+\begin{lstlisting}
+PerCapita = function(x){
+    # Function divides the data per number of 
+    # inhabitants of given district to  obtain per capita value 
+    #Args: 
+    #    x: the column of which the data should decided 
+    #      per number of citizens
+    # Returns:
+    # The vector of data x divided per number of inhabitants
+    # of given district
+  x/lvbInDt$Population
+}
+
+PerHa = function(x){
+    # Function divides the data by size in ha of given
+    # district to obtain per ha value
+    #Args: 
+    #    x: the column of which the data should 
+    #    divided by size of the district
+    # Returns:
+    # The vector of data x divided by size of the district in ha
+  x/lvbInDt$Size
+}
+
+\end{lstlisting}
+
+The list of the indicators and their description may be found in Annex A. The two functions has been applied to following indicators:
+ \begin{table}[ht]
+\centering
+\begin{tabular}{rll}
+  \hline
+ Method & Indicator \\ 
+  \hline
+ Per Capita & lvSpc, hsAv, prkSp, trs, doc, trf, socHl \\ 
+ Per Ha & \parbox[t]{8cm}{dns, trnDn, bkLN, sprCl, crChr,res, strCr, grSp}  \\ 
+ Other & \parbox[t]{8cm}{hsAl, htlOc, std, grdSz, chU3, chU6, actSn, actJn,crm, dsb, emp, comp trRv, bnk, agrRe, tr, pm10, pm25} \\ 
+   \hline
+\caption{Methods for calculating Indicators}
+\end{tabular}
+\end{table}
+If the functions has not be been applied, it means that the variable was already expressed in the relative value or that absolute value was reasonable indicator to be used ex. total taxable revenue of the companies in the given district. For more details see Annex A and 94:134 lines of code in Quantlet 3 - "SPL-Berlin-DstLivIndex-Calc".  
+
+\subsection{Normalizing Indicators}
+
+\section{Sub-Indexes and Total Liveability Index}
+
+\subsection{Sub-Indexes Calculation}
+
+\subsection{Total Liveability Index Calculation}
+
+
+
+\section{Results and Interpretation}
+

@@ -1,0 +1,110 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Statistical Programming Languages  
+% 
+% Dr Alla 
+% Humboldt Universitat zu Berlin
+% 15 March 2019
+%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\documentclass[11pt]{article}
+\usepackage[margin=1.2in]{geometry}
+\usepackage[toc,page]{appendix}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage{lipsum}
+\usepackage{caption}
+\usepackage{pdflscape}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage[svgnames]{xcolor}
+\usepackage{listings}
+\lstset{language=R,
+    basicstyle=\small\ttfamily,
+    stringstyle=\color{DarkGreen},
+    otherkeywords={0,1,2,3,4,5,6,7,8,9},
+    morekeywords={TRUE,FALSE},
+    deletekeywords={data,frame,length,as,character},
+    keywordstyle=\color{blue},
+    commentstyle=\color{DarkGreen},
+}
+
+
+\begin{document}
+
+\captionsetup[figure]{margin=1.5cm,font=small,labelfont={bf},name={Figure},labelsep=colon,textfont={it}}
+\captionsetup[table]{margin=1.5cm,font=small,labelfont={bf},name={Table},labelsep=colon,textfont={it}}
+\setlipsumdefault{1}
+
+
+\begin{titlepage}
+
+
+% -------------------------------------------------------------------
+% You need to edit the details here
+% -------------------------------------------------------------------
+
+\begin{center}
+{\LARGE Humboldt Universitat zu Berlin}\\[1.5cm]
+\linespread{1.2}\huge {\bfseries Title}\\[1.5cm]
+\linespread{1}
+{\Large Your Name}\\[1cm]
+{\large \emph{Supervisor:} Supervisor's Name}\\[1cm] % if applicable
+\large A report submitted in partial fulfilment of the requirements\\ for the degree of ???? in Computer Science\\[0.3cm] 
+\textit{in the}\\[0.3cm]
+Department of Computer Science\\[2cm]
+\today
+\end{center}
+
+\end{titlepage}
+
+
+% -------------------------------------------------------------------
+% Declaration
+% -------------------------------------------------------------------
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+\listoffigures
+
+\newpage
+
+\listoftables
+
+
+% -------------------------------------------------------------------
+% Main sections (as required)
+% -------------------------------------------------------------------
+
+\newpage
+
+
+\input{sections/introduction.tex}
+\input{sections/background.tex}
+\input{sections/methodology.tex}
+\input{sections/results.tex}
+\input{sections/discussion.tex}
+\input{sections/conclusion.tex}
+
+
+% -------------------------------------------------------------------
+% Bibliography
+% -------------------------------------------------------------------
+
+\bibliographystyle{agsm} 
+\bibliography{mybibliography} 
+
+
+% -------------------------------------------------------------------
+% Appendices
+% -------------------------------------------------------------------
+\begin{appendices}
+\input{sections/appendixA.tex}
+\input{sections/appendixB.tex}
+\end{appendices}
+
+\end{document}
