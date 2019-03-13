@@ -1,6 +1,6 @@
 #=========================PREPARING THE ENVIROMENT==============================
 
-#setwd("~/SPL-Project-New")
+#setwd("~/SPL_BerlinDst")
 
 pcks = list("rvest",
            "magrittr",
@@ -10,13 +10,29 @@ pcks = list("rvest",
            "rgdal",
            "xlsx")  # list pakages required 
   
-for (i in pcks) {                          
-    if(!require(i, character.only=TRUE))
-    {install.packages(i, character.only=TRUE)}
-    library(i, character.only=TRUE)
+CallPack = function(pack){
+    # Description: checks if the package from the list was installed,  
+    # install new packages and load all the packages from the list
+    # Author: Aleksandra Kudaeva
+    # Args: vector with package names
+    # Returns: -
+    
+    #create a list of packages that are not installed
+    uninstalled = pack[!(pack %in% installed.packages()[,"Package"])]
+    
+    #create a list of packages that are installed
+    installed   = pack[(pack %in% installed.packages()[,"Package"])]
+    
+    for (pack in uninstalled) {  #if not installed yet
+        install.packages(pack, character.only = TRUE)  #install packages 
+        library(pack, character.only = TRUE)  #call packages
+    }
+    for (pack in installed) {  #if already installed
+        library(pack, character.only = TRUE)  #load packages
+    }
 }
 
-  
+CallPack(pcks)
 #========FUNCTIONS FOR CLEANING AND ARRANGING THE DATA========================
 
 GetDataUnderURL = function(URL){
