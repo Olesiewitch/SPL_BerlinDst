@@ -1,4 +1,3 @@
-## SPL_BerlinDst 
 
 ## Livability in Berlin Districts: Comparative Analysis
 
