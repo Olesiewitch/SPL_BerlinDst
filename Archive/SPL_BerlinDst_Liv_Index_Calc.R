@@ -1,25 +1,39 @@
 #===================== PREPARING THE ENVIROMENT ================================
 #setwd("~/SPL_BerlinDst")
 
-install.packages("ggplot2")
-install.packages("reshape2")
-install.packages("rlang")
-install.packages("dplyr")
-install.packages("tidyr")
-install.packages("xlsx")
-install.packages("ggthemes")
-install.packages("xtable")
-install.packages("magrittr")   # install pakages required 
+pcks = list("ggplot2",
+            "magrittr",
+            "reshape2",
+            "ggthemes",
+            "rlang",
+            "dplyr",
+            "tidyr",
+            "xlsx",
+            "xtable")  # list pakages required 
 
-library(ggplot2)
-library(magrittr)
-library(rlang)
-library(dplyr)
-library(tidyr)
-library(ggthemes)
-library(xlsx)
-library(reshape2)
-library(xtable)  # read in required packages
+CallPack = function(pack){
+    # Description: checks if the package from the list was installed,  
+    # install new packages and load all the packages from the list
+    # Author: Aleksandra Kudaeva
+    # Args: vector with package names
+    # Returns: -
+    
+    #create a list of packages that are not installed
+    uninstalled = pack[!(pack %in% installed.packages()[,"Package"])]
+    
+    #create a list of packages that are installed
+    installed   = pack[(pack %in% installed.packages()[,"Package"])]
+    
+    for (pack in uninstalled) {  #if not installed yet
+        install.packages(pack, character.only = TRUE)  #install packages 
+        library(pack, character.only = TRUE)  #call packages
+    }
+    for (pack in installed) {  #if already installed
+        library(pack, character.only = TRUE)  #load packages
+    }
+}
+
+CallPack(pcks)
 
 options(xtable.floating = FALSE)
 options(xtable.timestamp = "")

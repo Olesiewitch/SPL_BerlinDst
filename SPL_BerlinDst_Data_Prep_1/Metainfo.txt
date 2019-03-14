@@ -1,0 +1,19 @@
+Name of Quantlet: SPL_BerlinDst_Data_Prep_1
+
+Published in: 'Statistical Programming Languages - Student Project on ''Livability of Berlin Districts: Comparative Analysis'' '
+
+Description: Generates the required data set from the raw data
+
+Keywords: data preparation, variable transformation, data description, data acquisition  
+
+Author: Malgorzata Paulina Olesiewicz
+
+See also: other Quantlets in this project
+
+Submitted: 15.03.2019
+
+Datafile: bezirksgrenzen.kml, Fallzahlen&HZ 2012-2017.xls, public transportation stops.csv, SB_B05-01-00_2018j01_BE.xls, statistic_id652680_strassenbaeume-in-berlin-nach-bezirken-2017.xls, statistic_id652716_oeffentliche-gruenflaechen-in-berlin-nach-bezirken-2017.xlsx
+
+Output:  
+- SPL_BerlinDst_Data_Prep_1.csv
+

@@ -63,7 +63,7 @@ DataToNumeric = function(column){
 DistricToFullName = function (column){
     # Function re-names the districts of Berlin with their full names 
     # without special signs. The function identifies the district by 
-    # three #or four letters of its name. 
+    # three or four letters of its name. 
     #
     # Args:
     #      column: vector or a column containing names of Berlin
@@ -71,7 +71,7 @@ DistricToFullName = function (column){
     #      use and additional information can be added to it.
     #      Only first 3-4letters need to be correct. 
     #
-    #Returns: 
+    # Returns: 
     #        Vector of replaced district names by its official names  
     #        without special signs.  
     
@@ -275,51 +275,32 @@ colnames(wbsDt) = c("Nr",
 # Data source paset0("https://www.statistik-berlin-brandenburg.de/Statistiken/",
 #"statistik_SB.asp?Ptyp=700&Sageb=21006&creg=BBB&anzwer=10")
   
-# Due to usage of German characters and not standard format of naming columns, 
-# reading columns by their names causes a lot of issue. Every computer seems
-# to read in data slightly diffrently even though encoding is set up to "UTF-8".
-
-# Package xlxs has also ben tested and worked well at the HU PC in PC Pool 25 
-# but caling columns by their names did not work at the author's 
-# british computer.To avoid issues with running the code the names of the 
-# columns have been given again. 
-
-sprtMb = read.xlsx("SPL_BerlinDst_Data_Prep_1/SB_B05-01-00_2018j01_BE.xls",
-                   sheetName = "T9", startRow = 4, encoding = "UTF-8",
-                   as.data.frame = TRUE)
-colnames(sprtMb) = c("NA.", "NA..1", "NA..2", "bis.6", "X.7...14", "X15...18", 
-                     "X19...20","X21...26", "X27...40", "X41...50", "X51...60", 
-                     "X61.und.mehr")
 
 # Read in sport clubs memberships data and convert columns to numeric.
 
-sprtMb = sprtMb %>%
-  mutate_at(vars("bis.6": "X61.und.mehr"),DataToNumeric) %>%  
-  mutate_at(vars("NA..1"),as.character)  
+sprtMb = read.xlsx("SPL_BerlinDst_Data_Prep_1/SB_B05-01-00_2018j01_BE.xls",
+                   sheetName = "T9", startRow = 4, encoding = "UTF-8",
+                   as.data.frame = TRUE) %>%
+  mutate_at(vars("bis6":"mehrund61"),DataToNumeric) %>%  
+  mutate_at(vars("Bezirk"),as.character)  
 
 # Read in sport clubs numbers data and rename the columns
+# Convert columns to numeric and name the districts properly
+
+# Ignore Warning message: "In (function (column)  : NAs introduced by coercion"
 
 sprtCl = read.xlsx("SPL_BerlinDst_Data_Prep_1/SB_B05-01-00_2018j01_BE.xls",
                    sheetName = "G3", encoding = "UTF-8", startRow = 2,
-                   as.data.frame = TRUE) 
-colnames(sprtCl)
-
-colnames(sprtCl) = c("NA.", "NA..1", "NA..2","NA..3", "NA..4", "NA..5", 
-                     "NA..6", "NA..7", "Bezirk", "X.Sportvereine",
-                     "X.Betriebssportgemeinschaften")
-
-# Convert columns to numeric
-# Ignore Warning message: "In (function (column)  : NAs introduced by coercion"
-sprtCl = sprtCl %>% 
-  mutate_at(vars("X.Sportvereine"),DataToNumeric) %>% 
+                   as.data.frame = TRUE) %>% 
+  mutate_at(vars("Sportvereine"),DataToNumeric) %>% 
   mutate_at(vars("Bezirk"),as.character)  
 
-  
+
 #=================== PREPARING SPORT DATA FOR MERGING ========================
   
 # Sport Club Members 
 
-mbDst = c(sprtMb$NA..1[33:44])%>%  # Chose district names 
+mbDst = c(sprtMb$Bezirk[33:44])%>%  # Chose district names 
           DistricToFullName(.)  # Uniformise the disctrict names
   
 
@@ -329,7 +310,7 @@ mbDst = c(sprtMb$NA..1[33:44])%>%  # Chose district names
 jnrMb = c(rowMeans(sprtMb[33:44, 4:6])) 
   
 
-snrMb = c(sprtMb$X61.und.mehr[33:44])  # Choose active sport club memb. age 61+
+snrMb = c(sprtMb$mehrund61[33:44])  # Choose active sport club memb. age 61+
 
 spMbDt = data.frame(mbDst, jnrMb, snrMb ,
                     stringsAsFactors = FALSE)  # create a data frame
@@ -341,7 +322,7 @@ colnames(spMbDt) = c("District","JunSport","SenSport")  # name the columns
 clbDst = c(sprtCl$Bezirk[1:12]) %>%  # Chose sport club district name data
     DistricToFullName(.)
 
-clbNm = c(sprtCl$X.Sportvereine[1:12])  
+clbNm = c(sprtCl$Sportvereine[1:12])  
 
 
 clbsDt = data.frame(clbDst, 
@@ -356,7 +337,9 @@ colnames(clbsDt) = c("District", "Sport")  # Name the column
 
 
 # Read in district borders coordinates
+# Data source: https://data.technologiestiftung-berlin.de/dataset/bezirksgrenzen 
 # Ignore warnings: no altitude values for KML object 1 - 16
+
 
 dstrBrd = getKMLcoordinates("SPL_BerlinDst_Data_Prep_1/bezirksgrenzen.kml")
 
@@ -402,11 +385,13 @@ colnames(bsStpDt)= c("District",
                      "Transport") # name the columns
 
 #==========================READING IN CRIME DATA==============================
-# Similar problem with encoding as before. Only three columns of interest,
-# which we can easily select by maching first letters. Columns of interst start
-# with:  
+# There is problem with encoding in this file as special signs make the code
+# not replicable on every computer when calling columns by their name
+# ( even if encoding is set to "UTF-8" ). Therefore, maching of column 
+# names by only couple of first names required
+# Columns of interst start with:  
 
-crmCl= c("LOR", "Bezei", "Straft") 
+crmCl= c("LOR", "Bezei", "Straft") # Vector with begining of column names 
 
 crm = read.xlsx("SPL_BerlinDst_Data_Prep_1/Fallzahlen&HZ 2012-2017.xls",
                 sheetName = "HZ_2017", encoding = "UTF-8",
@@ -414,12 +399,12 @@ crm = read.xlsx("SPL_BerlinDst_Data_Prep_1/Fallzahlen&HZ 2012-2017.xls",
     select(grep(paste(crmCl,collapse="|"), names(.))) %>%
   mutate_at(grep("Bezei", names(.)), as.character)
   
-   # Vector with begining of column names 
+
 #========================PREPARING CRIME DATA FOR MERGING=====================
 
-# Select data based on their "LOR Schlussel"[, 1] where districts are coded with the
-# last 4 numbers being "0000". Select only required data. Convert names of the
-# districts to full names, the rest of the data to numeric
+# Select data based on their "LOR Schlussel"[, 1] where districts are coded 
+# with the last 4 numbers being "0000". Select only required data. Convert 
+# names of the districts to full names, the rest of the data to numeric
 
 crmDt = crm[grep("0000", crm[, 1]), ] %>%
     select(2:3) %>%
@@ -442,7 +427,7 @@ rprtDt = c(26488, 4090, 26000, 20500, 2726, 7400, 7150)  # avaiable data
 
 #===================== PREPARING PARKING DATA FOR MERGING=====================
 
-# For the remaining districts the average of avaiable data has been used not
+# For the remaining districts the average of avaiable data has been used, not to
 # impact the index calculation. Create a vector with observations for all the
 # districts
 
@@ -508,7 +493,9 @@ colnames(trDt) = c("District", "Trees") # name columns
 # Data source: Source of data : paste0("https://de.statista.com/statistik/",
 # "daten/studie/652716/umfrage/oeffentliche-gruenflaechen-in-berlin-nach-",
 # "bezirken/") 
-#  Intrested in "Öffentliche.Grünflächen.in.ha" use "lich" to identify column
+
+# Again problem with encoding here. 
+# Intrested in "Öffentliche.Grünflächen.in.ha" use "lich" to identify column
 
 
 grSpNm = paste0("SPL_BerlinDst_Data_Prep_1/statistic_id652716_oeffentliche-",

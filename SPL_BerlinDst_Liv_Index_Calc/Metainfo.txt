@@ -1,0 +1,22 @@
+Name of Quantlet: SPL_BerlinDst_Liv_Index_Calc
+
+Published in: 'Statistical Programming Languages - Student Project on ''Livability of Berlin Districts: Comparative Analysis'' '
+
+Description: Calculation of Berlin Districts Livability Index based on previously prepared data. Calculation of Sub-Indexes, Pillars Contributions and Total Livability Index. Visualisation of final results.
+
+Keywords: index calculation, data normalization, data visualisation, boxplot, barplot  
+
+Author: Malgorzata Paulina Olesiewicz
+
+See also: other Quantlets in this project
+
+Submitted: 15.03.2019
+
+Datafile: SPL_BerlinDst_Data_Desc.csv
+
+Output:  
+- Index_Score_Data.csv
+- SPL_BerlinDst_Liv_Index.csv
+- Sub-Index Boxplot.png
+- Total Index BarPlot.png
+- Per Pillar BarPlot.png
