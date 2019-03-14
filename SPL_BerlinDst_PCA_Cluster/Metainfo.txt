@@ -1,0 +1,25 @@
+Name of Quantlet: SPL_BerlinDst_PCA_Cluster
+
+Published in: 'Statistical Programming Languages - Student Project on ''Livability in Berlin Districts: Comparative Analysis'' '
+
+Description: principle component analysis and cluster on Berlin district based on livability index and score dataframe
+
+Keywords: PCA, Cluster, visualization, reduce dimension, ggplot 
+
+Author: Wu Qi
+
+See also: other Quantlets in this project
+
+Submitted: 15.03.2019
+
+Datafile: 
+- SPL_BerlinDst_Liv_Index.csv
+- Index_Score_Data.csv
+
+Output:  
+- PCACluster4.png
+- PCAcon1.png
+- PCAexplVar.png
+- PCAIndandVar.png
+- PCAIndwithVar.png
+- PCAoptimalk.png
