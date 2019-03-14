@@ -51,7 +51,7 @@ for (i in 1:dim(dstr)[1]) {
 
 # Save resulting table to csv
 write.csv2(StrMtch, 
-           "./SPL_BerlinDst_Data_Prep_3/Output/Street_Index_Matching.csv", 
+           "./SPL_BerlinDst_Data_Prep_3/Street_Index_Matching.csv", 
            row.names = FALSE)
 
 
@@ -127,5 +127,5 @@ ap = PltnM %>%
 
 # Save final result as csv
 write.csv2(ap, 
-           "./SPL_BerlinDst_Data_Prep_3/Output/SPL_BerlinDst_Data_Prep_3.csv", 
+           "./SPL_BerlinDst_Data_Prep_3/SPL_BerlinDst_Data_Prep_3.csv", 
            row.names = FALSE)

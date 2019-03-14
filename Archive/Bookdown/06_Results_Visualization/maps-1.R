@@ -26,9 +26,11 @@ ber_adj["x","min"] = ber_adj["x","min"]-0.18
 ber_adj["x","max"] = ber_adj["x","max"]+0.22
 ber_adj["y","min"] = ber_adj["y","min"]-0.02
 
+# Upload map-teils from Stamen Maps
 map = get_stamenmap(ber_adj, maptype="toner-lite", zoom = 11)
 
-#source: https://data.technologiestiftung-berlin.de/dataset/bezirksgrenzen        # add space after #
+# Download polygons with districts borders 
+# source: https://data.technologiestiftung-berlin.de/dataset/bezirksgrenzen        # add space after #
 test = readOGR("./06_Results_Visualization/bezirksgrenzen.kml")
 Bezirk = fortify(test)
 Bezirk$District = case_when(Bezirk$id == "0" ~ "Reinickendorf",                   # changes spaces between ==
@@ -66,10 +68,12 @@ DistricToFullName = function (column){
 }
 
 #==========================READ INDEX AND RENT DATA=============================
+# Read Livability Index
 IndDt = read.csv2("./06_Results_Visualization/SPL_BerlinDst_Liv_Index.csv", 
                sep = ";", 
                dec = ",")
 
+# Read rent data
 RntDt = read_excel(paste0("./06_Results_Visualization/statistic_id259905",
                           "_mietpreise-in-berlin-2017-nach-bezirken.xlsx"),
                    sheet = "Daten",
@@ -78,9 +82,10 @@ RntDt = read_excel(paste0("./06_Results_Visualization/statistic_id259905",
   setNames(c("District", "Rent")) %>%
   filter(!District == "Berlin Durchschnitt") %>%
   
-  
+# Unify district names from retn data with standart version used before  
 RntDt$District = DistricToFullName(RntDt$District)
 
+# Merge Index and Rent Data with District borders
 IndRntDt = Bezirk %>% 
     merge(IndDt, by = "District") %>%
     merge(RntDt, by = "District")
@@ -103,7 +108,7 @@ library(ggthemes)
 p1 <- ggmap(map, extent = "normal", maprange = FALSE) +
   geom_polygon(data = IndRntDt, 
                aes(long, lat, group = group, fill=District),
-               colour = "red", 
+               colour = "darkcyan", 
                alpha = 0.2) + 
   theme_bw() +
   coord_map(projection="mercator",
@@ -161,8 +166,8 @@ print(p2)
 ggplot(LablesDt, aes(x=Rent, y=TotalIn)) +
   geom_point(size = 3, 
              colour = "steelblue") +  # Use hollow circles
-  geom_smooth(method=lm,  # Add linear regression line                           #space = 
-              se=FALSE) +  # Don't add shaded confidence region
+  geom_smooth(method = lm,  # Add linear regression line                           #space = 
+              se = FALSE) +  # Don't add shaded confidence region
   theme_bw()+
   theme(panel.grid.major = element_blank(),
         panel.grid.minor = element_blank()) +

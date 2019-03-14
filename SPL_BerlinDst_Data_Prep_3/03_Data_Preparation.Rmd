@@ -3,6 +3,7 @@ title: "03_Data_Preparation"
 author: "Aleksandra Kudaeva"
 date: "28 Februar 2019"
 output: pdf_document
+keep_tex: true
 ---
 
 ## Preparation of Air-Pollution Data
@@ -31,7 +32,7 @@ names(ap15) = mtch$new[match(names(ap15), mtch$old)]  # Rename variables
 
 ```
 
-Downloaded table consists of 12374 rows containing values of different air-pollution indicators and aggregated index values for section of main Berlin Streets (1238). Average value of PM10 pollution is equal to 20.6 mg/m^3, and PM25 - 14,3 (on average in 2015), which is below dangerous threshold. Statistics were calculated by means of the script provided below:  
+Downloaded table consists of 12374 rows containing values of different air-pollution indicators and aggregated index values for section of main Berlin Streets (1238). In our research we use PM10 and PM25 indicators because those ones are regulated by European Union and have clearly determined thresholds [*insert reference to guidelines*]. Average value of PM10 pollution is equal to 20.6 mg/m^3, and PM25 - 14,3 (on average in 2015), which is below dangerous threshold. Statistics were calculated by means of the script provided below:  
 
 ```{r desc_data, echo=TRUE, tidy=FALSE, eval=FALSE}
 # descriptory statistics of air pollution data table
@@ -69,7 +70,7 @@ for (i in 1:dim(dstr)[1]) {
 
 ```
 
-Downloaded table contains information on XXX streets from 12 districts of Berlin.
+Downloaded table contains information on 13399 streets from 12 districts of Berlin.
 
 ### Reformating and cleaning
 
@@ -114,8 +115,54 @@ ap15$str = ap15$Street %>%
 
 ### Merging and summarizing
 
+First step is to calculate weighted average PM10 and PM25 pollution for all streets presented in the Air-POllution Data.
+
+```{r street_average, echo=TRUE, tidy=FALSE, eval=FALSE}
+# Find PM10 and PM15 weighted averages for each street (by length of str.section)
+Pltn = ap15 %>% 
+    group_by(str) %>%
+    summarize(L = sum(Length),
+              MinPM10 = min(PM10_yearly), 
+              MaxPM10 = max(PM10_yearly),
+              AvgPM10 = weighted.mean(PM10_yearly, Length),
+              MinPM25 = min(PM25_yearly), 
+              MaxPM25 = max(PM25_yearly),
+              AvgPM25 = weighted.mean(PM25_yearly, Length)) %>%
+    arrange(str)
+```
+
+After we unified street names, tables are ready to be merged by street name:
+```{r street_average, echo=TRUE, tidy=FALSE, eval=FALSE}
+# Merge averaged air pollution tables with 
+PltnM = merge(Pltn, StrMtch, by="str", all.x = TRUE, all.y = FALSE)
+```
 
 
+```{r street_average, echo=TRUE, tidy=FALSE, eval=FALSE}
+# Merge averaged air pollution tables with 
+PltnM = merge(Pltn, StrMtch, by="str", all.x = TRUE, all.y = FALSE)
+```
 
+As a result of tables merge, we could define districts and postal indixes for XXX streets. 51 streets were not found in the matching table for street names and postal indixes and were excluded from the final data set.
+
+Finally, we can calculate an average air pollution for each of 12 Berlin districts. In order to do that we have to approximate air pollution of the streets which are included to more than one district. As it was not possible to find any information on how those streets were distributed among districts we assume equal distribution (e.g. if the street was included into 3 districts we devide it's total length by 3 and include each part to each district). The calculations described above were completed with R-script provided below:
+
+```{r street_average, echo=TRUE, tidy=FALSE, eval=FALSE}
+# Some streets are allocated to more than one district
+# We assume here that such streets are equally devided among all districts 
+# to which they belong
+
+ap = PltnM %>%
+    filter(!is.na(PLZ)) %>%  #filter NAs
+    group_by(str) %>%
+    mutate(DistrictLength = L/n()) %>% #appr. length of street in the district
+    group_by(District) %>%
+    summarize(PM10 = weighted.mean(AvgPM10, DistrictLength),  # av. PM10
+              PM25 = weighted.mean(AvgPM25, DistrictLength)) %>%  # av. PM25
+              
+    arrange(desc(PM10))
+```
+
+As a final result, we obtained a table consisting of 12 rows (corresponding to 12 Berlin districts) and 3 columns (District name, PM10 and PM25). 
 
 

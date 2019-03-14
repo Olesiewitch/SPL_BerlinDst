@@ -1,0 +1,272 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={03\_Data\_Preparation},
+            pdfauthor={Aleksandra Kudaeva},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\newcommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{03\_Data\_Preparation}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Aleksandra Kudaeva}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{28 Februar 2019}
+
+
+\begin{document}
+\maketitle
+
+\subsection{Preparation of Air-Pollution
+Data}\label{preparation-of-air-pollution-data}
+
+Preparation of air-pollution data required obtaining additional data and
+usage of several approximations. The whole process of data preparation
+can be devided in three parts: 1) downloading the data from different
+sources 2) data cleaning and reformating 3) merging and aggregating the
+data
+
+\subsubsection{Loading the data}\label{loading-the-data}
+
+Air-pollution data was downloaded from {[}*insert reference:
+``\url{https://fbinter.stadt-berlin.de/fb/index.jsp\%22*}{]} in xls
+format. Initial column names are poorly adapted for R processing (e.g.
+``PM10-Belastung (berechnetes Jahresmittel {[}µg/m³{]}) 2015'') as they
+are too long and contain special symbols. For the purpose of further
+analysis we rename all the columns according to the correspondence
+stated in a matching table (matching.csv)
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Read air-pollution data from excel}
+\NormalTok{ap15 =}\StringTok{ }\KeywordTok{read_excel}\NormalTok{(}\StringTok{"./SPL_BerlinDst_Data_Prep_3/Air_Pollution_2015.xls"}\NormalTok{, }
+                  \DataTypeTok{sheet =} \DecValTok{1}\NormalTok{)}
+
+\CommentTok{# Original names are too long and contain special symbols and spaces}
+\NormalTok{mtch =}\StringTok{ }\KeywordTok{read.csv2}\NormalTok{(}\StringTok{"./SPL_BerlinDst_Data_Prep_3/matching.csv"}\NormalTok{, }
+                 \DataTypeTok{sep =} \StringTok{";"}\NormalTok{, }
+                 \DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}\NormalTok{)  }\CommentTok{# Matching table for short names}
+
+\KeywordTok{names}\NormalTok{(ap15) =}\StringTok{ }\NormalTok{mtch}\OperatorTok{$}\NormalTok{new[}\KeywordTok{match}\NormalTok{(}\KeywordTok{names}\NormalTok{(ap15), mtch}\OperatorTok{$}\NormalTok{old)]  }\CommentTok{# Rename variables}
+\end{Highlighting}
+\end{Shaded}
+
+Downloaded table consists of 12374 rows containing values of different
+air-pollution indicators and aggregated index values for section of main
+Berlin Streets (1238). In our research we use PM10 and PM25 indicators
+because those ones are regulated by European Union and have clearly
+determined thresholds {[}\emph{insert reference to guidelines}{]}.
+Average value of PM10 pollution is equal to 20.6 mg/m\^{}3, and PM25 -
+14,3 (on average in 2015), which is below dangerous threshold.
+Statistics were calculated by means of the script provided below:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# descriptory statistics of air pollution data table}
+\NormalTok{ap15 }\OperatorTok{%>%}\StringTok{ }\KeywordTok{summarize}\NormalTok{(}\DataTypeTok{Sections =} \KeywordTok{n}\NormalTok{(),                 }\CommentTok{# Number of street sections}
+                   \DataTypeTok{Streets  =} \KeywordTok{n_distinct}\NormalTok{(Street),  }\CommentTok{# Number of unique streets}
+                   \DataTypeTok{avg_PM10 =} \KeywordTok{mean}\NormalTok{(PM10_yearly),   }\CommentTok{# Average value of PM10}
+                   \DataTypeTok{avg_PM25 =} \KeywordTok{mean}\NormalTok{(PM25_yearly))   }\CommentTok{# Average value of PM25}
+\end{Highlighting}
+\end{Shaded}
+
+The raw data does not contain district key. That is why, in order to
+bring Air-Pollution data to the same format as other variables described
+in previous chapters and merge tables we need to download additional
+information. Our solution was to scrap correspondence table from
+web-page {[}\emph{insert reference: kauperts}{]}:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\OperatorTok{:}\KeywordTok{dim}\NormalTok{(dstr)[}\DecValTok{1}\NormalTok{]) \{}
+    \CommentTok{# Generate a link to data for all the districts and sub-districts}
+\NormalTok{    link=}\KeywordTok{paste0}\NormalTok{(}\StringTok{"https://berlin.kauperts.de/Bezirke/"}\NormalTok{,}
+\NormalTok{                dstr}\OperatorTok{$}\NormalTok{District[i],}
+                \StringTok{"/Ortsteile/"}\NormalTok{,}
+\NormalTok{                dstr}\OperatorTok{$}\NormalTok{Sub.district[i],}
+                \StringTok{"/Strassen"}\NormalTok{)}
+    
+    \CommentTok{# Download the data from the web-page with generated link}
+\NormalTok{    webpage =}\StringTok{ }\KeywordTok{read_html}\NormalTok{(link)}
+\NormalTok{    tbls    =}\StringTok{ }\KeywordTok{html_nodes}\NormalTok{(webpage, }\StringTok{"table"}\NormalTok{)}
+\NormalTok{    tab     =}\StringTok{ }\KeywordTok{html_table}\NormalTok{(tbls)[[}\DecValTok{1}\NormalTok{]]}
+    
+    \CommentTok{# Add columns for district and sub-district}
+\NormalTok{    tab}\OperatorTok{$}\NormalTok{District    =}\StringTok{ }\NormalTok{dstr}\OperatorTok{$}\NormalTok{District[i]}
+\NormalTok{    tab}\OperatorTok{$}\NormalTok{SubDistrict =}\StringTok{ }\NormalTok{dstr}\OperatorTok{$}\NormalTok{Sub.district[i]}
+    
+    \CommentTok{# Add created table to the table for the whole Berlin}
+\NormalTok{    StrMtch =}\StringTok{ }\KeywordTok{rbind}\NormalTok{(StrMtch, tab)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+Downloaded table contains information on XXX streets from 12 districts
+of Berlin.
+
+\subsubsection{Reformating and cleaning}\label{reformating-and-cleaning}
+
+Another problem was different ways of writing street name,
+e.g.~Adamstr./ Africanische Str. and so on. First step to unification of
+street names was replacements of german special symbols and bringing
+everything to the low case. For that purpose the function
+\emph{ReplaceUmlauts} was written:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#replace all the Umlauts by latin equivalents}
+\NormalTok{ReplaceUmlauts =}\StringTok{ }\ControlFlowTok{function}\NormalTok{(clmn)\{}
+    \CommentTok{#Description: Replaces german special symbols and turns to lower case}
+    \CommentTok{#Author: Aleksandra Kudaeva}
+    \CommentTok{#Input:  column where you want to replace umlauts}
+    \CommentTok{#Output: column without umlauts (lower case)}
+    
+\NormalTok{    clmn =}\StringTok{ }\KeywordTok{tolower}\NormalTok{(clmn)  }\CommentTok{#all strings to lower case}
+    
+    \CommentTok{#check if at least one element of a vector has any umlauts in it}
+    \CommentTok{#replaces umlauts until there are no one left}
+    \ControlFlowTok{while}\NormalTok{(}\KeywordTok{any}\NormalTok{(}\KeywordTok{grepl}\NormalTok{(}\StringTok{"ä|ö|ü|ß"}\NormalTok{,clmn)) }\OperatorTok{==}\StringTok{ }\OtherTok{TRUE}\NormalTok{) \{}
+\NormalTok{        clmn }\OperatorTok{%<>%}\StringTok{ }
+\StringTok{            }\KeywordTok{sub}\NormalTok{(}\StringTok{"ä"}\NormalTok{, }\StringTok{"ae"}\NormalTok{, .) }\OperatorTok{%<>%}\StringTok{ }
+\StringTok{            }\KeywordTok{sub}\NormalTok{(}\StringTok{"ö"}\NormalTok{, }\StringTok{"oe"}\NormalTok{, .) }\OperatorTok{%<>%}\StringTok{ }
+\StringTok{            }\KeywordTok{sub}\NormalTok{(}\StringTok{"ü"}\NormalTok{, }\StringTok{"ue"}\NormalTok{, .) }\OperatorTok{%<>%}\StringTok{ }
+\StringTok{            }\KeywordTok{sub}\NormalTok{(}\StringTok{"ß"}\NormalTok{, }\StringTok{"ss"}\NormalTok{, .)}
+\NormalTok{    \}}
+    \KeywordTok{return}\NormalTok{(clmn)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+Next step, was to substract unique part of street name (e.g.~Adamstr. -
+Adam). THe following code illustrates work of replacement function and
+substitution procedure for air-pollution dataset (analogical procedure
+was performed for correspondence table):
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Street name formatting (in order to merge with street-index matching table)}
+\NormalTok{ap15}\OperatorTok{$}\NormalTok{str =}\StringTok{ }\NormalTok{ap15}\OperatorTok{$}\NormalTok{Street }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{ReplaceUmlauts}\NormalTok{() }\OperatorTok{%>%}\StringTok{  }\CommentTok{# Replace umlauts and switch to lower case}
+\StringTok{    }\KeywordTok{sub}\NormalTok{(}\StringTok{"str.$|str$|-strasse|strasse|-str.$"}\NormalTok{, }\StringTok{""}\NormalTok{, .) }\OperatorTok{%>%}\StringTok{  }\CommentTok{# Delete street ind.}
+\StringTok{    }\KeywordTok{sub}\NormalTok{(}\StringTok{"ak |as |ad "}\NormalTok{, }\StringTok{""}\NormalTok{, .)  }\CommentTok{# Delete AK, AS, AD in the beginning}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{Merging and summarizing}\label{merging-and-summarizing}
+
+First step is\ldots{}. After we unified street names, tables are ready
+to be merged by street name
+
+
+\end{document}
