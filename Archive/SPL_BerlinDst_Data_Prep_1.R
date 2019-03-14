@@ -1,7 +1,6 @@
 #=========================PREPARING THE ENVIROMENT==============================
 
 #setwd("~/SPL_BerlinDst")
-# The code was tested at HU PC Pool 25
 
 install.packages("rvest")
 install.packages("magrittr")
@@ -10,7 +9,7 @@ install.packages("dplyr")
 install.packages("tidyr")
 install.packages("rgdal")
 install.packages("xlsx")
-install.packages("maptools")# Install required pakages  
+install.packages("maptools")# install pakages required 
   
 library(rvest)
 library(magrittr)
@@ -19,7 +18,7 @@ library(dplyr)
 library(tidyr)
 library(rgdal)
 library(xlsx)
-library(maptools) # Load required packages
+library(maptools) # load required packages
 
 
 #========FUNCTIONS FOR CLEANING AND ARRANGING THE DATA========================
@@ -32,19 +31,19 @@ GetDataUnderURL = function(URL){
     # returned as a table.  
     #
     # Args:
-    #   URL: URL address under which the required data is 
+    #   URL: URL address under which the required data are 
     #        stored. The table which contains the data must  
     #        be the first table [[1]] on the page. 
     #
     # Returns: 
     # Matrix with the data stored in the first table under from 
     # the URL address 
-    
+ 
     webpage = read_html(URL)    
     table = html_table(html_nodes(webpage, "table")[[1]], 
                        fill = TRUE,trim = TRUE)
 }
-
+  
 DataToNumeric = function(column){
     # Function cleans up data in chosen column by replacing "," with "." as a 
     # decimel symbol, removes empty space between numbers and converst the 
@@ -69,9 +68,9 @@ DistricToFullName = function (column){
     # Args:
     #      column: vector or a column containing names of Berlin
     #      districts.Name can have any form, special signs can be
-    #      use and additional information can be added to it. Vector 
-    #      must be character type.Only first 3-4letters need to be correct.  
-    #      
+    #      use and additional information can be added to it.
+    #      Only first 3-4letters need to be correct. 
+    #
     # Returns: 
     #        Vector of replaced district names by its official names  
     #        without special signs.  
@@ -93,9 +92,9 @@ DistricToFullName = function (column){
     
     return(column)
 }
-
+  
 NrofStops= function(district){
-    # Function checkes, based on the geografical coordinates, how many public
+    # Function checkes based on the geografical coordinates, how many public
     # transportation stops (in file bsStp) are in the chosen Berlin district
     # and counts their number. 
     #
@@ -115,7 +114,7 @@ NrofStops= function(district){
     
     return(nrstops)
 }
-
+  
 #========ACCESING THE DATA FROM STATISTIK BERLIN BRANDENBURG WEBSITE==========
 
 # The data on Statistik Berlin Brandenburg Website are stored under several 
@@ -180,51 +179,50 @@ lstUrl = list(pplt = paste0("https://www.statistik-berlin-brandenburg.de/re",
 
 
 # Apply the DatafromURL function to all the previously listed URL adresses and 
-# split each data table from the tblLst into individual data frame in the 
-# Global Enviroment
-
+# split each data table from the tblLst into individual data frame
+ 
 tblLst = lapply(lstUrl, GetDataUnderURL) %>%
     list2env(envir = .GlobalEnv)
-
-
+  
+  
 #======== PREPARING DATA FRAME FROM STATISTIK WEBSITE FOR MERGING ============
 
 # The data tables aquired from the website are very poorly structured and  
 # columns are not directly linked with their names. Therefore hardcoding of  
 # numbers of rows and columns is required. 
-
-X1 = c(pplt[5:16, 1])  # choose district name data
-X2 = c(pplt[5:16, 2])  # choose population  size data
-X3 = c(sz[4:15, 2])  # choose district size data
-X4 = c(srf[4:15, 3])  # choose residential and traffic surface data
-X5 = c(srf[4:15, 4]) %>%  # choose agricultural surface data
+  
+X1 = c(pplt[5:16, 1])  # chose district name data
+X2 = c(pplt[5:16, 2])  # chose population  size data
+X3 = c(sz[4:15, 2])  # chose district size data
+X4 = c(srf[4:15, 3])  # chose residential and traffic surface data
+X5 = c(srf[4:15, 4]) %>%  # chose agricultural surface data
     replace(1, "0")  # replace the first element "-" with 0
-X6 = c(pplt[5:16, 3])  # choose employment data
-X7 = c(pplt[5:16, 5])  # choose non-professional persons data
-X8 = c(hshl[4:15, 2])  # choose  nr of private hauseholds data
-X9 = c(hshl[4:15, 3])  # choose persons/household data
-X10 = c(stdt[4:15, 2])  # choose nr of schools data
-X11 = c(stdt[4:15, 3])   # choose  nr of grades data
-X12 = c(stdt[4:15, 4])  # choose  nr of pupils data
-X13 = c(stdt[4:15, 5])  # choose  nr of pupils dat / K
-X14 = c(immb[4:15, 2])  # choose  nr of residential buildings data
-X15 = c(immb[4:15, 3])  # choose  nr of flats
-X16 = c(immb[4:15, 4])  # choose  total living space
-X17 = c(immb[4:15, 5])  # choose living space per capita
-X18 = c(trsm[4:15, 3])  # choose  nr of hotel beds
-X19 = c(trsm[4:15, 4])  # choose  nr of tourist guests
-X20 = c(trsm[4:15, 5])  # choose  nr of overnight stays
-X21 = c(socl[5:16, 2])  # choose  nr of social help recipients
-X22 = c(chld[4:15, 3])  # choose  nr of children in daycare
-X23 = c(chld[4:15, 4])  # choose % of children in daycare under 3
-X24 = c(chld[4:15, 5])  # choose  nr of %Children in daycare 3 - under 6
-X25 = c(hndy[4:15, 2])  # choose  nr of severely handicapped
-X26 = c(hndy[4:15, 3])  # choose  nr of severely handicapped/1K
-X27 = c(cmp[4:15, 2])  # choose  nr of companies
-X28 = c(cmp[4:15, 3])  # choose  nr of taxable revenues
-X29 = c(bnkr[5:16, 2])  # choose  nr of bankruptcies
-X30 = c(accd[4:15, 4])  # choose  nr of street traffic accidents /10K
-X31 = c(allw[5:16, 2])  # choose  nr of housing allowance households
+X6 = c(pplt[5:16, 3])  # chose employment data
+X7 = c(pplt[5:16, 5])  # chose non-professional persons data
+X8 = c(hshl[4:15, 2])  # chose  nr of private hauseholds data
+X9 = c(hshl[4:15, 3])  # chose persons/household data
+X10 = c(stdt[4:15, 2])  # chose nr of schools data
+X11 = c(stdt[4:15, 3])   # chose  nr of grades data
+X12 = c(stdt[4:15, 4])  # chose  nr of pupils data
+X13 = c(stdt[4:15, 5])  # chose  nr of pupils dat / K
+X14 = c(immb[4:15, 2])  # chose  nr of residential buildings data
+X15 = c(immb[4:15, 3])  # chose  nr of flats
+X16 = c(immb[4:15, 4])  # chose  total living space
+X17 = c(immb[4:15, 5])  # chose living space per capita
+X18 = c(trsm[4:15, 3])  # chose  nr of hotel beds
+X19 = c(trsm[4:15, 4])  # chose  nr of tourist guests
+X20 = c(trsm[4:15, 5])  # chose  nr of overnight stays
+X21 = c(socl[5:16, 2])  # chose  nr of social help recipients
+X22 = c(chld[4:15, 3])  # chose  nr of children in daycare
+X23 = c(chld[4:15, 4])  # chose % of children in daycare under 3
+X24 = c(chld[4:15, 5])  # chose  nr of %Children in daycare 3 - under 6
+X25 = c(hndy[4:15, 2])  # chose  nr of severely handicapped
+X26 = c(hndy[4:15, 3])  # chose  nr of severely handicapped/1K
+X27 = c(cmp[4:15, 2])  # chose  nr of companies
+X28 = c(cmp[4:15, 3])  # chose  nr of taxable revenues
+X29 = c(bnkr[5:16, 2])  # chose  nr of bankruptcies
+X30 = c(accd[4:15, 4])  # chose  nr of street traffic accidents /10K
+X31 = c(allw[5:16, 2])  # chose  nr of housing allowance households
 
 
 # Merge the data vectors together into one data frame and split the number 
@@ -271,19 +269,20 @@ colnames(wbsDt) = c("Nr",
                     "Bankruptcy",
                     "Accidents",
                     "Allowance")
-
+  
 #==================READING IN THE SPORT DATA FILES==============================
 
 # Data source paset0("https://www.statistik-berlin-brandenburg.de/Statistiken/",
 #"statistik_SB.asp?Ptyp=700&Sageb=21006&creg=BBB&anzwer=10")
+  
 
 # Read in sport clubs memberships data and convert columns to numeric.
 
 sprtMb = read.xlsx("SPL_BerlinDst_Data_Prep_1/SB_B05-01-00_2018j01_BE.xls",
                    sheetName = "T9", startRow = 4, encoding = "UTF-8",
                    as.data.frame = TRUE) %>%
-    mutate_at(vars("bis6":"mehrund61"),DataToNumeric) %>%  
-    mutate_at(vars("Bezirk"),as.character)  
+  mutate_at(vars("bis6":"mehrund61"),DataToNumeric) %>%  
+  mutate_at(vars("Bezirk"),as.character)  
 
 # Read in sport clubs numbers data and rename the columns
 # Convert columns to numeric and name the districts properly
@@ -293,26 +292,27 @@ sprtMb = read.xlsx("SPL_BerlinDst_Data_Prep_1/SB_B05-01-00_2018j01_BE.xls",
 sprtCl = read.xlsx("SPL_BerlinDst_Data_Prep_1/SB_B05-01-00_2018j01_BE.xls",
                    sheetName = "G3", encoding = "UTF-8", startRow = 2,
                    as.data.frame = TRUE) %>% 
-    mutate_at(vars("Sportvereine"),DataToNumeric) %>% 
-    mutate_at(vars("Bezirk"),as.character)  
+  mutate_at(vars("Sportvereine"),DataToNumeric) %>% 
+  mutate_at(vars("Bezirk"),as.character)  
 
-#=================== PREPARING SPORT DATA FOR MERGING ==========================
 
+#=================== PREPARING SPORT DATA FOR MERGING ========================
+  
 # Sport Club Members 
 
 mbDst = c(sprtMb$Bezirk[33:44])%>%  # Chose district names 
-    DistricToFullName(.)  # Uniformise the disctrict names
-
+          DistricToFullName(.)  # Uniformise the disctrict names
+  
 
 # Take mean of 3 age groups (up to 6, 7-14 and 15-18) to obtain average % of  
 # active sport club members age 0-18
-
+  
 jnrMb = c(rowMeans(sprtMb[33:44, 4:6])) 
-
+  
 
 snrMb = c(sprtMb$mehrund61[33:44])  # Choose active sport club memb. age 61+
 
-spMbDt = data.frame(mbDst, jnrMb, snrMb,
+spMbDt = data.frame(mbDst, jnrMb, snrMb ,
                     stringsAsFactors = FALSE)  # create a data frame
 
 colnames(spMbDt) = c("District","JunSport","SenSport")  # name the columns
@@ -333,7 +333,7 @@ clbsDt = data.frame(clbDst,
 colnames(clbsDt) = c("District", "Sport")  # Name the column
 
 
-#====================== READING IN BUS STOP DATA  ==============================
+#====================== READING IN BUS STOP DATA  ============================
 
 
 # Read in district borders coordinates
@@ -348,9 +348,9 @@ dstrBrd = getKMLcoordinates("SPL_BerlinDst_Data_Prep_1/bezirksgrenzen.kml")
 
 bsStp = read.csv("SPL_BerlinDst_Data_Prep_1/public transportation stops.csv")  
 
-
-#=================== PREPARING BUS STOP DATA FOR MERGING =======================
-
+  
+#================== PREPARING BUS STOP DATA FOR MERGING ======================
+  
 # create a list of all the polygons assigned to corresponding districts
 
 dstLst = list( rein = dstrBrd [[1]],  # chose polygon of Reinickendorf
@@ -368,7 +368,7 @@ dstLst = list( rein = dstrBrd [[1]],  # chose polygon of Reinickendorf
                fri  = dstrBrd[[15]],  # chose polygon of Friedrichshain-Kreu.
                tem  = dstrBrd[[16]])  # chose polygon of Tempelhof-Schöneberg
 
-
+  
 # Apply NrofBusStops function to all the districts: 
 
 bsLst = lapply(dstLst, NrofStops) 
@@ -384,11 +384,11 @@ bsStpDt= data.frame(DistricToFullName(names(bsLst)),
 colnames(bsStpDt)= c("District", 
                      "Transport") # name the columns
 
-#==========================READING IN CRIME DATA================================
+#==========================READING IN CRIME DATA==============================
 # There is problem with encoding in this file as special signs make the code
 # not replicable on every computer when calling columns by their name
-# (even if encoding is set to "UTF-8" ). Therefore, maching of columns 
-# names by only couple of (first) latters in the name is required
+# ( even if encoding is set to "UTF-8" ). Therefore, maching of column 
+# names by only couple of first names required
 # Columns of interst start with:  
 
 crmCl= c("LOR", "Bezei", "Straft") # Vector with begining of column names 
@@ -396,11 +396,11 @@ crmCl= c("LOR", "Bezei", "Straft") # Vector with begining of column names
 crm = read.xlsx("SPL_BerlinDst_Data_Prep_1/Fallzahlen&HZ 2012-2017.xls",
                 sheetName = "HZ_2017", encoding = "UTF-8",
                 startRow = 3, as.data.frame = TRUE) %>%
-    select(grep(paste(crmCl,collapse="|"), names(.))) %>%  # select columns 
-    mutate_at(grep("Bezei", names(.)), as.character)
+    select(grep(paste(crmCl,collapse="|"), names(.))) %>%
+  mutate_at(grep("Bezei", names(.)), as.character)
+  
 
-
-#========================PREPARING CRIME DATA FOR MERGING=======================
+#========================PREPARING CRIME DATA FOR MERGING=====================
 
 # Select data based on their "LOR Schlussel"[, 1] where districts are coded 
 # with the last 4 numbers being "0000". Select only required data. Convert 
@@ -413,19 +413,19 @@ crmDt = crm[grep("0000", crm[, 1]), ] %>%
 
 
 colnames(crmDt) = c("District", "Crime")  # name the columns
+  
 
-
-#======================= READING IN THE PARKING SPACES DATA=====================
+#======================= READING IN THE PARKING SPACES DATA===================
 
 # Writte in manualy numbers of parking spaces from mobility report. See:
 # paset0("https://www.berlin.de/senuvk/verkehr/politik_planung/zahlen_",
 #"fakten/download/Mobilitaet_dt_komplett.pdf")
 
 
-rprtDt = c(26488, 4090, 26000, 20500, 2726, 7400, 7150)  # Avaiable data
+rprtDt = c(26488, 4090, 26000, 20500, 2726, 7400, 7150)  # avaiable data
 
 
-#====================== PREPARING PARKING DATA FOR MERGING======================
+#===================== PREPARING PARKING DATA FOR MERGING=====================
 
 # For the remaining districts the average of avaiable data has been used, not to
 # impact the index calculation. Create a vector with observations for all the
@@ -453,11 +453,11 @@ prkDt = data.frame(prkDst, prkNr,
 
 colnames(prkDt) = c("District", "Parking")  # name columns
 
-#========================READING IN TREES DATA==================================
+#======================READING IN TREES DATA==================================
 
 # Data Source: paste0("https://de.statista.com/statistik/daten/studie/652680/",
 #"umfrage/strassenbaeume-in-berlin-nach-bezirken/")
-# Read in the trees data. 
+# Read in the trees data
 # Ignore Warning: Warning message: In DataToNumeric(NA..1) : NAs introduced 
 # by coercion
 
@@ -467,10 +467,11 @@ trNm = paste0("SPL_BerlinDst_Data_Prep_1/",
 
 tr = read.xlsx(trNm, sheetName = "Daten", as.data.frame = TRUE , 
                encoding = "UTF-8") %>%
-    mutate_at(grep("Berlin", names(.)), as.character) %>%  # Con. Dist. Names 
-    mutate_at(-grep("Berlin", names(.)), DataToNumeric)  # Con.other data to num.
+    mutate_at(grep("Berlin", names(.)), as.character) %>% 
+    mutate_at(-grep("Berlin", names(.)), DataToNumeric)  # convert data to numeric
+    
 
-#====================PREPARINF TREES DATA FOR MERGING===========================
+#====================PREPARINF TREES DATA FOR MERGING=========================
 
 trDst = tr[3:14, grep("Berlin", names(tr))] %>% 
     DistricToFullName(.) # select district names and mutate them  to full form
@@ -485,7 +486,8 @@ trDt = data.frame(trDst,
 
 colnames(trDt) = c("District", "Trees") # name columns
 
-#===========READING IN  AND PREPARING FOR MERGING GREEN SPACE DATA =============
+  
+#=========READING IN  AND PREPARING FOR MERGING GREEN SPACE DATA ============
 
 # Read in green space data
 # Data source: Source of data : paste0("https://de.statista.com/statistik/",
@@ -507,7 +509,7 @@ grSpDt = read.xlsx(grSpNm, sheetName = "Daten", startRow = 5,
 
 colnames(grSpDt) = c("District", "GreenSp")
 
-#================= MERGING DATA SETS INTO ONE DATA FRAME =======================
+#================ MERGING DATA SETS INTO ONE DATA FRAME ======================
 
 
 FnlDt = merge(wbsDt,spMbDt, by.y = "District") %>% 
@@ -516,7 +518,7 @@ FnlDt = merge(wbsDt,spMbDt, by.y = "District") %>%
     merge(.,prkDt,by.y = "District")%>%
     merge(.,bsStpDt,by.y = "District") %>%
     merge(.,trDt,by.y = "District") %>%
-    merge(.,grSpDt,by.y = "District")  # Merge all the data sets by the district
+    merge(.,grSpDt,by.y = "District")  # merge all the data sets by the district
 
 
 write.csv2(FnlDt, "SPL_BerlinDst_Data_Prep_1/SPL_BerlinDst_Data_Prep_1.csv")

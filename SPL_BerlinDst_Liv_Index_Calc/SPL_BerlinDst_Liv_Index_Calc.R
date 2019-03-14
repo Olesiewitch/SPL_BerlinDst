@@ -1,5 +1,6 @@
 #===================== PREPARING THE ENVIROMENT ================================
 #setwd("~/SPL_BerlinDst")
+# The code was tested at HU PC Pool 25
 
 install.packages("ggplot2")
 install.packages("reshape2")
@@ -9,7 +10,7 @@ install.packages("tidyr")
 install.packages("xlsx")
 install.packages("ggthemes")
 install.packages("xtable")
-install.packages("magrittr")   # install pakages required 
+install.packages("magrittr")   # Install pakages required 
 
 library(ggplot2)
 library(magrittr)
@@ -19,7 +20,7 @@ library(tidyr)
 library(ggthemes)
 library(xlsx)
 library(reshape2)
-library(xtable)  # read in required packages
+library(xtable)  # Read in required packages
 
 options(xtable.floating = FALSE)
 options(xtable.timestamp = "")
@@ -57,7 +58,6 @@ PerHa = function(x){
   x/lvbInDt$Size
 }
 
-
 NormalizePositive = function(x){
     # Function normalizes the data in the vector x , by assigning the values 
     # between 0 and 1 for every observation. The highest value among the
@@ -89,8 +89,8 @@ NormalizeNegative=function(x){
 IsOutlier =  function(y) {
     # Function checks if the given observation in vector y is an outlier or not.
     # The outlier is defined as an observation smaller than the first quantile 
-    # minus 1,5 times the interquartile range of the vector OR bigger than the 
-    # third quantile plus the 1.5 times the interquartile range of the vector.  
+    # minus 1,5 times the interquartile range of the vector OR bigger than than
+    # the third quantile plus the 1.5 times the interquartile range of the vector.  
     # The interquartile range is calculated using IQR function. 
     # For more information see ?IQR.  
     #
@@ -322,7 +322,7 @@ colnames(MaxScore) = colnames(RsltDt)  #  sure that the col. names are the same
 
 View(RsltDt)  
 
-# Get the latex code for the report (table XX )
+# Get the latex code for the report
 
 xtable(RsltDt)
 xtable(MaxScore)  
@@ -335,7 +335,8 @@ subMlt = melt(RsltDt[, -c(7:11)],id.vars = "District")  # Melt Sub-Index Results
 Districtlable = as.character(subMlt$District)  # Convert district names to chr. 
 
 # Create final data frame for plotting, group the data according to the
-# Sub-Index (variable) and creat new column which checks for outliers
+# Sub-Index (variable) and creat new column which checks for outliers and
+# if "TRUE" returns the name of the District
 
 subMltDt = data.frame(Districtlable,subMlt[, -1],stringsAsFactors = FALSE)%>%
     group_by(variable) %>%
@@ -345,7 +346,7 @@ subMltDt = data.frame(Districtlable,subMlt[, -1],stringsAsFactors = FALSE)%>%
 ggplot(subMltDt, aes(x=variable,y=value, group = variable)) +  # Create ggplot 
     geom_boxplot(aes(fill = variable)) +  # Create boxplot for every Sub-Index
     # Add District lebels for outliers
-    geom_text(aes(label = Outlier), size = 3,  vjust = - 0.5) +    
+    geom_text(aes(label = Outlier), size = 3,  vjust = - 0.5) + # Plot the outliers   
     theme_bw() +  # Choose black and white theme 
     scale_fill_economist(labels = c("Housing","Infrastructure",  # Choose color palet
                                     "Social", "Economic", 
@@ -362,11 +363,13 @@ ggplot(subMltDt, aes(x=variable,y=value, group = variable)) +  # Create ggplot
           legend.box       = "horizontal")  # Horizontally
  
 # Print the plot   
+
 ggsave("Sub-Index Boxplot.png", plot = last_plot(),scale = 1, device = "png", 
        path = "SPL_BerlinDst_Liv_Index_Calc/")
 
+dev.off()
 
-#============================ BAR PLOTS =========================================
+#============================ BAR PLOTS ========================================
 
 TtlMltDt = melt(RsltDt[, -c(2:6,11)],id.vars = "District") # Melt Pillars Data
 
@@ -395,8 +398,9 @@ ggplot(TtlMltDt, aes(x = District,y = value, fill = variable)) +  # Creat ggplot
 ggsave("Per Pillar BarPlot.png", plot = last_plot(),scale = 1, device = "png", 
        path = "SPL_BerlinDst_Liv_Index_Calc/")
 
+dev.off()
 
-# Creat cummulative Index Plot
+# Creat Cummulative Index Plot
 
 ggplot(TtlMltDt, aes(x = District,y = value, fill = variable)) +  # Creat ggplot 
     geom_bar(stat = "identity", width = 0.5)+  # Creat barplot 
@@ -420,6 +424,7 @@ ggplot(TtlMltDt, aes(x = District,y = value, fill = variable)) +  # Creat ggplot
 ggsave("Total Index BarPlot.png", plot = last_plot(),scale = 1, device = "png", 
        path = "SPL_BerlinDst_Liv_Index_Calc/")
 
+dev.off()
 
 # ========================END OF THE SCRIPT=====================================
 # ==============================================================================

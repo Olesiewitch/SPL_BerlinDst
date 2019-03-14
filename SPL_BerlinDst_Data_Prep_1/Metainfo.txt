@@ -12,7 +12,13 @@ See also: other Quantlets in this project
 
 Submitted: 15.03.2019
 
-Datafile: bezirksgrenzen.kml, Fallzahlen&HZ 2012-2017.xls, public transportation stops.csv, SB_B05-01-00_2018j01_BE.xls, statistic_id652680_strassenbaeume-in-berlin-nach-bezirken-2017.xls, statistic_id652716_oeffentliche-gruenflaechen-in-berlin-nach-bezirken-2017.xlsx
+Datafile:
+- bezirksgrenzen.kml
+- Fallzahlen&HZ 2012-2017.xls
+- public transportation stops.csv
+- SB_B05-01-00_2018j01_BE.xls
+- statistic_id652680_strassenbaeume-in-berlin-nach-bezirken-2017.xls
+- statistic_id652716_oeffentliche-gruenflaechen-in-berlin-nach-bezirken-2017.xlsx
 
 Output:  
 - SPL_BerlinDst_Data_Prep_1.csv
