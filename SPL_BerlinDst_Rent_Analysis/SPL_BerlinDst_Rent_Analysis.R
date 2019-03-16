@@ -1,37 +1,3 @@
-Name of Quantlet: SPL_BerlinDst_Rent_Analysis
-
-Published in: 'Statistical Programming Languages - Student Project on ''Livability of Berlin Districts: Comparative Analysis'' '
-
-Description: Given Data from previous quantlets and open maps information creates graph, diagrams and performs statistical basic statistical analysis of Liveability Index and average rents per district. Visualises East and West Berlin differences
-
-Keywords: data visualization, ggplot2, maps, scatter plot, polygon data 
-
-Author: Aleksandra Kudaeva
-
-See also: other Quantlets in this project
-
-Submitted: 15.03.2019
-
-Datafile:
-- SPL_BerlinDst_Liv_Index.xls
-- statistic_id259905_mietpreise-in-berlin-2017-nach-bezirken.csv
-- List_of_districts.csv
-
-Input: Berliner_Mauer_Hinterlandmauer.kml, bezirksgrenzen.kml
-
-![alt text](https://github.com/Olesiewitsch/SPL_BerlinDst/blob/master/SPL_BerlinDst_Rent_Analysis/BerlinDistrictsMap.png)
-![alt text](https://github.com/Olesiewitsch/SPL_BerlinDst/blob/master/SPL_BerlinDst_Rent_Analysis/IndexRent.png)
-![alt text](https://github.com/Olesiewitsch/SPL_BerlinDst/blob/master/SPL_BerlinDst_Rent_Analysis/IndexRentScatter.png)
-![alt text](https://github.com/Olesiewitsch/SPL_BerlinDst/blob/master/SPL_BerlinDst_Rent_Analysis/RentEastWest.png)
-![alt text](https://github.com/Olesiewitsch/SPL_BerlinDst/blob/master/SPL_BerlinDst_Rent_Analysis/InfrEastWest.png)
-![alt text](https://github.com/Olesiewitsch/SPL_BerlinDst/blob/master/SPL_BerlinDst_Rent_Analysis/EconEastWest.png)
-![alt text](https://github.com/Olesiewitsch/SPL_BerlinDst/blob/master/SPL_BerlinDst_Rent_Analysis/EcolEastWest.png)
-![alt text](https://github.com/Olesiewitsch/SPL_BerlinDst/blob/master/SPL_BerlinDst_Rent_Analysis/SocEastWest.png)
-![alt text](https://github.com/Olesiewitsch/SPL_BerlinDst/blob/master/SPL_BerlinDst_Rent_Analysis/HousingEastWest.png)
-
-
-## R Code 
-```
 #=======================LOAD PACKAGES===========================================
 # Install packages if not installed before
 if(!require("ggplot2")){install.packages("ggplot2")}
@@ -349,4 +315,7 @@ EastWest(IndRntDt$SocIn,  "Social Index", "SocEastWest", leg = FALSE)
 EastWest(IndRntDt$EcoIn,  "Economic Index", "EconEastWest", leg = FALSE)
 EastWest(IndRntDt$EnvIn,  "Environmental Index", "EcolEastWest", leg = FALSE)
 
-```
+
+
+
+

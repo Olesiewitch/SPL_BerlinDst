@@ -1,0 +1,32 @@
+Name of Quantlet: SPL_BerlinDst_Rent_Analysis
+
+Published in: 'Statistical Programming Languages - Student Project on ''Livability of Berlin Districts: Comparative Analysis'' '
+
+Description: Given Data from previous quantlets and open maps information creates graph, diagrams and performs statistical basic statistical analysis of Liveability Index and average rents per district. Visualises East and West Berlin differences
+
+Keywords: data visualization, ggplot2, maps, scatter plot, polygon data 
+
+Author: Aleksandra Kudaeva
+
+See also: other Quantlets in this project
+
+Submitted: 15.03.2019
+
+Datafile:
+- SPL_BerlinDst_Liv_Index.xls
+- statistic_id259905_mietpreise-in-berlin-2017-nach-bezirken.csv
+- List_of_districts.csv
+
+Input: Berliner_Mauer_Hinterlandmauer.kml, bezirksgrenzen.kml
+
+Output:  
+- BerlinDistrictsMap.png
+- IndexRent.png
+- IndexRentScatter.png
+- IndexEastWest.png
+- RentEastWest.png
+- HousingEastWest.png
+- InfrEastWest.png
+- SocEastWest.png
+- EcolEastWest.png
+- EconEastWest.png

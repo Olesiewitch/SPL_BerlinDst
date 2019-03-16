@@ -1,11 +1,11 @@
-"old";"new"
-"Abschnittsnummer (ID)";"Nr"
-"Name des Straßenabschnittes";"Street"
-"Länge des Straßenabschnittes [m]";"Length"
-"Durchschnittliche tägliche Verkehrsstärke (DTV) Kfz 2015";"KFZ_daily"
-"NO2-Belastung (berechnetes Jahresmittel [µg/m³]) 2015";"NO2_yearly"
-"PM10-Belastung (berechnetes Jahresmittel [µg/m³]) 2015";"PM10_yearly"
-"PM25-Belastung (berechnetes Jahresmittel [µg/m³]) 2015";"PM25_yearly"
-"Index der Luftbelastung für NO2 bezogen auf 2015";"NO2_index"
-"Index der Luftbelastung für PM10 bezogen auf 2015";"PM10_index"
-"Gesamtindex der Luftbelastung für NO2 und PM10 bezogen auf 2015";"Index_overal"
+old;new
+Abschnittsnummer (ID);Nr
+Name des Strassenabschnittes;Street
+Laenge des Strassenabschnittes [m];Length
+Durchschnittliche taegliche Verkehrsstaerke (DTV) Kfz 2015;KFZ_daily
+NO2-Belastung (berechnetes Jahresmittel [µg/m³]) 2015;NO2_yearly
+PM10-Belastung (berechnetes Jahresmittel [µg/m³]) 2015;PM10_yearly
+PM25-Belastung (berechnetes Jahresmittel [µg/m³]) 2015;PM25_yearly
+Index der Luftbelastung fuer NO2 bezogen auf 2015;NO2_index
+Index der Luftbelastung fuer PM10 bezogen auf 2015;PM10_index
+Gesamtindex der Luftbelastung fuer NO2 und PM10 bezogen auf 2015;Index_overal

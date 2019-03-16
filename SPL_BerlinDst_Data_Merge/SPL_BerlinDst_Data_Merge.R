@@ -1,24 +1,3 @@
-Name of Quantlet: SPL_BerlinDst_Data_Merge
-
-Published in: 'Statistical Programming Languages - Student Project on ''Livability of Berlin Districts: Comparative Analysis'' '
-
-Description: Merges tables from quantlets 1-3 and produces basic data statistics
-
-Keywords: data preparation, merge, data description, aggregation 
-
-Author: Aleksandra Kudaeva
-
-See also: other Quantlets in this project
-
-Submitted: 15.03.2019
-
-Datafile: SPL_BerlinDst_Data_Prep_1.csv, SPL_BerlinDst_Data_Prep_2.csv, SPL_BerlinDst_Data_Prep_3.csv
-
-Output:  
-- SPL_BerlinDst_Data_Merge.csv
-
-## R Code 
-```
 #=======================LOAD PACKAGES===========================================
 # Install packages if not installed before
 if(!require("pastecs")){install.packages("pastecs")}
@@ -118,4 +97,4 @@ stats = lvbInDt %>%
     select(-c(District, Nr)) %>%
     stat.desc()  #aggregated statistics
 
-```
+

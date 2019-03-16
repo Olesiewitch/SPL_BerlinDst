@@ -1,25 +1,3 @@
-Name of Quantlet: SPL_BerlinDst_Data_Prep_3
-
-Published in: 'Statistical Programming Languages - Student Project on ''Livability of Berlin Districts: Comparative Analysis'' '
-
-Description: Generates the required data set from the raw data
-
-Keywords: data preparation, variable transformation, data description, aggregation 
-
-Author: Aleksandra Kudaeva
-
-See also: other Quantlets in this project
-
-Submitted: 15.03.2019
-
-Datafile: Air_Pollution_2015.xls, matching.csv, List_of_districts.csv
-
-Output:
-- SPL_BerlinDst_Data_Prep_3.csv
-- Street_Index_Matching.csv
-
-## R Code 
-```
 # Working directory should be set to the project folder
 setwd("C:/Users/Alexandra/Documents/SPL_BerlinDst")
 #=========================RUN HELPFUL FUNCTIONS=================================
@@ -184,5 +162,3 @@ ap = PltnM %>%
 write.csv2(ap, 
            "./SPL_BerlinDst_Data_Prep_3/SPL_BerlinDst_Data_Prep_3.csv", 
            row.names = FALSE)
-
-```
