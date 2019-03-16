@@ -1,5 +1,5 @@
 # Working directory should be set to the project folder
-setwd("C:/Users/Alexandra/Documents/SPL_BerlinDst")
+#setwd("")
 #=========================RUN HELPFUL FUNCTIONS=================================
 #replace all the Umlauts by latin equivalents
 ReplaceUmlauts = function(clmn){
